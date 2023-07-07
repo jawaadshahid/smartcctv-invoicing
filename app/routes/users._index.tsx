@@ -65,7 +65,7 @@ export default function Index() {
             users.map((loopedUser: any) => {
               return (
                 <tr
-                  className="flex flex-col md:table-row max-[767px]:border-none"
+                  className="flex flex-col md:table-row"
                   key={loopedUser.id}
                 >
                   <td data-label="ID" className={TD_CLASSNAME}>
