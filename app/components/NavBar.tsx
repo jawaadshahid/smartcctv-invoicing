@@ -25,14 +25,16 @@ const NavBar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52"
           >
             <li>
               <a href="/">Home</a>
             </li>
-            <li>
-              <a href="/users">Users</a>
-            </li>
+            {user && (
+              <li>
+                <a href={user.isAdmin ? "/users" : `/users/${user.id}`}>User managemment</a>
+              </li>
+            )}
           </ul>
         </div>
       </div>

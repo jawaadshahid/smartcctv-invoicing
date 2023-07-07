@@ -1,17 +1,17 @@
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form, useLoaderData,
-  useNavigation
-} from "@remix-run/react";
-import { useState } from "react";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import { useContext, useState } from "react";
 import Modal from "~/components/Modal";
-import { db, deleteUserById } from "~/utils/db";
+import { UserContext } from "~/root";
+import { db, deleteUserById, getUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/users/login");
+  const user = await getUserById(uid);
+  if (!user?.isAdmin) return redirect(`/users/${uid}`);
   try {
     let users = {};
     users = await db.users.findMany();
@@ -27,7 +27,7 @@ export async function action({ request }: ActionArgs) {
   const deleteUserId = formData.get("uid") as string;
   try {
     await deleteUserById(parseInt(deleteUserId));
-    return redirect('/users')
+    return redirect("/users");
   } catch (err) {
     console.error(err);
     return {};
@@ -46,6 +46,7 @@ export default function Index() {
   const isSubmitting = navigation.state === "submitting";
   const [deletedUserID, setDeletedUserId] = useState(0);
   const [modelOpen, setModalOpen] = useState(false);
+  const user: any = useContext(UserContext);
 
   return (
     <div className="overflow-x-auto w-full">
@@ -61,33 +62,37 @@ export default function Index() {
         </thead>
         <tbody>
           {users &&
-            users.map((user: any) => {
+            users.map((loopedUser: any) => {
               return (
                 <tr
                   className="flex flex-col md:table-row max-[767px]:border-none"
-                  key={user.id}
+                  key={loopedUser.id}
                 >
                   <td data-label="ID" className={TD_CLASSNAME}>
-                    {user.id}
+                    {loopedUser.id}
                   </td>
                   <td data-label="First Name" className={TD_CLASSNAME}>
-                    {user.firstName}
+                    {loopedUser.firstName}
                   </td>
                   <td data-label="Last Name" className={TD_CLASSNAME}>
-                    {user.lastName}
+                    {loopedUser.lastName}
                   </td>
                   <td data-label="Email" className={TD_CLASSNAME}>
-                    {user.email}
+                    {loopedUser.email}
                   </td>
                   <td data-label="Actions" className={TD_CLASSNAME}>
-                    <div className="join join-horizontal">
-                      <a href={`users/${user.id}`} className="btn join-item">
+                    <div className="join">
+                      <a
+                        href={`users/${loopedUser.id}`}
+                        className="btn btn-neutral join-item"
+                      >
                         EDIT
                       </a>
                       <button
-                        className="btn join-item"
+                        className="btn btn-neutral join-item"
+                        disabled={user.id === loopedUser.id}
                         onClick={() => {
-                          setDeletedUserId(user.id);
+                          setDeletedUserId(loopedUser.id);
                           setModalOpen(true);
                         }}
                       >
@@ -111,7 +116,7 @@ export default function Index() {
           >
             <input type="hidden" name="uid" value={deletedUserID} />
             <button
-              className="btn btn-primary"
+              className="btn btn-neutral"
               type="submit"
               disabled={isSubmitting}
             >
@@ -119,7 +124,7 @@ export default function Index() {
             </button>
           </Form>
           <button
-            className="btn btn-primary"
+            className="btn btn-neutral"
             disabled={isSubmitting}
             onClick={() => setModalOpen(false)}
           >

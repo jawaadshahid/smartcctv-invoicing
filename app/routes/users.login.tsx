@@ -22,7 +22,7 @@ export async function action({ request }: ActionArgs) {
     );
     if (!isCorrectPassword) mess = "Invalid password!";
     else {
-      return await createUserSession(user.id, "/users");
+      return await createUserSession(user.id, "/");
     }
   } else {
     mess = "User not found";
@@ -38,7 +38,7 @@ export default function Login() {
   return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
-        <Form method="post" className="bg-neutral px-4 py-2 rounded-lg">
+        <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
           <fieldset disabled={navigation.state === "submitting"}>
             <div className="mb-4">
               <label className="label" htmlFor="email">
@@ -65,12 +65,12 @@ export default function Login() {
               />
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn btn-accent" type="submit">
+              <button className="btn btn-neutral" type="submit">
                 {navigation.state === "submitting" ? "Validating..." : "Log In"}
               </button>
               <a
                 href="/users/register"
-                className="inline-block link link-accent px-2"
+                className="inline-block link link-neutral-content px-4"
               >
                 No account? create user
               </a>

@@ -94,7 +94,7 @@ export default function Index() {
   return(
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
-        <Form method="post" className="bg-neutral px-4 py-2 rounded-lg">
+        <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
           <fieldset disabled={navigation.state === "submitting"}>
             <div className="mb-4">
               <label className="label" htmlFor="firstname">
@@ -177,10 +177,10 @@ export default function Index() {
               )}
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-neutral" type="submit">
                 {navigation.state === "submitting" ? "Submitting..." : "Submit"}
               </button>
-              <a href="/users" className="btn ml-3">
+              <a href="/users" className="btn btn-neutral ml-3">
                 Cancel
               </a>
             </div>
