@@ -1,11 +1,18 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import { useContext } from "react";
-import { UserContext } from "~/root";
+import { SITE_TITLE, UserContext } from "~/root";
 import { db, getUserByEmail } from "~/utils/db";
+import { getUserId } from "~/utils/session";
 import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
+
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const uid = await getUserId(request);
+  if (!uid) return redirect("/login");
+};
 
 export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
@@ -83,10 +90,10 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "user list" }];
+  return [{ title: `${SITE_TITLE} - Change user details`}];
 };
 
-export default function Index() {
+export default function UserId() {
   const user: any = useContext(UserContext);
   const navigation = useNavigation();
   const data = useActionData();

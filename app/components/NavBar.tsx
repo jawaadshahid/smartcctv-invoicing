@@ -45,7 +45,7 @@ const NavBar = () => {
             className="btn btn-ghost btn-circle tooltip tooltip-left"
             data-tip="login"
           >
-            <a href="/users/login">
+            <a href="/login">
               <svg
                 className="w-6 h-6 mx-auto"
                 fill="none"
@@ -67,7 +67,7 @@ const NavBar = () => {
             className="btn btn-ghost btn-circle tooltip tooltip-left"
             data-tip="logout"
           >
-            <a href="/users/logout">
+            <a href="/logout">
               <svg
                 className="w-6 h-6 mx-auto"
                 fill="none"

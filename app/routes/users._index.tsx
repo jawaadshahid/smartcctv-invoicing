@@ -3,13 +3,13 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext, useState } from "react";
 import Modal from "~/components/Modal";
-import { UserContext } from "~/root";
+import { SITE_TITLE, UserContext } from "~/root";
 import { db, deleteUserById, getUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
-  if (!uid) return redirect("/users/login");
+  if (!uid) return redirect("/login");
   const user = await getUserById(uid);
   if (!user?.isAdmin) return redirect(`/users/${uid}`);
   try {
@@ -35,7 +35,7 @@ export async function action({ request }: ActionArgs) {
 }
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "user list" }];
+  return [{ title: `${SITE_TITLE} - Users` }];
 };
 
 export default function Index() {
@@ -49,8 +49,8 @@ export default function Index() {
   const user: any = useContext(UserContext);
 
   return (
-    <div className="overflow-x-auto w-full">
-      <table className="table w-full static">
+    <div className="-mx-4">
+      <table className="table static">
         <thead>
           <tr className="hidden md:table-row">
             <th>ID</th>

@@ -13,6 +13,8 @@ import { createContext } from "react";
 import { getUserId } from "./utils/session";
 import { getUserById } from "./utils/db";
 
+export const SITE_TITLE = "Smart CCTV admin"
+
 export const UserContext = createContext(null);
 
 export const loader = async ({ request }: LoaderArgs) => {

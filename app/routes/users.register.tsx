@@ -2,11 +2,12 @@ import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
+import { SITE_TITLE } from "~/root";
 import { db, getUserByEmail } from "~/utils/db";
 import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "register" }];
+  return [{ title: `${SITE_TITLE} - Register` }];
 };
 
 export async function action({ request }: ActionArgs) {
@@ -48,7 +49,7 @@ export async function action({ request }: ActionArgs) {
   });
   if (user) {
     console.log("create user:", user);
-    return redirect("/users/login");
+    return redirect("/login");
   } else {
     console.log("err:", "failed to create the user");
   }
@@ -139,7 +140,7 @@ export default function Register() {
               <button className="btn btn-neutral" type="submit">
                 {navigation.state === "submitting" ? "Submitting..." : "Submit"}
               </button>
-              <a href="/users/login" className="btn btn-neutral ml-3">
+              <a href="/login" className="btn btn-neutral ml-3">
                 Cancel
               </a>
             </div>
