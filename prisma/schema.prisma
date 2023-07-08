@@ -4,16 +4,71 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL_WITH_SCHEMA")
+  url      = env("DATABASE_URL")
 }
 
 model users {
   id        Int      @id @default(autoincrement())
-  firstName String?  @db.VarChar(255)
-  lastName  String?  @db.VarChar(255)
-  password  String?  @db.VarChar(255)
-  email     String?  @db.VarChar(255)
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  email     String   @unique
   createdAt DateTime @db.DateTime(0)
   updatedAt DateTime @db.DateTime(0)
-  isAdmin   Int      @default(0)
+  isAdmin   Int      @db.TinyInt() @default(0)
+}
+
+model customers {
+  customer_id Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  tel         String  @db.VarChar(255)
+  email       String  @db.VarChar(255)
+  address     String  @db.VarChar(255)
+  invoice     invoices?
+}
+
+model invoices {
+  invoice_id  Int                  @id @default(autoincrement())
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  products    invoiced_products[]
+  customer    customers            @relation(fields: [customer_id], references: [customer_id])
+  customer_id Int                  @unique
+}
+
+model invoiced_products {
+  invprods_id Int       @id @default(autoincrement())
+  invoices    invoices  @relation(fields: [invoice_id], references: [invoice_id])
+  invoice_id  Int
+  products    products @relation(fields: [product_id], references: [product_id])
+  product_id  Int
+}
+
+model products {
+  product_id Int            @id @default(autoincrement())
+  model      product_models @relation(fields: [model_id], references: [model_id])
+  model_id   Int
+  brand      product_brands @relation(fields: [brand_id], references: [brand_id])
+  brand_id   Int
+  type       product_types  @relation(fields: [type_id], references: [type_id])
+  type_id    Int
+  invoices   invoiced_products[]
+}
+
+model product_models {
+  model_id   Int    @id @default(autoincrement())
+  model_name String @db.VarChar(255)
+  products   products[]
+}
+
+model product_brands {
+  brand_id   Int    @id @default(autoincrement())
+  brand_name String @db.VarChar(255)
+  products   products[]
+}
+
+model product_types {
+  type_id   Int     @id @default(autoincrement())
+  type_name String  @db.VarChar(255)
+  products  products[]
 }
