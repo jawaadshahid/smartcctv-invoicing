@@ -39,6 +39,9 @@ const NavBar = () => {
             <li>
               <a href="/invoices">Invoices</a>
             </li>
+            <li>
+              <a href="/customers">Customers</a>
+            </li>
           </ul>
         </div>
       </div>

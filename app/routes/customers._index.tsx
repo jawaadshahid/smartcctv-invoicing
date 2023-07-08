@@ -8,22 +8,22 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const invoices = db.invoices.findMany();
-    return json({ invoices });
+    const customers = db.customers.findMany();
+    return json({ customers });
   } catch (err) {
     console.error(err);
     return {};
   }
 };
 
-export default function InvoicesIndex() {
+export default function CustomersIndex() {
   const TD_CLASSNAME =
     "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
-  const { invoices } = useLoaderData();
-  console.log({ invoices });
+  const { customers } = useLoaderData();
+  console.log({ customers });
   return (
     <>
-      {invoices && invoices.length ? (
+      {customers && customers.length ? (
         <div className="-mx-4">
           <table className="table static">
             <thead>
@@ -32,15 +32,15 @@ export default function InvoicesIndex() {
               </tr>
             </thead>
             <tbody>
-              {invoices &&
-                invoices.map((loopedInvoices: any) => {
+              {customers &&
+                customers.map((loopedCustomers: any) => {
                   return (
                     <tr
                       className="flex flex-col md:table-row"
-                      key={loopedInvoices.id}
+                      key={loopedCustomers.id}
                     >
                       <td data-label="ID" className={TD_CLASSNAME}>
-                        {loopedInvoices.id}
+                        {loopedCustomers.id}
                       </td>
                     </tr>
                   );
@@ -49,11 +49,11 @@ export default function InvoicesIndex() {
           </table>
         </div>
       ) : (
-        <p>No invoices found...</p>
+        <p>No customers found...</p>
       )}
       <div className="flex justify-end">
         <a href="#" className="btn btn-neutral">
-          Add new invoice +
+          Add new customer +
         </a>
       </div>
     </>
