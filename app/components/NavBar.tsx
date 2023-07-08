@@ -32,9 +32,11 @@ const NavBar = () => {
               <a href="/">Home</a>
             </li>
             <li>
-              <a href={user.isAdmin ? "/users" : `/users/${user.id}`}>
-                User managemment
-              </a>
+              {user.isAdmin ? (
+                <a href="/users">Users</a>
+              ) : (
+                <a href={`/users/${user.id}`}>My details</a>
+              )}
             </li>
             <li>
               <a href="/invoices">Invoices</a>
@@ -42,10 +44,15 @@ const NavBar = () => {
             <li>
               <a href="/customers">Customers</a>
             </li>
+            <li>
+              <a href="/products">Products</a>
+            </li>
           </ul>
         </div>
       </div>
-      <div className="navbar-center"><p>Hi, {user.firstName}</p></div>
+      <div className="navbar-center">
+        <p>Hi, {user.firstName}</p>
+      </div>
       <div className="navbar-end">
         {!user ? (
           <button
