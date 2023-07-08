@@ -15,60 +15,67 @@ model users {
   email     String   @unique
   createdAt DateTime @db.DateTime(0)
   updatedAt DateTime @db.DateTime(0)
-  isAdmin   Int      @db.TinyInt() @default(0)
+  isAdmin   Int      @default(0) @db.TinyInt
 }
 
 model customers {
-  customer_id Int     @id @default(autoincrement())
-  name        String  @db.VarChar(255)
-  tel         String  @db.VarChar(255)
-  email       String  @db.VarChar(255)
-  address     String  @db.VarChar(255)
+  customer_id Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  tel         String    @db.VarChar(255)
+  email       String    @db.VarChar(255)
+  address     String    @db.VarChar(255)
   invoice     invoices?
 }
 
 model invoices {
-  invoice_id  Int                  @id @default(autoincrement())
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  invoice_id  Int                 @id @default(autoincrement())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  customer_id Int                 @unique
   products    invoiced_products[]
-  customer    customers            @relation(fields: [customer_id], references: [customer_id])
-  customer_id Int                  @unique
+  customer    customers           @relation(fields: [customer_id], references: [customer_id])
 }
 
 model invoiced_products {
-  invprods_id Int       @id @default(autoincrement())
-  invoices    invoices  @relation(fields: [invoice_id], references: [invoice_id])
+  invprods_id Int      @id @default(autoincrement())
   invoice_id  Int
-  products    products @relation(fields: [product_id], references: [product_id])
   product_id  Int
+  invoices    invoices @relation(fields: [invoice_id], references: [invoice_id])
+  products    products @relation(fields: [product_id], references: [product_id])
+
+  @@index([invoice_id], map: "invoiced_products_invoice_id_fkey")
+  @@index([product_id], map: "invoiced_products_product_id_fkey")
 }
 
 model products {
-  product_id Int            @id @default(autoincrement())
-  model      product_models @relation(fields: [model_id], references: [model_id])
+  product_id Int                 @id @default(autoincrement())
   model_id   Int
-  brand      product_brands @relation(fields: [brand_id], references: [brand_id])
   brand_id   Int
-  type       product_types  @relation(fields: [type_id], references: [type_id])
   type_id    Int
   invoices   invoiced_products[]
+  brand      product_brands      @relation(fields: [brand_id], references: [brand_id])
+  model      product_models      @relation(fields: [model_id], references: [model_id])
+  type       product_types       @relation(fields: [type_id], references: [type_id])
+
+  @@index([brand_id], map: "products_brand_id_fkey")
+  @@index([model_id], map: "products_model_id_fkey")
+  @@index([type_id], map: "products_type_id_fkey")
 }
 
 model product_models {
-  model_id   Int    @id @default(autoincrement())
-  model_name String @db.VarChar(255)
+  model_id   Int        @id @default(autoincrement())
+  model_name String     @db.VarChar(255)
   products   products[]
 }
 
 model product_brands {
-  brand_id   Int    @id @default(autoincrement())
-  brand_name String @db.VarChar(255)
+  brand_id   Int        @id @default(autoincrement())
+  brand_name String     @db.VarChar(255)
   products   products[]
 }
 
 model product_types {
-  type_id   Int     @id @default(autoincrement())
-  type_name String  @db.VarChar(255)
+  type_id   Int        @id @default(autoincrement())
+  type_name String     @db.VarChar(255)
   products  products[]
 }

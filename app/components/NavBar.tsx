@@ -3,6 +3,7 @@ import { UserContext } from "~/root";
 
 const NavBar = () => {
   const user: any = useContext(UserContext);
+  if (!user) return <div className="navbar bg-base-100"></div>;
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -30,15 +31,18 @@ const NavBar = () => {
             <li>
               <a href="/">Home</a>
             </li>
-            {user && (
-              <li>
-                <a href={user.isAdmin ? "/users" : `/users/${user.id}`}>User managemment</a>
-              </li>
-            )}
+            <li>
+              <a href={user.isAdmin ? "/users" : `/users/${user.id}`}>
+                User managemment
+              </a>
+            </li>
+            <li>
+              <a href="/invoices">Invoices</a>
+            </li>
           </ul>
         </div>
       </div>
-      <div className="navbar-center">{user && <p>Hi, {user.firstName}</p>}</div>
+      <div className="navbar-center"><p>Hi, {user.firstName}</p></div>
       <div className="navbar-end">
         {!user ? (
           <button

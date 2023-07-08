@@ -38,7 +38,7 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Users` }];
 };
 
-export default function Index() {
+export default function UsersIndex() {
   const TD_CLASSNAME =
     "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const { users } = useLoaderData();

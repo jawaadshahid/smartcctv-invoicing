@@ -686,40 +686,6 @@ html {
   --tw-backdrop-sepia:  ;
 }
 
-.container {
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
-
 .avatar.placeholder > div {
   display: flex;
   align-items: center;
@@ -2024,14 +1990,14 @@ html {
   z-index: 1;
 }
 
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .-mx-4 {
   margin-left: -1rem;
   margin-right: -1rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mb-2 {
@@ -2102,10 +2068,6 @@ html {
   max-width: 20rem;
 }
 
-.max-w-screen-2xl {
-  max-width: 1536px;
-}
-
 .flex-col {
   flex-direction: column;
 }
@@ -2114,8 +2076,8 @@ html {
   place-items: center;
 }
 
-.overflow-x-auto {
-  overflow-x: auto;
+.justify-end {
+  justify-content: flex-end;
 }
 
 .rounded-lg {
@@ -2141,6 +2103,11 @@ html {
   padding-right: 1rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -2149,21 +2116,6 @@ html {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
-.px-6 {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .text-xs {
@@ -2268,11 +2220,6 @@ html {
 
   .md\:table-row {
     display: table-row;
-  }
-
-  .md\:px-4 {
-    padding-left: 1rem;
-    padding-right: 1rem;
   }
 
   .md\:before\:hidden::before {
