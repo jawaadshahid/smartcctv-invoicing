@@ -39,7 +39,7 @@ const NavBar = () => {
               )}
             </li>
             <li>
-              <a href="/invoices">Invoices</a>
+              <a href="/quotes">Quotes</a>
             </li>
             <li>
               <a href="/customers">Customers</a>

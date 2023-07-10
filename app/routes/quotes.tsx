@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import NavBar from "~/components/NavBar";
 
-export default function Invoices() {
+export default function Quotes() {
   return (
     <div>
       <NavBar />

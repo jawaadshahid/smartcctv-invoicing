@@ -19,43 +19,47 @@ model users {
 }
 
 model customers {
-  customer_id Int       @id @default(autoincrement())
-  name        String    @db.VarChar(255)
-  tel         String    @db.VarChar(255)
-  email       String    @db.VarChar(255)
-  address     String    @db.VarChar(255)
-  invoice     invoices?
+  customer_id Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  tel         String  @db.VarChar(255)
+  email       String  @db.VarChar(255)
+  address     String  @db.VarChar(255)
+  quote       quotes?
 }
 
-model invoices {
-  invoice_id  Int                 @id @default(autoincrement())
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  customer_id Int                 @unique
-  products    invoiced_products[]
-  customer    customers           @relation(fields: [customer_id], references: [customer_id])
+model quotes {
+  quote_id        Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  customer_id     Int               @unique
+  c_name          String            @db.VarChar(255)
+  c_address       String            @db.VarChar(255)
+  c_tel           String            @db.VarChar(255)
+  c_email         String            @db.VarChar(255)
+  quoted_products quoted_products[]
+  customer        customers         @relation(fields: [customer_id], references: [customer_id])
 }
 
-model invoiced_products {
-  invprods_id Int      @id @default(autoincrement())
-  invoice_id  Int
-  product_id  Int
-  invoices    invoices @relation(fields: [invoice_id], references: [invoice_id])
-  products    products @relation(fields: [product_id], references: [product_id])
+model quoted_products {
+  invprod_id Int     @id @default(autoincrement())
+  quote_id   Int
+  name       String  @db.VarChar(255)
+  quantity   Int     @default(1) @db.SmallInt
+  price      Decimal @db.Decimal(10, 2)
+  quote      quotes  @relation(fields: [quote_id], references: [quote_id])
 
-  @@index([invoice_id], map: "invoiced_products_invoice_id_fkey")
-  @@index([product_id], map: "invoiced_products_product_id_fkey")
+  @@index([quote_id], map: "quoted_products_quote_id_fkey")
 }
 
 model products {
-  product_id Int                 @id @default(autoincrement())
+  product_id Int            @id @default(autoincrement())
   model_id   Int
   brand_id   Int
   type_id    Int
-  invoices   invoiced_products[]
-  brand      product_brands      @relation(fields: [brand_id], references: [brand_id])
-  model      product_models      @relation(fields: [model_id], references: [model_id])
-  type       product_types       @relation(fields: [type_id], references: [type_id])
+  price      Decimal        @db.Decimal(10, 2)
+  brand      product_brands @relation(fields: [brand_id], references: [brand_id])
+  model      product_models @relation(fields: [model_id], references: [model_id])
+  type       product_types  @relation(fields: [type_id], references: [type_id])
 
   @@index([brand_id], map: "products_brand_id_fkey")
   @@index([model_id], map: "products_model_id_fkey")
