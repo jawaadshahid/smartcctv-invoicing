@@ -4,8 +4,8 @@ declare const global: Global & { db?: PrismaClient };
 
 let db: PrismaClient;
 
-if (typeof window === 'undefined') {
-  if (process.env['NODE_ENV'] === 'production') {
+if (typeof window === "undefined") {
+  if (process.env["NODE_ENV"] === "production") {
     db = new PrismaClient();
   } else {
     if (!global.db) {
@@ -33,4 +33,23 @@ const deleteUserById = (id: number) => {
   });
 };
 
-export { db, getUserByEmail, getUserById, deleteUserById };
+const deleteProductById = (product_id: number) => {
+  return db.products.delete({
+    where: { product_id },
+  });
+};
+
+const deleteCustomerById = (customer_id: number) => {
+  return db.customers.delete({
+    where: { customer_id },
+  });
+};
+
+export {
+  db,
+  getUserByEmail,
+  getUserById,
+  deleteUserById,
+  deleteProductById,
+  deleteCustomerById,
+};

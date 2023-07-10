@@ -36,6 +36,7 @@ export async function action({ request }: ActionArgs) {
 export default function Login() {
   const navigation = useNavigation();
   const data = useActionData();
+  const inputClass = "input input-bordered w-full max-w-xs"
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function Login() {
                   <span className="label-text">Email</span>
                 </label>
                 <input
-                  className="input input-bordered w-full max-w-xs"
+                  className={inputClass}
                   name="email"
                   id="email"
                   type="text"
@@ -61,7 +62,7 @@ export default function Login() {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  className="input input-bordered w-full max-w-xs"
+                  className={inputClass}
                   name="password"
                   id="password"
                   type="password"

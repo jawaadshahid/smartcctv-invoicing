@@ -1,3 +1,19 @@
+export const validateTel = (tel: string) => {
+  if (!tel) {
+    return "Tel is Required!";
+  } else if (!/^[0][1-9]\d{9}$|^[1-9]\d{9}$/.test(tel)) {
+    return "Invalid tel, needs to be a 11 digit number!";
+  }
+}
+
+export const validateName = (name: string) => {
+  if (!name) {
+    return "Name is Required!";
+  } else if (!/^[a-z A-Z]+$/.test(name)) {
+    return "Invalid name!";
+  }
+}
+
 export const validateFname = (firstname: string) => {
   if (!firstname) {
     return "First name is Required!";

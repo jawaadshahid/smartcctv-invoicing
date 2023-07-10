@@ -7,6 +7,10 @@ import { SITE_TITLE, UserContext } from "~/root";
 import { db, deleteUserById, getUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 
+export const meta: V2_MetaFunction = () => {
+  return [{ title: `${SITE_TITLE} - Users` }];
+};
+
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
@@ -33,10 +37,6 @@ export async function action({ request }: ActionArgs) {
     return {};
   }
 }
-
-export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - Users` }];
-};
 
 export default function UsersIndex() {
   const TD_CLASSNAME =
