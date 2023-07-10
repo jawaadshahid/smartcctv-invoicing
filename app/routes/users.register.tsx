@@ -37,6 +37,9 @@ export async function action({ request }: ActionArgs) {
   // generate enctypted password
   const password = await bcrypt.hash(rpassword, 10);
 
+  const currUsers = await db.users.findMany()
+  const isAdmin = currUsers.length === 0;
+
   const user = await db.users.create({
     data: {
       firstName: fname,
@@ -45,6 +48,7 @@ export async function action({ request }: ActionArgs) {
       password: password,
       createdAt: new Date(),
       updatedAt: new Date(),
+      isAdmin: isAdmin ? 1 : 0
     },
   });
   if (user) {
@@ -62,6 +66,7 @@ export async function action({ request }: ActionArgs) {
 export default function Register() {
   const navigation = useNavigation();
   const data = useActionData();
+  const inputClass = "input input-bordered w-full max-w-xs"
 
   return (
     <div className="grid place-items-center">
@@ -73,7 +78,7 @@ export default function Register() {
                 <span className="label-text">First name</span>
               </label>
               <input
-                className="input input-bordered w-full max-w-xs"
+                className={inputClass}
                 id="firstname"
                 name="firstname"
                 type="text"
@@ -90,7 +95,7 @@ export default function Register() {
                 <span className="label-text">Last name</span>
               </label>
               <input
-                className="input input-bordered w-full max-w-xs"
+                className={inputClass}
                 id="lastname"
                 name="lastname"
                 type="text"
@@ -107,7 +112,7 @@ export default function Register() {
                 <span className="label-text">Email</span>
               </label>
               <input
-                className="input input-bordered w-full max-w-xs"
+                className={inputClass}
                 id="email"
                 name="email"
                 type="text"
@@ -124,7 +129,7 @@ export default function Register() {
                 <span className="label-text">Password</span>
               </label>
               <input
-                className="input input-bordered w-full max-w-xs"
+                className={inputClass}
                 id="password"
                 name="password"
                 type="password"
