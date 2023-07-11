@@ -45,101 +45,93 @@ export default function CustomersIndex() {
   const [modelOpen, setModalOpen] = useState(false);
   console.log({ customers });
   return (
-    <>
+    <div className="-mx-4">
       {customers && customers.length ? (
-        <div className="-mx-4">
-          <table className="table static">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Name</th>
-                <th>Tel</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers &&
-                customers.map((loopedCustomers: any) => {
-                  return (
-                    <tr
-                      className="flex flex-col md:table-row"
-                      key={loopedCustomers.customer_id}
-                    >
-                      <td data-label="ID" className={TD_CLASSNAME}>
-                        {loopedCustomers.customer_id}
-                      </td>
-                      <td data-label="Name" className={TD_CLASSNAME}>
-                        {loopedCustomers.name}
-                      </td>
-                      <td data-label="Tel" className={TD_CLASSNAME}>
-                        {loopedCustomers.tel}
-                      </td>
-                      <td data-label="Email" className={TD_CLASSNAME}>
-                        {loopedCustomers.email}
-                      </td>
-                      <td data-label="Address" className={TD_CLASSNAME}>
-                        {loopedCustomers.address}
-                      </td>
-                      <td data-label="Actions" className={TD_CLASSNAME}>
-                        <button
-                          className="btn btn-neutral"
-                          onClick={() => {
-                            setDeletedCustomerID(loopedCustomers.customer_id);
-                            setModalOpen(true);
-                          }}
-                        >
-                          DELETE
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-          <div className="flex justify-end mt-4">
-            <a href="/customers/create" className="btn btn-neutral">
-              Add new customer +
-            </a>
-          </div>
-          <Modal open={modelOpen}>
-            <p className="py-4">
-              Are you sure you want to delete this customer?
-            </p>
-            <div className="modal-action">
-              <Form
-                method="post"
-                onSubmit={() => {
-                  setModalOpen(false);
-                }}
-              >
-                <input
-                  type="hidden"
-                  name="customer_id"
-                  value={deletedCustomerID}
-                />
-                <button
-                  className="btn btn-neutral"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Confirming..." : "Confirm"}
-                </button>
-              </Form>
-              <button
-                className="btn btn-neutral"
-                disabled={isSubmitting}
-                onClick={() => setModalOpen(false)}
-              >
-                Close
-              </button>
-            </div>
-          </Modal>
-        </div>
+        <table className="table static">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>ID</th>
+              <th>Name</th>
+              <th>Tel</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers &&
+              customers.map((loopedCustomers: any) => {
+                return (
+                  <tr
+                    className="flex flex-col md:table-row"
+                    key={loopedCustomers.customer_id}
+                  >
+                    <td data-label="ID" className={TD_CLASSNAME}>
+                      {loopedCustomers.customer_id}
+                    </td>
+                    <td data-label="Name" className={TD_CLASSNAME}>
+                      {loopedCustomers.name}
+                    </td>
+                    <td data-label="Tel" className={TD_CLASSNAME}>
+                      {loopedCustomers.tel}
+                    </td>
+                    <td data-label="Email" className={TD_CLASSNAME}>
+                      {loopedCustomers.email}
+                    </td>
+                    <td data-label="Address" className={TD_CLASSNAME}>
+                      {loopedCustomers.address}
+                    </td>
+                    <td data-label="Actions" className={TD_CLASSNAME}>
+                      <button
+                        className="btn btn-neutral"
+                        onClick={() => {
+                          setDeletedCustomerID(loopedCustomers.customer_id);
+                          setModalOpen(true);
+                        }}
+                      >
+                        DELETE
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       ) : (
-        <p>No customers found...</p>
+        <p className="text-center">No customers found...</p>
       )}
-    </>
+      <div className="flex justify-end mt-4">
+        <a href="/customers/create" className="btn btn-neutral">
+          Add new customer +
+        </a>
+      </div>
+      <Modal open={modelOpen}>
+        <p className="py-4">Are you sure you want to delete this customer?</p>
+        <div className="modal-action">
+          <Form
+            method="post"
+            onSubmit={() => {
+              setModalOpen(false);
+            }}
+          >
+            <input type="hidden" name="customer_id" value={deletedCustomerID} />
+            <button
+              className="btn btn-neutral"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Confirming..." : "Confirm"}
+            </button>
+          </Form>
+          <button
+            className="btn btn-neutral"
+            disabled={isSubmitting}
+            onClick={() => setModalOpen(false)}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+    </div>
   );
 }
