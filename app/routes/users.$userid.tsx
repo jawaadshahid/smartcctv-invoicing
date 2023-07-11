@@ -12,6 +12,7 @@ import { validateEmail, validateFname, validateLname, validatePassword } from "~
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
+  return {};
 };
 
 export async function action({ request, params }: ActionArgs) {

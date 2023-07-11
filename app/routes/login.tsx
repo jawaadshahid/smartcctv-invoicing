@@ -17,7 +17,7 @@ export async function action({ request }: ActionArgs) {
   const password = body.get("password") as string;
   var mess = "";
   const user = await getUserByEmail(email);
-  if (user) {
+  if (user && user.isApproved) {
     const isCorrectPassword = await bcrypt.compare(
       password,
       `${user.password}`
@@ -69,7 +69,7 @@ export default function Login() {
                   placeholder="******************"
                 />
               </div>
-              <div className="mt-6 mb-2">
+              <div className="flex justify-between items-center mt-6 mb-2">
                 <button className="btn btn-neutral" type="submit">
                   {navigation.state === "submitting"
                     ? "Validating..."
@@ -77,9 +77,9 @@ export default function Login() {
                 </button>
                 <a
                   href="/users/register"
-                  className="inline-block link link-neutral-content px-4"
+                  className="block link link-neutral-content"
                 >
-                  No account? create user
+                  Register
                 </a>
                 {data && data.message && (
                   <p className="text-error mt-1 text-xs">{data.message}</p>

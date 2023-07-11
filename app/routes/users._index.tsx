@@ -29,12 +29,27 @@ export const loader = async ({ request }: LoaderArgs) => {
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const deleteUserId = formData.get("uid") as string;
-  try {
-    await deleteUserById(parseInt(deleteUserId));
-    return redirect("/users");
-  } catch (err) {
-    console.error(err);
-    return {};
+  const approvedUserId = formData.get("approvedUserId") as string;
+  if (deleteUserId) {
+    try {
+      await deleteUserById(parseInt(deleteUserId));
+      return redirect("/users");
+    } catch (err) {
+      console.error(err);
+      return {};
+    }
+  }
+  if (approvedUserId) {
+    try {
+      await db.users.update({
+        where: { id: parseInt(approvedUserId) },
+        data: { isApproved: 1 },
+      });
+      return redirect("/users");
+    } catch (err) {
+      console.error(err);
+      return {};
+    }
   }
 }
 
@@ -57,6 +72,7 @@ export default function UsersIndex() {
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th>Approved</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -64,10 +80,7 @@ export default function UsersIndex() {
           {users &&
             users.map((loopedUser: any) => {
               return (
-                <tr
-                  className="flex flex-col md:table-row"
-                  key={loopedUser.id}
-                >
+                <tr className="flex flex-col md:table-row" key={loopedUser.id}>
                   <td data-label="ID" className={TD_CLASSNAME}>
                     {loopedUser.id}
                   </td>
@@ -79,6 +92,22 @@ export default function UsersIndex() {
                   </td>
                   <td data-label="Email" className={TD_CLASSNAME}>
                     {loopedUser.email}
+                  </td>
+                  <td data-label="Approved" className={TD_CLASSNAME}>
+                    {loopedUser.isApproved ? (
+                      "Approved"
+                    ) : (
+                      <Form method="post">
+                        <input
+                          type="hidden"
+                          name="approvedUserId"
+                          value={loopedUser.id}
+                        />
+                        <button type="submit" className="btn btn-neutral">
+                          Approve
+                        </button>
+                      </Form>
+                    )}
                   </td>
                   <td data-label="Actions" className={TD_CLASSNAME}>
                     <div className="join">

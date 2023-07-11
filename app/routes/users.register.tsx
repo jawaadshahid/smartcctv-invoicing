@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import { SITE_TITLE } from "~/root";
-import { db, getUserByEmail } from "~/utils/db";
+import { db } from "~/utils/db";
 import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -27,38 +27,35 @@ export async function action({ request }: ActionArgs) {
   //if there are errors, we return the form errors
   if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
-  // existing user check
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
-    formErrors.email = "email already registered!";
-    return { formErrors };
-  }
-
   // generate enctypted password
   const password = await bcrypt.hash(rpassword, 10);
 
   const currUsers = await db.users.findMany()
-  const isAdmin = currUsers.length === 0;
+  const isFirst = currUsers.length === 0;
 
-  const user = await db.users.create({
-    data: {
-      firstName: fname,
-      lastName: lname,
-      email: email,
-      password: password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isAdmin: isAdmin ? 1 : 0
-    },
-  });
-  if (user) {
+  try {
+    const user = await db.users.create({
+      data: {
+        firstName: fname,
+        lastName: lname,
+        email: email,
+        password: password,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isAdmin: isFirst ? 1 : 0,
+        isApproved: isFirst ? 1 : 0
+      },
+    });
     console.log("create user:", user);
     return redirect("/login");
-  } else {
-    console.log("err:", "failed to create the user");
+  } catch (err: any) {
+    if (err.code === "P2002") {
+      formErrors.email = "email already registered!";
+      return { formErrors };
+    }
+    console.log(err)
+    return {}
   }
-
-  return {};
 }
 
 // Note the "action" export name, this will handle our form POST
