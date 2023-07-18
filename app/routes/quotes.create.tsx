@@ -1,4 +1,5 @@
 import type {
+  Prisma,
   customers,
   product_brands,
   product_models,
@@ -70,8 +71,8 @@ export async function action({ request }: ActionArgs) {
           `${address}`
         );
         return { createdCustomer };
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log({ error });
         customerActionErrors.info =
           "There was a problem creating the customer...";
         return { customerActionErrors };
@@ -93,26 +94,88 @@ export async function action({ request }: ActionArgs) {
           `${price}`
         );
         return { createdProduct };
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log({ error });
         productActionErrors.info =
           "There was a problem creating the product...";
         return { productActionErrors };
       }
     case "create_quote":
-      const { customer, labour, ...productValues } = values;
-      console.log({ productValues });
+      const { customer, labour, prodcount, ...productValues } = values;
       const quoteActionErrors: any = {};
 
       if (!customer)
         quoteActionErrors.customer = "you must select or define a customer!";
 
-        console.log(Object.keys(productValues));
       if (Object.keys(productValues).length === 0)
-        quoteActionErrors.product = "you must select or define at least one product!";
+        quoteActionErrors.product =
+          "you must select or define at least one product!";
 
       if (Object.values(quoteActionErrors).some(Boolean))
         return { quoteActionErrors };
+
+      // first loop: compile promises to get prods by Id
+      const prodPromiseCollection: any[] = [];
+      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
+        const product_id = parseInt(productValues[`p_${i + 1}_id`] as string);
+        if (!product_id) return true;
+        prodPromiseCollection.push(
+          db.products.findUnique({
+            where: { product_id },
+            include: {
+              brand: true,
+              model: true,
+              type: true,
+            },
+          })
+        );
+      });
+
+      // retrieves products from compiled promises
+      let retrievedSelectedProds = [];
+      try {
+        retrievedSelectedProds = await Promise.all(prodPromiseCollection);
+      } catch (error) {
+        console.log({ error });
+        quoteActionErrors.info =
+          "there was a problem saving the quote, please try again later";
+        return { quoteActionErrors };
+      }
+
+      // loops products and constructs quoted products
+      const quotedProducts = retrievedSelectedProds.map((product: any, i) => {
+        const { brand_name, model_name, type_name, price } = product;
+        const quantity = parseInt(productValues[`p_${i + 1}_qty`] as string);
+        return {
+          name: `${brand_name} - ${type_name} - ${model_name}`,
+          quantity,
+          price,
+        };
+      });
+
+      const newQuote: Prisma.quotesCreateInput = {
+        customer: {
+          connect: {
+            customer_id: parseInt(`${customer}`),
+          },
+        },
+        quoted_products: {
+          createMany: {
+            data: quotedProducts,
+          },
+        },
+        labour: Number(`${labour}`),
+      };
+
+      try {
+        await db.quotes.create({ data: newQuote });
+        return redirect("/quotes");
+      } catch (error) {
+        console.log({ error });
+        quoteActionErrors.info =
+          "there was a problem saving the quote, please try again later";
+        return { quoteActionErrors };
+      }
   }
 
   return {};
@@ -213,6 +276,12 @@ export default function QuotesCreate() {
             </span>
           </label>
         )}
+        <input
+          type="hidden"
+          name="prodcount"
+          id="prodcount"
+          value={productCount}
+        />
         <fieldset disabled={navigation.state === "submitting"}>
           <div className="mb-4">
             <label className="label" htmlFor="customer">

@@ -33,10 +33,6 @@ model quotes {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   customer_id     Int               @unique
-  c_name          String            @db.VarChar(255)
-  c_address       String            @db.VarChar(255)
-  c_tel           String            @db.VarChar(255)
-  c_email         String            @db.VarChar(255)
   labour          Int
   quoted_products quoted_products[]
   customer        customers         @relation(fields: [customer_id], references: [customer_id])

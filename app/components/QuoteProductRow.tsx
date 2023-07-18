@@ -66,8 +66,8 @@ const QuoteProductRow = ({
       >
         <select
           className={selectClass}
-          name={`product_${rowId}`}
-          id={`product_${rowId}`}
+          name={`p_${rowId}_id`}
+          id={`p_${rowId}_id`}
           value={productSelectValue}
           onChange={(e) => {
             handleSelect(rowId, e.target.value);
@@ -91,8 +91,8 @@ const QuoteProductRow = ({
           <td data-label="Quantity" className={TD_CLASSNAME}>
             <input
               className={inputClass}
-              name={`qty_${rowId}`}
-              id={`qty_${rowId}`}
+              name={`p_${rowId}_qty`}
+              id={`p_${rowId}_qty`}
               type="number"
               min="1"
               value={qty}
