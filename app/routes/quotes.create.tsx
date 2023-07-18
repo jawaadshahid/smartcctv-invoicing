@@ -100,7 +100,19 @@ export async function action({ request }: ActionArgs) {
         return { productActionErrors };
       }
     case "create_quote":
-      console.log({values})
+      const { customer, labour, ...productValues } = values;
+      console.log({ productValues });
+      const quoteActionErrors: any = {};
+
+      if (!customer)
+        quoteActionErrors.customer = "you must select or define a customer!";
+
+        console.log(Object.keys(productValues));
+      if (Object.keys(productValues).length === 0)
+        quoteActionErrors.product = "you must select or define at least one product!";
+
+      if (Object.values(quoteActionErrors).some(Boolean))
+        return { quoteActionErrors };
   }
 
   return {};
