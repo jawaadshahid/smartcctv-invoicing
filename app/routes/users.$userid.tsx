@@ -8,6 +8,9 @@ import { db, getUserByEmail } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
 
+export const meta: V2_MetaFunction = () => {
+  return [{ title: `${SITE_TITLE} - Change user details`}];
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
@@ -89,10 +92,6 @@ export async function action({ request, params }: ActionArgs) {
     console.log("err:", "failed to update the user");
   }
 }
-
-export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - Change user details`}];
-};
 
 export default function UserId() {
   const user: any = useContext(UserContext);

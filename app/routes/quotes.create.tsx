@@ -320,6 +320,16 @@ export default function QuotesCreate() {
           </div>
         </fieldset>
         <fieldset disabled={navigation.state === "submitting"}>
+          <label className="label">
+            <span className="label-text">Products</span>
+          </label>
+          {data?.quoteActionErrors?.product && (
+            <label className="label">
+              <span className="label-text-alt text-error">
+                {data.quoteActionErrors.product}
+              </span>
+            </label>
+          )}
           <div className="-mx-4">
             <table className="table">
               <thead>
@@ -340,17 +350,6 @@ export default function QuotesCreate() {
                     dispatchPSV={dispatchPSV}
                   />
                 ))}
-                {data?.quoteActionErrors?.product && (
-                  <tr>
-                    <td colSpan={4}>
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          {data.quoteActionErrors.product}
-                        </span>
-                      </label>
-                    </td>
-                  </tr>
-                )}
                 <tr className="flex flex-col md:table-row">
                   <td colSpan={4}>
                     <div className="flex md:justify-end join">

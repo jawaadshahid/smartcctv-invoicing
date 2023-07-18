@@ -1,4 +1,4 @@
-import type { quoted_products, quotes } from "@prisma/client";
+import type { customers, quoted_products } from "@prisma/client";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -6,9 +6,14 @@ import { SITE_TITLE } from "~/root";
 import { db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 
-interface QuotesType extends quotes {
+type QuotesType = {
+  quote_id: number;
+  createdAt: string;
+  updatedAt: string;
+  customer: customers;
+  labour: number;
   quoted_products: quoted_products[];
-}
+};
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];
@@ -20,6 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   try {
     const quotes = await db.quotes.findMany({
       include: {
+        customer: true,
         quoted_products: true,
       },
     });
@@ -30,10 +36,17 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 };
 
+const prettifyDateString = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toDateString();
+};
+
 export default function QuotesIndex() {
   const TD_CLASSNAME =
     "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const { quotes } = useLoaderData();
+
+  console.log({ quotes });
   return (
     <>
       {quotes && quotes.length ? (
@@ -54,7 +67,7 @@ export default function QuotesIndex() {
                   ({
                     quote_id,
                     createdAt,
-                    c_name,
+                    customer,
                     quoted_products,
                     labour,
                   }: QuotesType) => {
@@ -64,20 +77,30 @@ export default function QuotesIndex() {
                           {quote_id}
                         </td>
                         <td data-label="Date" className={TD_CLASSNAME}>
-                          {createdAt.toISOString()}
+                          {prettifyDateString(createdAt)}
                         </td>
                         <td data-label="Customer" className={TD_CLASSNAME}>
-                          {c_name}
+                          {customer.name}
                         </td>
                         <td data-label="Amount (£)" className={TD_CLASSNAME}>
                           {quoted_products.reduce(
                             (partialSum, qp) =>
-                              qp.price * qp.quantity + partialSum,
+                              partialSum + qp.price * qp.quantity,
                             0
                           ) + labour}
                         </td>
                         <td data-label="Actions" className={TD_CLASSNAME}>
-                          view, share, delete
+                          <div className="join">
+                            <a
+                              href={`quotes/${quote_id}`}
+                              className="btn btn-neutral join-item"
+                            >
+                              View
+                            </a>
+                            <button className="btn btn-neutral join-item">
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
