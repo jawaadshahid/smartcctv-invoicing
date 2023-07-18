@@ -12,6 +12,7 @@ import {
 import { createContext } from "react";
 import { getUserId } from "./utils/session";
 import { getUserById } from "./utils/db";
+import NavBar from "./components/NavBar";
 
 export const SITE_TITLE = "Smart CCTV admin"
 
@@ -46,6 +47,7 @@ export default function App() {
       </head>
       <body>
         <UserContext.Provider value={user}>
+          <NavBar />
           <Outlet />
         </UserContext.Provider>
         <ScrollRestoration />

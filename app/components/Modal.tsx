@@ -9,6 +9,7 @@ const Modal = ({ children, open }: Props) => {
   const modalClass = cn({
     "modal modal-bottom sm:modal-middle": true,
     "modal-open": open,
+    hidden: !open,
   });
   return (
     <div className={modalClass}>

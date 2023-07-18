@@ -2,7 +2,6 @@ import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
-import NavBar from "~/components/NavBar";
 import { SITE_TITLE } from "~/root";
 import { getUserByEmail } from "~/utils/db";
 import { createUserSession } from "~/utils/session";
@@ -39,56 +38,53 @@ export default function Login() {
   const inputClass = "input input-bordered w-full max-w-xs"
 
   return (
-    <>
-      <NavBar />
-      <div className="grid place-items-center">
-        <div className="w-full max-w-xs">
-          <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
-            <fieldset disabled={navigation.state === "submitting"}>
-              <div className="mb-4">
-                <label className="label" htmlFor="email">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  className={inputClass}
-                  name="email"
-                  id="email"
-                  type="text"
-                  placeholder="john@example.com"
-                />
-              </div>
-              <div>
-                <label className="label" htmlFor="password">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  className={inputClass}
-                  name="password"
-                  id="password"
-                  type="password"
-                  placeholder="******************"
-                />
-              </div>
-              <div className="flex justify-between items-center mt-6 mb-2">
-                <button className="btn btn-neutral" type="submit">
-                  {navigation.state === "submitting"
-                    ? "Validating..."
-                    : "Log In"}
-                </button>
-                <a
-                  href="/users/register"
-                  className="block link link-neutral-content"
-                >
-                  Register
-                </a>
-                {data && data.message && (
-                  <p className="text-error mt-1 text-xs">{data.message}</p>
-                )}
-              </div>
-            </fieldset>
-          </Form>
-        </div>
+    <div className="grid place-items-center">
+      <div className="w-full max-w-xs">
+        <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
+          <fieldset disabled={navigation.state === "submitting"}>
+            <div className="mb-4">
+              <label className="label" htmlFor="email">
+                <span className="label-text">Email</span>
+              </label>
+              <input
+                className={inputClass}
+                name="email"
+                id="email"
+                type="text"
+                placeholder="john@example.com"
+              />
+            </div>
+            <div>
+              <label className="label" htmlFor="password">
+                <span className="label-text">Password</span>
+              </label>
+              <input
+                className={inputClass}
+                name="password"
+                id="password"
+                type="password"
+                placeholder="******************"
+              />
+            </div>
+            <div className="flex justify-between items-center mt-6 mb-2">
+              <button className="btn btn-neutral" type="submit">
+                {navigation.state === "submitting"
+                  ? "Validating..."
+                  : "Log In"}
+              </button>
+              <a
+                href="/users/register"
+                className="block link link-neutral-content"
+              >
+                Register
+              </a>
+              {data && data.message && (
+                <p className="text-error mt-1 text-xs">{data.message}</p>
+              )}
+            </div>
+          </fieldset>
+        </Form>
       </div>
-    </>
+    </div>
   );
 }

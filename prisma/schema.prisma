@@ -37,17 +37,18 @@ model quotes {
   c_address       String            @db.VarChar(255)
   c_tel           String            @db.VarChar(255)
   c_email         String            @db.VarChar(255)
+  labour          Int
   quoted_products quoted_products[]
   customer        customers         @relation(fields: [customer_id], references: [customer_id])
 }
 
 model quoted_products {
-  invprod_id Int     @id @default(autoincrement())
+  invprod_id Int    @id @default(autoincrement())
   quote_id   Int
-  name       String  @db.VarChar(255)
-  quantity   Int     @default(1) @db.SmallInt
-  price      Decimal @db.Decimal(10, 2)
-  quote      quotes  @relation(fields: [quote_id], references: [quote_id])
+  name       String @db.VarChar(255)
+  quantity   Int    @default(1) @db.SmallInt
+  price      Int
+  quote      quotes @relation(fields: [quote_id], references: [quote_id])
 
   @@index([quote_id], map: "quoted_products_quote_id_fkey")
 }
@@ -57,30 +58,42 @@ model products {
   model_id   Int
   brand_id   Int
   type_id    Int
-  price      Decimal        @db.Decimal(10, 2)
-  brand      product_brands @relation(fields: [brand_id], references: [brand_id])
-  model      product_models @relation(fields: [model_id], references: [model_id])
-  type       product_types  @relation(fields: [type_id], references: [type_id])
+  price      Int
+  brand_name String
+  model_name String
+  type_name  String
+  brand      product_brands @relation(fields: [brand_id, brand_name], references: [brand_id, brand_name])
+  model      product_models @relation(fields: [model_id, model_name], references: [model_id, model_name])
+  type       product_types  @relation(fields: [type_id, type_name], references: [type_id, type_name])
 
   @@index([brand_id], map: "products_brand_id_fkey")
   @@index([model_id], map: "products_model_id_fkey")
   @@index([type_id], map: "products_type_id_fkey")
-}
-
-model product_models {
-  model_id   Int        @id @default(autoincrement())
-  model_name String     @db.VarChar(255)
-  products   products[]
+  @@index([brand_id, brand_name], map: "products_brand_id_brand_name_fkey")
+  @@index([model_id, model_name], map: "products_model_id_model_name_fkey")
+  @@index([type_id, type_name], map: "products_type_id_type_name_fkey")
 }
 
 model product_brands {
   brand_id   Int        @id @default(autoincrement())
   brand_name String     @db.VarChar(255)
   products   products[]
+
+  @@unique([brand_id, brand_name])
+}
+
+model product_models {
+  model_id   Int        @id @default(autoincrement())
+  model_name String     @db.VarChar(255)
+  products   products[]
+
+  @@unique([model_id, model_name])
 }
 
 model product_types {
   type_id   Int        @id @default(autoincrement())
   type_name String     @db.VarChar(255)
   products  products[]
+
+  @@unique([type_id, type_name])
 }
