@@ -1,11 +1,17 @@
 import type { customers, quoted_products } from "@prisma/client";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { SITE_TITLE } from "~/root";
+import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import { useContext, useEffect, useState } from "react";
+import Modal from "~/components/Modal";
+import { getQuoteBuffer } from "~/components/QuotePDFDoc";
+import ShareQuoteForm from "~/components/ShareQuoteForm";
+import { mailer } from "~/entry.server";
+import { SITE_TITLE, UserContext } from "~/root";
 import { db } from "~/utils/db";
+import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
+import { validateEmail } from "~/utils/validations";
 
 type QuotesType = {
   quote_id: number;
@@ -17,7 +23,7 @@ type QuotesType = {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - View Quote ` }];
+  return [{ title: `${SITE_TITLE} - View quote ` }];
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -42,6 +48,49 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 };
 
+export async function action({ request }: ActionArgs) {
+  const formData = await request.formData();
+  const { _action, ...values } = Object.fromEntries(formData);
+  switch (_action) {
+    case "share_quote":
+      const { quoteid, customerEmail, userEmail, otherEmails } = values;
+      const shareActionErrors: any = {};
+
+      if (!customerEmail && !userEmail && !otherEmails)
+        shareActionErrors.msg = "One option has to be selected or defined!";
+
+      if (Object.values(shareActionErrors).some(Boolean))
+        return { shareActionErrors };
+
+      const othEmails = otherEmails
+        ? String(otherEmails)
+            .split(",")
+            .map((othEmail: string) => {
+              const trimmed = othEmail.trim();
+              shareActionErrors.msg = validateEmail(trimmed);
+              return trimmed;
+            })
+        : [];
+
+      if (Object.values(shareActionErrors).some(Boolean))
+        return { shareActionErrors };
+
+      const allEmails: string[] = [...othEmails];
+
+      if (customerEmail) allEmails.push(String(customerEmail));
+      if (userEmail) allEmails.push(String(userEmail));
+
+      const pdfBuffer = await getQuoteBuffer(quoteid as string);
+
+      const mailResponse = await sendEmail(allEmails, pdfBuffer);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("message sent:", mailer.getTestMessageUrl(mailResponse));
+      }
+  }
+  return {};
+}
+
 const prettifyDateString = (dateString: string) => {
   const date = new Date(dateString);
   return date.toDateString();
@@ -50,9 +99,13 @@ const prettifyDateString = (dateString: string) => {
 export default function QuoteId() {
   const TD_CLASSNAME =
     "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
+  const user: any = useContext(UserContext);
   const { quote }: { quote: QuotesType } = useLoaderData();
   const { createdAt, labour, customer, quoted_products } = quote;
+  const navigation = useNavigation();
+  const data = useActionData();
   const [grandTotal, setGrandTotal] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     setGrandTotal(() => {
@@ -123,11 +176,43 @@ export default function QuoteId() {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end mt-4 gap-4">
+        <a
+          href={`/quotes/${quote.quote_id}/generatedquote`}
+          target="_blank"
+          className="btn btn-neutral"
+          rel="noreferrer"
+        >
+          Generate
+        </a>
+        <button
+          className="btn btn-neutral"
+          onClick={() => {
+            setShowShareModal(true);
+          }}
+        >
+          Share
+        </button>
         <a href="/quotes" className="btn btn-neutral">
           Back
         </a>
       </div>
+      <Modal open={showShareModal}>
+        <h3 className="mb-4">Share with:</h3>
+        {showShareModal && (
+          <ShareQuoteForm
+            quoteid={quote.quote_id}
+            customer={customer}
+            user={user}
+            navigation={navigation}
+            formErrors={data?.shareActionErrors}
+            onCancel={() => {
+              setShowShareModal(false);
+              if (data) data.shareActionErrors = {};
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

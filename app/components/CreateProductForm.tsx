@@ -23,7 +23,7 @@ const TaxonomyField = ({
 }) => {
   const hasItems = taxoItems.length > 0;
   const [isNewTaxoItem, setIsNewTaxoItem] = useState(!hasItems);
-  const [taxoSelectValue, setTaxoSelectValue] = useState("")
+  const [taxoSelectValue, setTaxoSelectValue] = useState("");
 
   const taxoInputClass = cn({
     [inputClass]: true,
@@ -32,9 +32,8 @@ const TaxonomyField = ({
   });
 
   useEffect(() => {
-    setIsNewTaxoItem(taxoSelectValue === "-1")
-  }, [taxoSelectValue])
-  
+    setIsNewTaxoItem(taxoSelectValue === "-1");
+  }, [taxoSelectValue]);
 
   return (
     <div className="mb-2">
@@ -51,7 +50,7 @@ const TaxonomyField = ({
           id={taxoName}
           value={taxoSelectValue}
           onChange={(e) => {
-            setTaxoSelectValue(e.target.value)
+            setTaxoSelectValue(e.target.value);
           }}
         >
           <option disabled value="">
@@ -94,7 +93,7 @@ const CreateProductForm = ({
   navigation,
   formErrors,
   onCancel,
-  actionName
+  actionName,
 }: {
   selectData: {
     brands: product_brands[];
@@ -104,17 +103,12 @@ const CreateProductForm = ({
   navigation: Navigation;
   formErrors?: any;
   onCancel: Function;
-  actionName: string
+  actionName: string;
 }) => {
   const { brands, models, types } = selectData;
 
   return (
-    <Form
-      replace
-      method="post"
-      className={formClass}
-      onSubmit={() => {  }}
-    >
+    <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
         <label className="label">
           <span className="label-text-alt text-error">{formErrors.info}</span>

@@ -182,6 +182,7 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function QuotesCreate() {
+  const formClass = "bg-base-300 px-4 py-2 rounded-lg";
   const selectClass = "select select-bordered w-full";
   const inputClass = "input input-bordered w-full";
   const navigation = useNavigation();
@@ -268,7 +269,7 @@ export default function QuotesCreate() {
   return (
     <div>
       <h2 className="mb-4 text-center">Create a new quote</h2>
-      <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
+      <Form method="post" className={formClass}>
         {data?.quoteActionErrors?.info && (
           <label className="label">
             <span className="label-text-alt text-error">
