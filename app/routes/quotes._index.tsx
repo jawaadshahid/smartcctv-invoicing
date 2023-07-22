@@ -5,6 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import { SITE_TITLE } from "~/root";
 import { db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
+import { resTDClass, resTRClass } from "~/utils/styleClasses";
 
 type QuotesType = {
   quote_id: number;
@@ -42,11 +43,8 @@ const prettifyDateString = (dateString: string) => {
 };
 
 export default function QuotesIndex() {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const { quotes } = useLoaderData();
 
-  console.log({ quotes });
   return (
     <>
       {quotes && quotes.length ? (
@@ -72,24 +70,24 @@ export default function QuotesIndex() {
                     labour,
                   }: QuotesType) => {
                     return (
-                      <tr className="flex flex-col md:table-row" key={quote_id}>
-                        <td data-label="ID" className={TD_CLASSNAME}>
+                      <tr className={resTRClass} key={quote_id}>
+                        <td data-label="ID" className={resTDClass}>
                           {quote_id}
                         </td>
-                        <td data-label="Date" className={TD_CLASSNAME}>
+                        <td data-label="Date" className={resTDClass}>
                           {prettifyDateString(createdAt)}
                         </td>
-                        <td data-label="Customer" className={TD_CLASSNAME}>
+                        <td data-label="Customer" className={resTDClass}>
                           {customer.name}
                         </td>
-                        <td data-label="Amount (£)" className={TD_CLASSNAME}>
+                        <td data-label="Amount (£)" className={resTDClass}>
                           {quoted_products.reduce(
                             (partialSum, qp) =>
                               partialSum + qp.price * qp.quantity,
                             0
                           ) + labour}
                         </td>
-                        <td data-label="Actions" className={TD_CLASSNAME}>
+                        <td data-label="Actions" className={resTDClass}>
                           <div className="join">
                             <a
                               href={`quotes/${quote_id}`}

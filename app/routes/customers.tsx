@@ -13,6 +13,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, db, deleteCustomerById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
+import { resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateCustomerData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -67,8 +68,6 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Customers() {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const { customers }: { customers: customers[] } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
@@ -103,27 +102,27 @@ export default function Customers() {
                   ({ customer_id, name, tel, email, address }: customers) => {
                     return (
                       <tr
-                        className="flex flex-col md:table-row"
+                        className={resTRClass}
                         key={customer_id}
                       >
-                        <td data-label="ID" className={TD_CLASSNAME}>
+                        <td data-label="ID" className={resTDClass}>
                           {customer_id}
                         </td>
-                        <td data-label="Name" className={TD_CLASSNAME}>
+                        <td data-label="Name" className={resTDClass}>
                           {name}
                         </td>
-                        <td data-label="Tel" className={TD_CLASSNAME}>
+                        <td data-label="Tel" className={resTDClass}>
                           {tel}
                         </td>
-                        <td data-label="Email" className={TD_CLASSNAME}>
+                        <td data-label="Email" className={resTDClass}>
                           {email}
                         </td>
-                        <td data-label="Address" className={TD_CLASSNAME}>
+                        <td data-label="Address" className={resTDClass}>
                           {address}
                         </td>
                         <td
                           data-label="Actions"
-                          className={`${TD_CLASSNAME} md:text-right`}
+                          className={`${resTDClass} md:text-right`}
                         >
                           <button
                             className="btn btn-neutral"

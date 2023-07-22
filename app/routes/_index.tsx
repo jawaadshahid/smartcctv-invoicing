@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function IndexRoute() {
   return (
     <div className="md:container md:mx-auto p-6">
-      <h1>Welcome to Smart CCTV admin</h1>
+      <p>Welcome to Smart CCTV admin</p>
     </div>
   );
 }

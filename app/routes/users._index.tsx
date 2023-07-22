@@ -6,6 +6,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE, UserContext } from "~/root";
 import { db, deleteUserById, getUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
+import { resTDClass, resTRClass } from "~/utils/styleClasses";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Users` }];
@@ -54,8 +55,6 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function UsersIndex() {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const { users } = useLoaderData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -80,20 +79,20 @@ export default function UsersIndex() {
           {users &&
             users.map((loopedUser: any) => {
               return (
-                <tr className="flex flex-col md:table-row" key={loopedUser.id}>
-                  <td data-label="ID" className={TD_CLASSNAME}>
+                <tr className={resTRClass} key={loopedUser.id}>
+                  <td data-label="ID" className={resTDClass}>
                     {loopedUser.id}
                   </td>
-                  <td data-label="First Name" className={TD_CLASSNAME}>
+                  <td data-label="First Name" className={resTDClass}>
                     {loopedUser.firstName}
                   </td>
-                  <td data-label="Last Name" className={TD_CLASSNAME}>
+                  <td data-label="Last Name" className={resTDClass}>
                     {loopedUser.lastName}
                   </td>
-                  <td data-label="Email" className={TD_CLASSNAME}>
+                  <td data-label="Email" className={resTDClass}>
                     {loopedUser.email}
                   </td>
-                  <td data-label="Approved" className={TD_CLASSNAME}>
+                  <td data-label="Approved" className={resTDClass}>
                     {loopedUser.isApproved ? (
                       "Approved"
                     ) : (
@@ -109,7 +108,7 @@ export default function UsersIndex() {
                       </Form>
                     )}
                   </td>
-                  <td data-label="Actions" className={TD_CLASSNAME}>
+                  <td data-label="Actions" className={resTDClass}>
                     <div className="join">
                       <a
                         href={`users/${loopedUser.id}`}

@@ -26,7 +26,7 @@ const NavBar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-2 p-2 shadow bg-base-300 rounded-box z-[1]"
+            className="prose prose-a:no-underline menu dropdown-content mt-2 p-2 shadow bg-base-300 rounded-box z-[1]"
           >
             <li>
               <a href="/">Home</a>
@@ -51,7 +51,11 @@ const NavBar = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <p>Hi, {user.firstName}</p>
+        <img
+          className="h-10 w-auto mx-4"
+          src="https://smartcctvuk.co.uk/img/logo-small.png"
+          alt=""
+        />
       </div>
       <div className="navbar-end">
         {!user ? (
@@ -77,27 +81,30 @@ const NavBar = () => {
             </a>
           </button>
         ) : (
-          <button
-            className="btn btn-ghost btn-circle tooltip tooltip-left"
-            data-tip="logout"
-          >
-            <a href="/logout">
-              <svg
-                className="w-6 h-6 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                ></path>
-              </svg>
-            </a>
-          </button>
+          <>
+            <p className="hidden md:block">Hi, {user.firstName}</p>
+            <button
+              className="btn btn-ghost btn-circle tooltip tooltip-left"
+              data-tip="logout"
+            >
+              <a href="/logout">
+                <svg
+                  className="w-6 h-6 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  ></path>
+                </svg>
+              </a>
+            </button>
+          </>
         )}
       </div>
     </div>

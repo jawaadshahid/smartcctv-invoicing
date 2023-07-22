@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react";
 import type { customers, users } from "@prisma/client";
 import type { Navigation } from "@remix-run/router";
+import { formClass, inputClass } from "~/utils/styleClasses";
 
 const ShareQuoteForm = ({
   quoteid,
@@ -17,8 +18,6 @@ const ShareQuoteForm = ({
   onCancel: Function;
   formErrors: any;
 }) => {
-  const formClass = "bg-base-300 px-4 py-2 rounded-lg";
-  const inputClass = "input input-bordered w-full";
 
   return (
     <Form replace method="post" className={formClass}>

@@ -18,6 +18,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createProduct, db, deleteProductById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
+import { resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -94,8 +95,6 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Products() {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const {
     products,
     brands,
@@ -145,27 +144,27 @@ export default function Products() {
                 products.map((loopedProducts: any) => {
                   return (
                     <tr
-                      className="flex flex-col md:table-row"
+                      className={resTRClass}
                       key={loopedProducts.product_id}
                     >
-                      <td data-label="ID" className={TD_CLASSNAME}>
+                      <td data-label="ID" className={resTDClass}>
                         {loopedProducts.product_id}
                       </td>
-                      <td data-label="Brand" className={TD_CLASSNAME}>
+                      <td data-label="Brand" className={resTDClass}>
                         {loopedProducts.brand.brand_name}
                       </td>
-                      <td data-label="Type" className={TD_CLASSNAME}>
+                      <td data-label="Type" className={resTDClass}>
                         {loopedProducts.type.type_name}
                       </td>
-                      <td data-label="Model" className={TD_CLASSNAME}>
+                      <td data-label="Model" className={resTDClass}>
                         {loopedProducts.model.model_name}
                       </td>
-                      <td data-label="Price" className={TD_CLASSNAME}>
+                      <td data-label="Price" className={resTDClass}>
                         £{loopedProducts.price}
                       </td>
                       <td
                         data-label="Actions"
-                        className={`${TD_CLASSNAME} md:text-right`}
+                        className={`${resTDClass} md:text-right`}
                       >
                         <button
                           className="btn btn-neutral"

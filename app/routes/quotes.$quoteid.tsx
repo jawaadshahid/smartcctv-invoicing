@@ -11,6 +11,7 @@ import { SITE_TITLE, UserContext } from "~/root";
 import { db } from "~/utils/db";
 import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
+import { resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateEmail } from "~/utils/validations";
 
 type QuotesType = {
@@ -97,8 +98,6 @@ const prettifyDateString = (dateString: string) => {
 };
 
 export default function QuoteId() {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
   const user: any = useContext(UserContext);
   const { quote }: { quote: QuotesType } = useLoaderData();
   const { createdAt, labour, customer, quoted_products } = quote;
@@ -142,22 +141,22 @@ export default function QuoteId() {
               quoted_products.map(
                 ({ invprod_id, name, quantity, price }: quoted_products) => {
                   return (
-                    <tr key={invprod_id} className="flex flex-col md:table-row">
-                      <td data-label="Name" className={TD_CLASSNAME}>
+                    <tr key={invprod_id} className={resTRClass}>
+                      <td data-label="Name" className={resTDClass}>
                         {name}
                       </td>
-                      <td data-label="Quantity" className={TD_CLASSNAME}>
+                      <td data-label="Quantity" className={resTDClass}>
                         {quantity}
                       </td>
                       <td
                         data-label="Unit Price (£)"
-                        className={`${TD_CLASSNAME} md:text-right`}
+                        className={`${resTDClass} md:text-right`}
                       >
                         {price}
                       </td>
                       <td
                         data-label="Subtotal (£)"
-                        className={`${TD_CLASSNAME} md:text-right`}
+                        className={`${resTDClass} md:text-right`}
                       >
                         {price * quantity}
                       </td>
@@ -165,11 +164,11 @@ export default function QuoteId() {
                   );
                 }
               )}
-            <tr className="flex flex-col md:table-row">
+            <tr className={resTRClass}>
               <td colSpan={3} className="hidden md:table-cell"></td>
               <td className="md:text-right">Labour cost (£): {labour}</td>
             </tr>
-            <tr className="flex flex-col md:table-row">
+            <tr className={resTRClass}>
               <td colSpan={3} className="hidden md:table-cell"></td>
               <td className="md:text-right">Total cost (£): {grandTotal}</td>
             </tr>

@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { SITE_TITLE } from "~/root";
 import { getUserByEmail } from "~/utils/db";
 import { createUserSession } from "~/utils/session";
+import { formClass, inputClass } from "~/utils/styleClasses";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Login` }];
@@ -35,12 +36,11 @@ export async function action({ request }: ActionArgs) {
 export default function Login() {
   const navigation = useNavigation();
   const data = useActionData();
-  const inputClass = "input input-bordered w-full max-w-xs"
 
   return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
-        <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
+        <Form method="post" className={formClass}>
           <fieldset disabled={navigation.state === "submitting"}>
             <div className="mb-4">
               <label className="label" htmlFor="email">
@@ -68,9 +68,7 @@ export default function Login() {
             </div>
             <div className="flex justify-between items-center mt-6 mb-2">
               <button className="btn btn-neutral" type="submit">
-                {navigation.state === "submitting"
-                  ? "Validating..."
-                  : "Log In"}
+                {navigation.state === "submitting" ? "Validating..." : "Log In"}
               </button>
               <a
                 href="/users/register"
@@ -79,7 +77,11 @@ export default function Login() {
                 Register
               </a>
               {data && data.message && (
-                <p className="text-error mt-1 text-xs">{data.message}</p>
+                <label className="label">
+                  <span className="label-text-alt text-error">
+                    {data.message}
+                  </span>
+                </label>
               )}
             </div>
           </fieldset>

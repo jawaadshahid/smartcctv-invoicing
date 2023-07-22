@@ -1,8 +1,6 @@
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
-
-const formClass = "bg-base-300 px-4 py-2 rounded-lg";
-const inputClass = "input input-bordered w-full";
+import { formClass, inputClass } from "~/utils/styleClasses";
 
 const CreateCustomerForm = ({
   navigation,

@@ -4,6 +4,7 @@ import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import { SITE_TITLE } from "~/root";
 import { db } from "~/utils/db";
+import { formClass, inputClass } from "~/utils/styleClasses";
 import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -34,7 +35,7 @@ export async function action({ request }: ActionArgs) {
   const isFirst = currUsers.length === 0;
 
   try {
-    const user = await db.users.create({
+    await db.users.create({
       data: {
         firstName: fname,
         lastName: lname,
@@ -46,15 +47,13 @@ export async function action({ request }: ActionArgs) {
         isApproved: isFirst ? 1 : 0
       },
     });
-    console.log("create user:", user);
     return redirect("/login");
   } catch (err: any) {
     if (err.code === "P2002") {
       formErrors.email = "email already registered!";
       return { formErrors };
     }
-    console.log(err)
-    return {}
+    console.error(err)
   }
 }
 
@@ -63,12 +62,11 @@ export async function action({ request }: ActionArgs) {
 export default function Register() {
   const navigation = useNavigation();
   const data = useActionData();
-  const inputClass = "input input-bordered w-full max-w-xs"
 
   return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
-        <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
+        <Form method="post" className={formClass}>
           <fieldset disabled={navigation.state === "submitting"}>
             <div className="mb-4">
               <label className="label" htmlFor="firstname">

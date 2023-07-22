@@ -1,5 +1,6 @@
 import type { products } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { inputClass, resTDClass, resTRClass, selectClass } from "~/utils/styleClasses";
 
 const QuoteProductRow = ({
   rowId,
@@ -17,11 +18,6 @@ const QuoteProductRow = ({
   }[];
   dispatchPSV: any;
 }) => {
-  const TD_CLASSNAME =
-    "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
-  const inputClass = "input input-bordered w-full";
-  const selectClass = "select select-bordered w-full";
-
   const [qty, setQty] = useState(1);
   const [unitPrice, setUnitPrice] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
@@ -58,11 +54,11 @@ const QuoteProductRow = ({
   };
 
   return (
-    <tr className="flex flex-col md:table-row">
+    <tr className={resTRClass}>
       <td
         colSpan={productSelectValue ? 1 : 4}
         data-label="Product"
-        className={TD_CLASSNAME}
+        className={resTDClass}
       >
         <select
           className={selectClass}
@@ -88,7 +84,7 @@ const QuoteProductRow = ({
       </td>
       {productSelectValue && (
         <>
-          <td data-label="Quantity" className={TD_CLASSNAME}>
+          <td data-label="Quantity" className={resTDClass}>
             <input
               className={inputClass}
               name={`p_${rowId}_qty`}
@@ -101,12 +97,12 @@ const QuoteProductRow = ({
               }}
             />
           </td>
-          <td data-label="Unit (£)" className={`${TD_CLASSNAME} md:text-right`}>
+          <td data-label="Unit (£)" className={`${resTDClass} md:text-right`}>
             {unitPrice ? unitPrice : " - "}
           </td>
           <td
             data-label="Subtotal (£)"
-            className={`${TD_CLASSNAME} md:text-right`}
+            className={`${resTDClass} md:text-right`}
           >
             {subtotal ? subtotal : " - "}
           </td>

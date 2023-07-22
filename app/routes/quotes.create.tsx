@@ -22,6 +22,7 @@ import QuoteProductRow from "~/components/QuoteProductRow";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, createProduct, db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
+import { formClass, inputClass, resTRClass, selectClass } from "~/utils/styleClasses";
 import { validateCustomerData, validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -182,9 +183,6 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function QuotesCreate() {
-  const formClass = "bg-base-300 px-4 py-2 rounded-lg";
-  const selectClass = "select select-bordered w-full";
-  const inputClass = "input input-bordered w-full";
   const navigation = useNavigation();
   const {
     customers,
@@ -351,7 +349,7 @@ export default function QuotesCreate() {
                     dispatchPSV={dispatchPSV}
                   />
                 ))}
-                <tr className="flex flex-col md:table-row">
+                <tr className={resTRClass}>
                   <td colSpan={4}>
                     <div className="flex md:justify-end join">
                       <button
@@ -391,7 +389,7 @@ export default function QuotesCreate() {
                     </div>
                   </td>
                 </tr>
-                <tr className="flex flex-col md:table-row">
+                <tr className={resTRClass}>
                   <td colSpan={2} className="hidden md:table-cell"></td>
                   <td className="flex md:table-cell">
                     <label className="label md:justify-end" htmlFor="labour">
@@ -412,7 +410,7 @@ export default function QuotesCreate() {
                     />
                   </td>
                 </tr>
-                <tr className="flex flex-col md:table-row">
+                <tr className={resTRClass}>
                   <td colSpan={2} className="hidden md:table-cell"></td>
                   <td>
                     <label className="label md:justify-end">

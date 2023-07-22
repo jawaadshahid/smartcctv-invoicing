@@ -86,7 +86,6 @@ export async function action({ request, params }: ActionArgs) {
     }
   })
   if (updateUser) {
-    console.log("updated user:", updateUser);
     return redirect("/users");
   } else {
     console.log("err:", "failed to update the user");
