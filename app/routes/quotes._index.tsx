@@ -48,65 +48,63 @@ export default function QuotesIndex() {
   return (
     <>
       {quotes && quotes.length ? (
-        <div className="-mx-4">
-          <table className="table static">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Amount (£)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {quotes &&
-                quotes.map(
-                  ({
-                    quote_id,
-                    createdAt,
-                    customer,
-                    quoted_products,
-                    labour,
-                  }: QuotesType) => {
-                    return (
-                      <tr className={resTRClass} key={quote_id}>
-                        <td data-label="ID" className={resTDClass}>
-                          {quote_id}
-                        </td>
-                        <td data-label="Date" className={resTDClass}>
-                          {prettifyDateString(createdAt)}
-                        </td>
-                        <td data-label="Customer" className={resTDClass}>
-                          {customer.name}
-                        </td>
-                        <td data-label="Amount (£)" className={resTDClass}>
-                          {quoted_products.reduce(
-                            (partialSum, qp) =>
-                              partialSum + qp.price * qp.quantity,
-                            0
-                          ) + labour}
-                        </td>
-                        <td data-label="Actions" className={resTDClass}>
-                          <div className="join">
-                            <a
-                              href={`quotes/${quote_id}`}
-                              className="btn btn-neutral join-item"
-                            >
-                              View
-                            </a>
-                            <button className="btn btn-neutral join-item">
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        <table className="table static">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>ID</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Amount (£)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quotes &&
+              quotes.map(
+                ({
+                  quote_id,
+                  createdAt,
+                  customer,
+                  quoted_products,
+                  labour,
+                }: QuotesType) => {
+                  return (
+                    <tr className={resTRClass} key={quote_id}>
+                      <td data-label="ID" className={resTDClass}>
+                        {quote_id}
+                      </td>
+                      <td data-label="Date" className={resTDClass}>
+                        {prettifyDateString(createdAt)}
+                      </td>
+                      <td data-label="Customer" className={resTDClass}>
+                        {customer.name}
+                      </td>
+                      <td data-label="Amount (£)" className={resTDClass}>
+                        {quoted_products.reduce(
+                          (partialSum, qp) =>
+                            partialSum + qp.price * qp.quantity,
+                          0
+                        ) + labour}
+                      </td>
+                      <td data-label="Actions" className={resTDClass}>
+                        <div className="join">
+                          <a
+                            href={`quotes/${quote_id}`}
+                            className="btn btn-neutral join-item"
+                          >
+                            View
+                          </a>
+                          <button className="btn btn-neutral join-item">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+          </tbody>
+        </table>
       ) : (
         <p>No quotes found...</p>
       )}

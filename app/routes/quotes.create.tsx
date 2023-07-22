@@ -329,103 +329,101 @@ export default function QuotesCreate() {
               </span>
             </label>
           )}
-          <div className="-mx-4">
-            <table className="table">
-              <thead>
-                <tr className="hidden md:table-row">
-                  <th>Product</th>
-                  <th className="w-[100px]">Quantity</th>
-                  <th className="text-right w-[150px]">Unit (£)</th>
-                  <th className="text-right w-[150px]">Subtotal (£)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...Array(productCount)].map((e, i) => (
-                  <QuoteProductRow
-                    key={i}
-                    rowId={`${i + 1}`}
-                    products={products}
-                    productSelectValues={productSelectValues}
-                    dispatchPSV={dispatchPSV}
-                  />
-                ))}
-                <tr className={resTRClass}>
-                  <td colSpan={4}>
-                    <div className="flex md:justify-end join">
-                      <button
-                        className="btn btn-neutral join-item"
-                        disabled={productCount === 1}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setProductCount((pCount) => {
-                            dispatchPSV({
-                              type: "remove",
-                              row_id: `${pCount}`,
-                            });
-                            return pCount - 1;
+          <table className="table">
+            <thead>
+              <tr className="hidden md:table-row">
+                <th>Product</th>
+                <th className="w-[100px]">Quantity</th>
+                <th className="text-right w-[150px]">Unit (£)</th>
+                <th className="text-right w-[150px]">Subtotal (£)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(productCount)].map((e, i) => (
+                <QuoteProductRow
+                  key={i}
+                  rowId={`${i + 1}`}
+                  products={products}
+                  productSelectValues={productSelectValues}
+                  dispatchPSV={dispatchPSV}
+                />
+              ))}
+              <tr className={resTRClass}>
+                <td colSpan={4}>
+                  <div className="flex md:justify-end join">
+                    <button
+                      className="btn btn-neutral join-item"
+                      disabled={productCount === 1}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProductCount((pCount) => {
+                          dispatchPSV({
+                            type: "remove",
+                            row_id: `${pCount}`,
                           });
-                        }}
-                      >
-                        -
-                      </button>
-                      <button
-                        className="btn btn-neutral join-item"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setProductCount((pCount) => {
-                            dispatchPSV({
-                              type: "add",
-                              row_id: `${pCount + 1}`,
-                              product_id: "",
-                              qty: 1,
-                              price: 0,
-                            });
-                            return pCount + 1;
-                          });
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr className={resTRClass}>
-                  <td colSpan={2} className="hidden md:table-cell"></td>
-                  <td className="flex md:table-cell">
-                    <label className="label md:justify-end" htmlFor="labour">
-                      <span className="label-text">Labour cost (£):</span>
-                    </label>
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="0"
-                      name="labour"
-                      id="labour"
-                      value={labour}
-                      className={`${inputClass} md:text-right`}
-                      onChange={(e) => {
-                        setLabour(parseInt(e.target.value));
+                          return pCount - 1;
+                        });
                       }}
-                    />
-                  </td>
-                </tr>
-                <tr className={resTRClass}>
-                  <td colSpan={2} className="hidden md:table-cell"></td>
-                  <td>
-                    <label className="label md:justify-end">
-                      <span className="label-text">Total cost (£):</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label className="label md:justify-end">
-                      <span className="label-text">{grandtotal}</span>
-                    </label>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    >
+                      -
+                    </button>
+                    <button
+                      className="btn btn-neutral join-item"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProductCount((pCount) => {
+                          dispatchPSV({
+                            type: "add",
+                            row_id: `${pCount + 1}`,
+                            product_id: "",
+                            qty: 1,
+                            price: 0,
+                          });
+                          return pCount + 1;
+                        });
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr className={resTRClass}>
+                <td colSpan={2} className="hidden md:table-cell"></td>
+                <td className="flex md:table-cell">
+                  <label className="label md:justify-end" htmlFor="labour">
+                    <span className="label-text">Labour cost (£):</span>
+                  </label>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    name="labour"
+                    id="labour"
+                    value={labour}
+                    className={`${inputClass} md:text-right`}
+                    onChange={(e) => {
+                      setLabour(parseInt(e.target.value));
+                    }}
+                  />
+                </td>
+              </tr>
+              <tr className={resTRClass}>
+                <td colSpan={2} className="hidden md:table-cell"></td>
+                <td>
+                  <label className="label md:justify-end">
+                    <span className="label-text">Total cost (£):</span>
+                  </label>
+                </td>
+                <td>
+                  <label className="label md:justify-end">
+                    <span className="label-text">{grandtotal}</span>
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div className="flex md:justify-end mt-4 mb-2">
             <button
               className="btn btn-neutral"

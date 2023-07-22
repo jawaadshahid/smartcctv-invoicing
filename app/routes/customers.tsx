@@ -13,7 +13,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, db, deleteCustomerById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { resTDClass, resTRClass } from "~/utils/styleClasses";
+import { contentBodyClass, resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateCustomerData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -55,7 +55,7 @@ export async function action({ request }: ActionArgs) {
         return { createActionErrors };
 
       try {
-        await createCustomer(`${name}`, `${tel}`, `${email}`, `${address}`)
+        await createCustomer(`${name}`, `${tel}`, `${email}`, `${address}`);
         return { customerCreated: true };
       } catch (err) {
         console.log(err);
@@ -82,65 +82,60 @@ export default function Customers() {
   }, [data]);
 
   return (
-    <div className="md:container md:mx-auto p-6">
+    <div className={contentBodyClass}>
       {customers && customers.length ? (
-        <div className="-mx-4">
-          <table className="table static">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Name</th>
-                <th>Tel</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th className="md:text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers &&
-                customers.map(
-                  ({ customer_id, name, tel, email, address }: customers) => {
-                    return (
-                      <tr
-                        className={resTRClass}
-                        key={customer_id}
+        <table className="table static">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>ID</th>
+              <th>Name</th>
+              <th>Tel</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th className="md:text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers &&
+              customers.map(
+                ({ customer_id, name, tel, email, address }: customers) => {
+                  return (
+                    <tr className={resTRClass} key={customer_id}>
+                      <td data-label="ID" className={resTDClass}>
+                        {customer_id}
+                      </td>
+                      <td data-label="Name" className={resTDClass}>
+                        {name}
+                      </td>
+                      <td data-label="Tel" className={resTDClass}>
+                        {tel}
+                      </td>
+                      <td data-label="Email" className={resTDClass}>
+                        {email}
+                      </td>
+                      <td data-label="Address" className={resTDClass}>
+                        {address}
+                      </td>
+                      <td
+                        data-label="Actions"
+                        className={`${resTDClass} md:text-right`}
                       >
-                        <td data-label="ID" className={resTDClass}>
-                          {customer_id}
-                        </td>
-                        <td data-label="Name" className={resTDClass}>
-                          {name}
-                        </td>
-                        <td data-label="Tel" className={resTDClass}>
-                          {tel}
-                        </td>
-                        <td data-label="Email" className={resTDClass}>
-                          {email}
-                        </td>
-                        <td data-label="Address" className={resTDClass}>
-                          {address}
-                        </td>
-                        <td
-                          data-label="Actions"
-                          className={`${resTDClass} md:text-right`}
+                        <button
+                          className="btn btn-neutral"
+                          onClick={() => {
+                            setDeletedCustomerID(customer_id);
+                            setDeleteModalOpen(true);
+                          }}
                         >
-                          <button
-                            className="btn btn-neutral"
-                            onClick={() => {
-                              setDeletedCustomerID(customer_id);
-                              setDeleteModalOpen(true);
-                            }}
-                          >
-                            DELETE
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+                          DELETE
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+          </tbody>
+        </table>
       ) : (
         <p className="text-center">No customers found...</p>
       )}

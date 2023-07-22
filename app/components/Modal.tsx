@@ -13,7 +13,7 @@ const Modal = ({ children, open }: Props) => {
   });
   return (
     <div className={modalClass}>
-      <div className="modal-box">{children}</div>
+      <div className="modal-box prose">{children}</div>
     </div>
   );
 };

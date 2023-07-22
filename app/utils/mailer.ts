@@ -14,7 +14,7 @@ export async function sendEmail(to: string[], attachmentBuffer:any) {
     from: process.env.EMAIL_USER,
     to,
     subject: "Smart CCTV Quote",
-    html: "Hi<br>Please find your quotation attached",
+    html: "Hi. Please find your quotation attached",
     attachments: [{
       filename: "quote.pdf",
       content: attachmentBuffer

@@ -1,8 +1,9 @@
 import { Outlet } from "react-router";
+import { contentBodyClass } from "~/utils/styleClasses";
 
 export default function Quotes() {
   return (
-    <div className="md:container md:mx-auto p-6">
+    <div className={contentBodyClass}>
       <Outlet />
     </div>
   );

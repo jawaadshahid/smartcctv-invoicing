@@ -63,7 +63,7 @@ export default function UsersIndex() {
   const user: any = useContext(UserContext);
 
   return (
-    <div className="-mx-4">
+    <>
       <table className="table static">
         <thead>
           <tr className="hidden md:table-row">
@@ -160,6 +160,6 @@ export default function UsersIndex() {
           </button>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }

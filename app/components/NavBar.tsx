@@ -26,7 +26,7 @@ const NavBar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="prose prose-a:no-underline menu dropdown-content mt-2 p-2 shadow bg-base-300 rounded-box z-[1]"
+            className="prose prose-li:pl-0 prose-a:no-underline menu dropdown-content mt-2 p-2 shadow bg-base-300 rounded-box z-[1]"
           >
             <li>
               <a href="/">Home</a>

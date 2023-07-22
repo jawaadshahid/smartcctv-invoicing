@@ -1,3 +1,4 @@
+export const contentBodyClass = "prose md:max-w-screen-xl md:mx-auto p-6";
 export const formClass = "bg-base-300 px-4 py-2 rounded-lg";
 export const inputClass = "input input-bordered w-full";
 export const selectClass = "select select-bordered w-full";

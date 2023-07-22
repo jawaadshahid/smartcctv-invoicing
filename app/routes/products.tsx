@@ -18,7 +18,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createProduct, db, deleteProductById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { resTDClass, resTRClass } from "~/utils/styleClasses";
+import { contentBodyClass, resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -125,63 +125,58 @@ export default function Products() {
   }, [data]);
 
   return (
-    <div className="md:container md:mx-auto p-6">
+    <div className={contentBodyClass}>
       {products && products.length ? (
-        <div className="-mx-4">
-          <table className="table static">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Brand</th>
-                <th>Type</th>
-                <th>Model</th>
-                <th>Price</th>
-                <th className="md:text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products &&
-                products.map((loopedProducts: any) => {
-                  return (
-                    <tr
-                      className={resTRClass}
-                      key={loopedProducts.product_id}
+        <table className="table static">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>ID</th>
+              <th>Brand</th>
+              <th>Type</th>
+              <th>Model</th>
+              <th>Price</th>
+              <th className="md:text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products &&
+              products.map((loopedProducts: any) => {
+                return (
+                  <tr className={resTRClass} key={loopedProducts.product_id}>
+                    <td data-label="ID" className={resTDClass}>
+                      {loopedProducts.product_id}
+                    </td>
+                    <td data-label="Brand" className={resTDClass}>
+                      {loopedProducts.brand.brand_name}
+                    </td>
+                    <td data-label="Type" className={resTDClass}>
+                      {loopedProducts.type.type_name}
+                    </td>
+                    <td data-label="Model" className={resTDClass}>
+                      {loopedProducts.model.model_name}
+                    </td>
+                    <td data-label="Price" className={resTDClass}>
+                      £{loopedProducts.price}
+                    </td>
+                    <td
+                      data-label="Actions"
+                      className={`${resTDClass} md:text-right`}
                     >
-                      <td data-label="ID" className={resTDClass}>
-                        {loopedProducts.product_id}
-                      </td>
-                      <td data-label="Brand" className={resTDClass}>
-                        {loopedProducts.brand.brand_name}
-                      </td>
-                      <td data-label="Type" className={resTDClass}>
-                        {loopedProducts.type.type_name}
-                      </td>
-                      <td data-label="Model" className={resTDClass}>
-                        {loopedProducts.model.model_name}
-                      </td>
-                      <td data-label="Price" className={resTDClass}>
-                        £{loopedProducts.price}
-                      </td>
-                      <td
-                        data-label="Actions"
-                        className={`${resTDClass} md:text-right`}
+                      <button
+                        className="btn btn-neutral"
+                        onClick={() => {
+                          setDeletedProductID(loopedProducts.product_id);
+                          setDeleteModalOpen(true);
+                        }}
                       >
-                        <button
-                          className="btn btn-neutral"
-                          onClick={() => {
-                            setDeletedProductID(loopedProducts.product_id);
-                            setDeleteModalOpen(true);
-                          }}
-                        >
-                          DELETE
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+                        DELETE
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       ) : (
         <p className="text-center">No products found...</p>
       )}

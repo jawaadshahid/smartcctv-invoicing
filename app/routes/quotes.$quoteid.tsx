@@ -88,6 +88,8 @@ export async function action({ request }: ActionArgs) {
       if (process.env.NODE_ENV === "development") {
         console.log("message sent:", mailer.getTestMessageUrl(mailResponse));
       }
+
+      return { shareActionErrors: { msg: "email sent!" } };
   }
   return {};
 }
@@ -126,55 +128,53 @@ export default function QuoteId() {
       <p>Tel: {customer.tel}</p>
       <p>Email: {customer.email}</p>
       <h3>Products</h3>
-      <div className="-mx-4">
-        <table className="table">
-          <thead>
-            <tr className="hidden md:table-row">
-              <th>Name</th>
-              <th>Quantity</th>
-              <th className="text-right">Unit Price (£)</th>
-              <th className="text-right">Subtotal (£)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {quoted_products &&
-              quoted_products.map(
-                ({ invprod_id, name, quantity, price }: quoted_products) => {
-                  return (
-                    <tr key={invprod_id} className={resTRClass}>
-                      <td data-label="Name" className={resTDClass}>
-                        {name}
-                      </td>
-                      <td data-label="Quantity" className={resTDClass}>
-                        {quantity}
-                      </td>
-                      <td
-                        data-label="Unit Price (£)"
-                        className={`${resTDClass} md:text-right`}
-                      >
-                        {price}
-                      </td>
-                      <td
-                        data-label="Subtotal (£)"
-                        className={`${resTDClass} md:text-right`}
-                      >
-                        {price * quantity}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            <tr className={resTRClass}>
-              <td colSpan={3} className="hidden md:table-cell"></td>
-              <td className="md:text-right">Labour cost (£): {labour}</td>
-            </tr>
-            <tr className={resTRClass}>
-              <td colSpan={3} className="hidden md:table-cell"></td>
-              <td className="md:text-right">Total cost (£): {grandTotal}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <table className="table">
+        <thead>
+          <tr className="hidden md:table-row">
+            <th>Name</th>
+            <th>Quantity</th>
+            <th className="text-right">Unit Price (£)</th>
+            <th className="text-right">Subtotal (£)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {quoted_products &&
+            quoted_products.map(
+              ({ invprod_id, name, quantity, price }: quoted_products) => {
+                return (
+                  <tr key={invprod_id} className={resTRClass}>
+                    <td data-label="Name" className={resTDClass}>
+                      {name}
+                    </td>
+                    <td data-label="Quantity" className={resTDClass}>
+                      {quantity}
+                    </td>
+                    <td
+                      data-label="Unit Price (£)"
+                      className={`${resTDClass} md:text-right`}
+                    >
+                      {price}
+                    </td>
+                    <td
+                      data-label="Subtotal (£)"
+                      className={`${resTDClass} md:text-right`}
+                    >
+                      {price * quantity}
+                    </td>
+                  </tr>
+                );
+              }
+            )}
+          <tr className={resTRClass}>
+            <td colSpan={3} className="hidden md:table-cell"></td>
+            <td className="md:text-right">Labour cost (£): {labour}</td>
+          </tr>
+          <tr className={resTRClass}>
+            <td colSpan={3} className="hidden md:table-cell"></td>
+            <td className="md:text-right">Total cost (£): {grandTotal}</td>
+          </tr>
+        </tbody>
+      </table>
       <div className="flex justify-end mt-4 gap-4">
         <a
           href={`/quotes/${quote.quote_id}/generatedquote`}
