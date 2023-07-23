@@ -102,22 +102,22 @@ export default function UsersIndex() {
                           name="approvedUserId"
                           value={loopedUser.id}
                         />
-                        <button type="submit" className="btn btn-neutral">
+                        <button type="submit" className="btn">
                           Approve
                         </button>
                       </Form>
                     )}
                   </td>
                   <td data-label="Actions" className={resTDClass}>
-                    <div className="join">
+                    <div className="btn-group">
                       <a
                         href={`users/${loopedUser.id}`}
-                        className="btn btn-neutral join-item"
+                        className="btn"
                       >
                         EDIT
                       </a>
                       <button
-                        className="btn btn-neutral join-item"
+                        className="btn"
                         disabled={user.id === loopedUser.id}
                         onClick={() => {
                           setDeletedUserId(loopedUser.id);
@@ -144,7 +144,7 @@ export default function UsersIndex() {
           >
             <input type="hidden" name="uid" value={deletedUserID} />
             <button
-              className="btn btn-neutral"
+              className="btn"
               type="submit"
               disabled={isSubmitting}
             >
@@ -152,7 +152,7 @@ export default function UsersIndex() {
             </button>
           </Form>
           <button
-            className="btn btn-neutral"
+            className="btn"
             disabled={isSubmitting}
             onClick={() => setModalOpen(false)}
           >

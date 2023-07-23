@@ -137,10 +137,10 @@ export default function Register() {
               )}
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn btn-neutral" type="submit">
+              <button className="btn" type="submit">
                 {navigation.state === "submitting" ? "Submitting..." : "Submit"}
               </button>
-              <a href="/login" className="btn btn-neutral ml-3">
+              <a href="/login" className="btn ml-3">
                 Cancel
               </a>
             </div>

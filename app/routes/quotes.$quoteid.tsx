@@ -83,13 +83,20 @@ export async function action({ request }: ActionArgs) {
 
       const pdfBuffer = await getQuoteBuffer(quoteid as string);
 
-      const mailResponse = await sendEmail(allEmails, pdfBuffer);
-
+      const mailResponse: any = await sendEmail(allEmails, pdfBuffer);
+      if (mailResponse.error)
+        return { shareActionErrors: { msg: mailResponse.error } };
       if (process.env.NODE_ENV === "development") {
         console.log("message sent:", mailer.getTestMessageUrl(mailResponse));
       }
 
-      return { shareActionErrors: { msg: "email sent!" } };
+      if (mailResponse.accepted && mailResponse.accepted.length > 0)
+        return { shareActionErrors: { msg: "mail sent!" } };
+      return {
+        shareActionErrors: {
+          msg: "something went wrong (vague, I know, but I haven't handled this error)",
+        },
+      };
   }
   return {};
 }
@@ -121,7 +128,7 @@ export default function QuoteId() {
   return (
     <div>
       <h2>Quote</h2>
-      <p>Generated on: {prettifyDateString(createdAt)}</p>
+      <p>Created on: {prettifyDateString(createdAt)}</p>
       <h3>Customer</h3>
       <p>Name: {customer.name}</p>
       <p>Address: {customer.address}</p>
@@ -179,20 +186,20 @@ export default function QuoteId() {
         <a
           href={`/quotes/${quote.quote_id}/generatedquote`}
           target="_blank"
-          className="btn btn-neutral"
+          className="btn"
           rel="noreferrer"
         >
           Generate
         </a>
         <button
-          className="btn btn-neutral"
+          className="btn"
           onClick={() => {
             setShowShareModal(true);
           }}
         >
           Share
         </button>
-        <a href="/quotes" className="btn btn-neutral">
+        <a href="/quotes" className="btn">
           Back
         </a>
       </div>

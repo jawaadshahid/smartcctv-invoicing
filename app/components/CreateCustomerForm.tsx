@@ -98,7 +98,7 @@ const CreateCustomerForm = ({
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <button
-            className="btn btn-neutral"
+            className="btn"
             type="submit"
             name="_action"
             value={actionName}
@@ -106,7 +106,7 @@ const CreateCustomerForm = ({
             {navigation.state === "submitting" ? "Submitting..." : "Submit"}
           </button>
           <button
-            className="btn btn-neutral ml-4"
+            className="btn ml-4"
             onClick={(e) => {
               e.preventDefault();
               onCancel();

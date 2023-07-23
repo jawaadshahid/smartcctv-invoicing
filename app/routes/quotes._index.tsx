@@ -87,14 +87,14 @@ export default function QuotesIndex() {
                         ) + labour}
                       </td>
                       <td data-label="Actions" className={resTDClass}>
-                        <div className="join">
+                        <div className="btn-group">
                           <a
                             href={`quotes/${quote_id}`}
-                            className="btn btn-neutral join-item"
+                            className="btn"
                           >
                             View
                           </a>
-                          <button className="btn btn-neutral join-item">
+                          <button className="btn">
                             Delete
                           </button>
                         </div>
@@ -109,7 +109,7 @@ export default function QuotesIndex() {
         <p>No quotes found...</p>
       )}
       <div className="flex justify-end mt-4">
-        <a href="/quotes/create" className="btn btn-neutral">
+        <a href="/quotes/create" className="btn">
           Add new quote +
         </a>
       </div>

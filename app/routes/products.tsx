@@ -163,7 +163,7 @@ export default function Products() {
                       className={`${resTDClass} md:text-right`}
                     >
                       <button
-                        className="btn btn-neutral"
+                        className="btn"
                         onClick={() => {
                           setDeletedProductID(loopedProducts.product_id);
                           setDeleteModalOpen(true);
@@ -182,7 +182,7 @@ export default function Products() {
       )}
       <div className="flex justify-end mt-4">
         <button
-          className="btn btn-neutral"
+          className="btn"
           onClick={() => {
             setCreateModalOpen(true);
           }}
@@ -219,7 +219,7 @@ export default function Products() {
           <Form replace method="post">
             <input type="hidden" name="product_id" value={deletedProductID} />
             <button
-              className="btn btn-neutral"
+              className="btn"
               type="submit"
               name="_action"
               value="delete"
@@ -229,7 +229,7 @@ export default function Products() {
             </button>
           </Form>
           <button
-            className="btn btn-neutral"
+            className="btn"
             disabled={navigation.state === "submitting"}
             onClick={() => setDeleteModalOpen(false)}
           >

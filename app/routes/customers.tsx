@@ -121,7 +121,7 @@ export default function Customers() {
                         className={`${resTDClass} md:text-right`}
                       >
                         <button
-                          className="btn btn-neutral"
+                          className="btn"
                           onClick={() => {
                             setDeletedCustomerID(customer_id);
                             setDeleteModalOpen(true);
@@ -141,7 +141,7 @@ export default function Customers() {
       )}
       <div className="flex justify-end mt-4">
         <button
-          className="btn btn-neutral"
+          className="btn"
           onClick={() => {
             setCreateModalOpen(true);
           }}
@@ -174,7 +174,7 @@ export default function Customers() {
           <Form replace method="post">
             <input type="hidden" name="customer_id" value={deletedCustomerID} />
             <button
-              className="btn btn-neutral"
+              className="btn"
               type="submit"
               name="_action"
               value="delete"
@@ -184,7 +184,7 @@ export default function Customers() {
             </button>
           </Form>
           <button
-            className="btn btn-neutral"
+            className="btn"
             disabled={navigation.state === "submitting"}
             onClick={() => setDeleteModalOpen(false)}
           >

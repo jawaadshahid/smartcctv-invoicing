@@ -72,7 +72,7 @@ const ShareQuoteForm = ({
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <button
-            className="btn btn-neutral"
+            className="btn"
             type="submit"
             name="_action"
             value="share_quote"
@@ -80,7 +80,7 @@ const ShareQuoteForm = ({
             {navigation.state === "submitting" ? "Submitting..." : "Submit"}
           </button>
           <button
-            className="btn btn-neutral ml-3"
+            className="btn ml-3"
             onClick={(e) => {
               e.preventDefault();
               onCancel();

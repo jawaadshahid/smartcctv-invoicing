@@ -352,7 +352,7 @@ export default function QuotesCreate() {
                 <td colSpan={4}>
                   <div className="flex md:justify-end join">
                     <button
-                      className="btn btn-neutral join-item"
+                      className="btn join-item"
                       disabled={productCount === 1}
                       onClick={(e) => {
                         e.preventDefault();
@@ -368,7 +368,7 @@ export default function QuotesCreate() {
                       -
                     </button>
                     <button
-                      className="btn btn-neutral join-item"
+                      className="btn join-item"
                       onClick={(e) => {
                         e.preventDefault();
                         setProductCount((pCount) => {
@@ -426,14 +426,14 @@ export default function QuotesCreate() {
           </table>
           <div className="flex md:justify-end mt-4 mb-2">
             <button
-              className="btn btn-neutral"
+              className="btn"
               type="submit"
               name="_action"
               value="create_quote"
             >
               {navigation.state === "submitting" ? "Submitting..." : "Submit"}
             </button>
-            <a className="btn btn-neutral ml-4" href="/quotes">
+            <a className="btn ml-4" href="/quotes">
               Cancel
             </a>
           </div>

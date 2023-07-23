@@ -183,10 +183,10 @@ export default function UserId() {
               )}
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn btn-neutral" type="submit">
+              <button className="btn" type="submit">
                 {navigation.state === "submitting" ? "Submitting..." : "Submit"}
               </button>
-              <a href="/users" className="btn btn-neutral ml-3">
+              <a href="/users" className="btn ml-3">
                 Cancel
               </a>
             </div>

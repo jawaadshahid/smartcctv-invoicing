@@ -67,7 +67,7 @@ export default function Login() {
               />
             </div>
             <div className="flex justify-between items-center mt-6 mb-2">
-              <button className="btn btn-neutral" type="submit">
+              <button className="btn" type="submit">
                 {navigation.state === "submitting" ? "Validating..." : "Log In"}
               </button>
               <a
