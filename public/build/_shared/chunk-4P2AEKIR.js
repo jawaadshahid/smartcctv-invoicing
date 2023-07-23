@@ -1,0 +1,1 @@
+var e="prose md:max-w-screen-xl md:mx-auto p-6",o="bg-base-300 px-4 py-2 rounded-lg",t="input input-bordered w-full",s="select select-bordered w-full",l="flex flex-col md:table-row",r="before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";export{e as a,o as b,t as c,s as d,l as e,r as f};

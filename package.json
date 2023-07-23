@@ -21,7 +21,7 @@
     "@remix-run/serve": "^1.18.0",
     "bcryptjs": "^2.4.3",
     "classnames": "^2.3.2",
-    "daisyui": "^3.1.7",
+    "daisyui": "^2.52.0",
     "isbot": "^3.6.8",
     "nodemailer": "^6.9.4",
     "prisma": "^4.16.2",
