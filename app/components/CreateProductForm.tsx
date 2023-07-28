@@ -8,6 +8,7 @@ import type { Navigation } from "@remix-run/router";
 import cn from "classnames";
 import { useEffect, useState } from "react";
 import { formClass, inputClass, selectClass } from "~/utils/styleClasses";
+import FormBtn from "./FormBtn";
 
 const TaxonomyField = ({
   taxoName,
@@ -102,7 +103,7 @@ const CreateProductForm = ({
   actionName: string;
 }) => {
   const { brands, models, types } = selectData;
-
+  const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
@@ -111,7 +112,7 @@ const CreateProductForm = ({
         </label>
       )}
 
-      <fieldset disabled={navigation.state === "submitting"}>
+      <fieldset disabled={isSubmitting}>
         <TaxonomyField
           taxoName="brand"
           taxoItems={brands}
@@ -147,23 +148,24 @@ const CreateProductForm = ({
           )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
-          <button
-            className="btn"
+          <FormBtn
             type="submit"
             name="_action"
             value={actionName}
+            isSubmitting={isSubmitting}
           >
-            {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-          </button>
-          <button
-            className="btn ml-3"
+            Submit
+          </FormBtn>
+          <FormBtn
+            className="ml-4"
+            isSubmitting={isSubmitting}
             onClick={(e) => {
               e.preventDefault();
               onCancel();
             }}
           >
             Cancel
-          </button>
+          </FormBtn>
         </div>
       </fieldset>
     </Form>

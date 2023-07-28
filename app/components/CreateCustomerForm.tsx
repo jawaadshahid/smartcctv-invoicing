@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
+import FormBtn from "./FormBtn";
 
 const CreateCustomerForm = ({
   navigation,
@@ -13,6 +14,7 @@ const CreateCustomerForm = ({
   onCancel: Function;
   actionName: string;
 }) => {
+  const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
@@ -20,7 +22,7 @@ const CreateCustomerForm = ({
           <span className="label-text-alt text-error">{formErrors.info}</span>
         </label>
       )}
-      <fieldset disabled={navigation.state === "submitting"}>
+      <fieldset disabled={isSubmitting}>
         <div className="mb-2">
           <label className="label" htmlFor="name">
             <span className="label-text">Name</span>
@@ -97,23 +99,24 @@ const CreateCustomerForm = ({
           )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
-          <button
-            className="btn"
+          <FormBtn
             type="submit"
             name="_action"
             value={actionName}
+            isSubmitting={isSubmitting}
           >
-            {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-          </button>
-          <button
-            className="btn ml-4"
+            Submit
+          </FormBtn>
+          <FormBtn
+            className="ml-4"
+            isSubmitting={isSubmitting}
             onClick={(e) => {
               e.preventDefault();
               onCancel();
             }}
           >
             Cancel
-          </button>
+          </FormBtn>
         </div>
       </fieldset>
     </Form>

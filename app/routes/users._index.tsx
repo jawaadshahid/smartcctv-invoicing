@@ -2,6 +2,8 @@ import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext, useState } from "react";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE, UserContext } from "~/root";
 import { db, deleteUserById, getUserById } from "~/utils/db";
@@ -102,30 +104,30 @@ export default function UsersIndex() {
                           name="approvedUserId"
                           value={loopedUser.id}
                         />
-                        <button type="submit" className="btn">
+                        <FormBtn type="submit" isSubmitting={isSubmitting}>
                           Approve
-                        </button>
+                        </FormBtn>
                       </Form>
                     )}
                   </td>
                   <td data-label="Actions" className={resTDClass}>
                     <div className="btn-group">
-                      <a
+                      <FormAnchorButton
                         href={`users/${loopedUser.id}`}
-                        className="btn"
+                        isSubmitting={isSubmitting}
                       >
                         EDIT
-                      </a>
-                      <button
-                        className="btn"
+                      </FormAnchorButton>
+                      <FormBtn
                         disabled={user.id === loopedUser.id}
+                        isSubmitting={isSubmitting}
                         onClick={() => {
                           setDeletedUserId(loopedUser.id);
                           setModalOpen(true);
                         }}
                       >
                         DELETE
-                      </button>
+                      </FormBtn>
                     </div>
                   </td>
                 </tr>
@@ -143,21 +145,13 @@ export default function UsersIndex() {
             }}
           >
             <input type="hidden" name="uid" value={deletedUserID} />
-            <button
-              className="btn"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Confirming..." : "Confirm"}
-            </button>
+            <FormBtn type="submit" isSubmitting>
+              Confirm
+            </FormBtn>
           </Form>
-          <button
-            className="btn"
-            disabled={isSubmitting}
-            onClick={() => setModalOpen(false)}
-          >
+          <FormBtn isSubmitting onClick={() => setModalOpen(false)}>
             Close
-          </button>
+          </FormBtn>
         </div>
       </Modal>
     </>

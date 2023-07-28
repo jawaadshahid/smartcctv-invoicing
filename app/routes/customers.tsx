@@ -9,6 +9,7 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import CreateCustomerForm from "~/components/CreateCustomerForm";
+import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, db, deleteCustomerById } from "~/utils/db";
@@ -71,6 +72,7 @@ export default function Customers() {
   const { customers }: { customers: customers[] } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
   const [deletedCustomerID, setDeletedCustomerID] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -120,15 +122,15 @@ export default function Customers() {
                         data-label="Actions"
                         className={`${resTDClass} md:text-right`}
                       >
-                        <button
-                          className="btn"
+                        <FormBtn
+                          isSubmitting={isSubmitting}
                           onClick={() => {
                             setDeletedCustomerID(customer_id);
                             setDeleteModalOpen(true);
                           }}
                         >
                           DELETE
-                        </button>
+                        </FormBtn>
                       </td>
                     </tr>
                   );
@@ -140,14 +142,14 @@ export default function Customers() {
         <p className="text-center">No customers found...</p>
       )}
       <div className="flex justify-end mt-4">
-        <button
-          className="btn"
+        <FormBtn
+          isSubmitting={isSubmitting}
           onClick={() => {
             setCreateModalOpen(true);
           }}
         >
           Add new customer +
-        </button>
+        </FormBtn>
       </div>
       <Modal open={createModalOpen}>
         <h3 className="mb-4">Create new customer</h3>
@@ -173,23 +175,22 @@ export default function Customers() {
         <div className="modal-action">
           <Form replace method="post">
             <input type="hidden" name="customer_id" value={deletedCustomerID} />
-            <button
-              className="btn"
+            <FormBtn
               type="submit"
               name="_action"
               value="delete"
-              disabled={navigation.state === "submitting"}
+              isSubmitting={isSubmitting}
             >
-              {navigation.state === "submitting" ? "Confirming..." : "Confirm"}
-            </button>
+              Confirm
+            </FormBtn>
           </Form>
-          <button
-            className="btn"
-            disabled={navigation.state === "submitting"}
+          <FormBtn
+            className="ml-4"
+            isSubmitting={isSubmitting}
             onClick={() => setDeleteModalOpen(false)}
           >
             Cancel
-          </button>
+          </FormBtn>
         </div>
       </Modal>
     </div>

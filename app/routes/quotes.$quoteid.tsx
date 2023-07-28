@@ -3,6 +3,8 @@ import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext, useEffect, useState } from "react";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { getQuoteBuffer } from "~/components/QuotePDFDoc";
 import ShareQuoteForm from "~/components/ShareQuoteForm";
@@ -112,6 +114,7 @@ export default function QuoteId() {
   const { createdAt, labour, customer, quoted_products } = quote;
   const navigation = useNavigation();
   const data = useActionData();
+  const isSubmitting = navigation.state === "submitting";
   const [grandTotal, setGrandTotal] = useState(0);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -183,25 +186,25 @@ export default function QuoteId() {
         </tbody>
       </table>
       <div className="flex justify-end mt-4 gap-4">
-        <a
+        <FormAnchorButton
           href={`/quotes/${quote.quote_id}/generatedquote`}
           target="_blank"
-          className="btn"
           rel="noreferrer"
+          isSubmitting={isSubmitting}
         >
           Generate
-        </a>
-        <button
-          className="btn"
+        </FormAnchorButton>
+        <FormBtn
+          isSubmitting={isSubmitting}
           onClick={() => {
             setShowShareModal(true);
           }}
         >
           Share
-        </button>
-        <a href="/quotes" className="btn">
+        </FormBtn>
+        <FormAnchorButton href="/quotes" isSubmitting={isSubmitting}>
           Back
-        </a>
+        </FormAnchorButton>
       </div>
       <Modal open={showShareModal}>
         <h3 className="mb-4">Share with:</h3>

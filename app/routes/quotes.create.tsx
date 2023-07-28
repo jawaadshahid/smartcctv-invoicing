@@ -17,12 +17,19 @@ import {
 import { useEffect, useReducer, useState } from "react";
 import CreateCustomerForm from "~/components/CreateCustomerForm";
 import CreateProductForm from "~/components/CreateProductForm";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import QuoteProductRow from "~/components/QuoteProductRow";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, createProduct, db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { formClass, inputClass, resTRClass, selectClass } from "~/utils/styleClasses";
+import {
+  formClass,
+  inputClass,
+  resTRClass,
+  selectClass,
+} from "~/utils/styleClasses";
 import { validateCustomerData, validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -198,6 +205,7 @@ export default function QuotesCreate() {
     models: product_models[];
   } = useLoaderData();
   const data = useActionData();
+  const isSubmitting = navigation.state === "submitting";
   const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [customerSelectValue, setCustomerSelectValue] = useState("");
   const [productCount, setProductCount] = useState(1);
@@ -281,7 +289,7 @@ export default function QuotesCreate() {
           id="prodcount"
           value={productCount}
         />
-        <fieldset disabled={navigation.state === "submitting"}>
+        <fieldset disabled={isSubmitting}>
           <div className="mb-4">
             <label className="label" htmlFor="customer">
               <span className="label-text">Customer</span>
@@ -318,7 +326,7 @@ export default function QuotesCreate() {
             )}
           </div>
         </fieldset>
-        <fieldset disabled={navigation.state === "submitting"}>
+        <fieldset disabled={isSubmitting}>
           <label className="label">
             <span className="label-text">Products</span>
           </label>
@@ -350,10 +358,10 @@ export default function QuotesCreate() {
               ))}
               <tr className={resTRClass}>
                 <td colSpan={4}>
-                  <div className="flex md:justify-end join">
-                    <button
-                      className="btn join-item"
+                  <div className="flex md:justify-end btn-group">
+                    <FormBtn
                       disabled={productCount === 1}
+                      isSubmitting={isSubmitting}
                       onClick={(e) => {
                         e.preventDefault();
                         setProductCount((pCount) => {
@@ -366,9 +374,9 @@ export default function QuotesCreate() {
                       }}
                     >
                       -
-                    </button>
-                    <button
-                      className="btn join-item"
+                    </FormBtn>
+                    <FormBtn
+                      isSubmitting={isSubmitting}
                       onClick={(e) => {
                         e.preventDefault();
                         setProductCount((pCount) => {
@@ -384,7 +392,7 @@ export default function QuotesCreate() {
                       }}
                     >
                       +
-                    </button>
+                    </FormBtn>
                   </div>
                 </td>
               </tr>
@@ -425,17 +433,21 @@ export default function QuotesCreate() {
             </tbody>
           </table>
           <div className="flex md:justify-end mt-4 mb-2">
-            <button
-              className="btn"
+            <FormBtn
               type="submit"
               name="_action"
               value="create_quote"
+              isSubmitting={isSubmitting}
             >
-              {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-            </button>
-            <a className="btn ml-4" href="/quotes">
+              Submit
+            </FormBtn>
+            <FormAnchorButton
+              className="ml-4"
+              href="/quotes"
+              isSubmitting={isSubmitting}
+            >
               Cancel
-            </a>
+            </FormAnchorButton>
           </div>
         </fieldset>
       </Form>

@@ -2,10 +2,17 @@ import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE } from "~/root";
 import { db } from "~/utils/db";
 import { formClass, inputClass } from "~/utils/styleClasses";
-import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
+import {
+  validateEmail,
+  validateFname,
+  validateLname,
+  validatePassword,
+} from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Register` }];
@@ -31,7 +38,7 @@ export async function action({ request }: ActionArgs) {
   // generate enctypted password
   const password = await bcrypt.hash(rpassword, 10);
 
-  const currUsers = await db.users.findMany()
+  const currUsers = await db.users.findMany();
   const isFirst = currUsers.length === 0;
 
   try {
@@ -44,7 +51,7 @@ export async function action({ request }: ActionArgs) {
         createdAt: new Date(),
         updatedAt: new Date(),
         isAdmin: isFirst ? 1 : 0,
-        isApproved: isFirst ? 1 : 0
+        isApproved: isFirst ? 1 : 0,
       },
     });
     return redirect("/login");
@@ -53,7 +60,7 @@ export async function action({ request }: ActionArgs) {
       formErrors.email = "email already registered!";
       return { formErrors };
     }
-    console.error(err)
+    console.error(err);
   }
 }
 
@@ -62,12 +69,13 @@ export async function action({ request }: ActionArgs) {
 export default function Register() {
   const navigation = useNavigation();
   const data = useActionData();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
         <Form method="post" className={formClass}>
-          <fieldset disabled={navigation.state === "submitting"}>
+          <fieldset disabled={isSubmitting}>
             <div className="mb-4">
               <label className="label" htmlFor="firstname">
                 <span className="label-text">First name</span>
@@ -137,12 +145,16 @@ export default function Register() {
               )}
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn" type="submit">
-                {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-              </button>
-              <a href="/login" className="btn ml-3">
+              <FormBtn type="submit" isSubmitting={isSubmitting}>
+                Submit
+              </FormBtn>
+              <FormAnchorButton
+                href="/login"
+                className="ml-3"
+                isSubmitting={isSubmitting}
+              >
                 Cancel
-              </a>
+              </FormAnchorButton>
             </div>
           </fieldset>
         </Form>

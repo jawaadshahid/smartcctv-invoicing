@@ -2,6 +2,8 @@ import type { customers, quoted_products } from "@prisma/client";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE } from "~/root";
 import { db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
@@ -88,15 +90,10 @@ export default function QuotesIndex() {
                       </td>
                       <td data-label="Actions" className={resTDClass}>
                         <div className="btn-group">
-                          <a
-                            href={`quotes/${quote_id}`}
-                            className="btn"
-                          >
+                          <FormAnchorButton href={`quotes/${quote_id}`}>
                             View
-                          </a>
-                          <button className="btn">
-                            Delete
-                          </button>
+                          </FormAnchorButton>
+                          <FormBtn>Delete</FormBtn>
                         </div>
                       </td>
                     </tr>
@@ -109,9 +106,9 @@ export default function QuotesIndex() {
         <p>No quotes found...</p>
       )}
       <div className="flex justify-end mt-4">
-        <a href="/quotes/create" className="btn">
+        <FormAnchorButton href="/quotes/create">
           Add new quote +
-        </a>
+        </FormAnchorButton>
       </div>
     </>
   );

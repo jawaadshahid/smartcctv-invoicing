@@ -14,6 +14,7 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import CreateProductForm from "~/components/CreateProductForm";
+import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createProduct, db, deleteProductById } from "~/utils/db";
@@ -108,6 +109,7 @@ export default function Products() {
   } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
   const [deletedProductID, setDeletedProductID] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -162,15 +164,15 @@ export default function Products() {
                       data-label="Actions"
                       className={`${resTDClass} md:text-right`}
                     >
-                      <button
-                        className="btn"
+                      <FormBtn
+                        isSubmitting={isSubmitting}
                         onClick={() => {
                           setDeletedProductID(loopedProducts.product_id);
                           setDeleteModalOpen(true);
                         }}
                       >
                         DELETE
-                      </button>
+                      </FormBtn>
                     </td>
                   </tr>
                 );
@@ -181,14 +183,14 @@ export default function Products() {
         <p className="text-center">No products found...</p>
       )}
       <div className="flex justify-end mt-4">
-        <button
-          className="btn"
+        <FormBtn
+          isSubmitting={isSubmitting}
           onClick={() => {
             setCreateModalOpen(true);
           }}
         >
           Add new product +
-        </button>
+        </FormBtn>
       </div>
       <Modal open={createModalOpen}>
         <h3 className="mb-4">Create new product</h3>
@@ -218,23 +220,21 @@ export default function Products() {
         <div className="modal-action">
           <Form replace method="post">
             <input type="hidden" name="product_id" value={deletedProductID} />
-            <button
-              className="btn"
+            <FormBtn
               type="submit"
               name="_action"
               value="delete"
-              disabled={navigation.state === "submitting"}
+              isSubmitting={isSubmitting}
             >
-              {navigation.state === "submitting" ? "Confirming..." : "Confirm"}
-            </button>
+              Confirm
+            </FormBtn>
           </Form>
-          <button
-            className="btn"
-            disabled={navigation.state === "submitting"}
+          <FormBtn
+            isSubmitting={isSubmitting}
             onClick={() => setDeleteModalOpen(false)}
           >
             Cancel
-          </button>
+          </FormBtn>
         </div>
       </Modal>
     </div>

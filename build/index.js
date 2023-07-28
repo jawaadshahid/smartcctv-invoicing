@@ -26,6 +26,7 @@ var stdin_exports = {};
 __export(stdin_exports, {
   assets: () => assets_manifest_default,
   assetsBuildDirectory: () => assetsBuildDirectory,
+  dev: () => dev,
   entry: () => entry,
   future: () => future,
   publicPath: () => publicPath,
@@ -39,7 +40,7 @@ __export(entry_server_exports, {
   default: () => handleRequest,
   mailer: () => mailer
 });
-var import_node_stream = require("node:stream"), import_node = require("@remix-run/node"), import_react = require("@remix-run/react"), import_isbot = __toESM(require("isbot")), import_server = require("react-dom/server"), import_nodemailer = __toESM(require("nodemailer")), import_jsx_runtime = require("react/jsx-runtime"), mailer = import_nodemailer.default, ABORT_DELAY = 5e3;
+var import_node_stream = require("node:stream"), import_node = require("@remix-run/node"), import_react = require("@remix-run/react"), import_isbot = __toESM(require("isbot")), import_server = require("react-dom/server"), import_nodemailer = __toESM(require("nodemailer")), import_jsx_dev_runtime = require("react/jsx-dev-runtime"), mailer = import_nodemailer.default, ABORT_DELAY = 5e3;
 function handleRequest(request, responseStatusCode, responseHeaders, remixContext, loadContext) {
   return (0, import_isbot.default)(request.headers.get("user-agent")) ? handleBotRequest(
     request,
@@ -56,13 +57,21 @@ function handleRequest(request, responseStatusCode, responseHeaders, remixContex
 function handleBotRequest(request, responseStatusCode, responseHeaders, remixContext) {
   return new Promise((resolve, reject) => {
     let shellRendered = !1, { pipe, abort } = (0, import_server.renderToPipeableStream)(
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(
         import_react.RemixServer,
         {
           context: remixContext,
           url: request.url,
           abortDelay: ABORT_DELAY
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/entry.server.tsx",
+          lineNumber: 50,
+          columnNumber: 7
+        },
+        this
       ),
       {
         onAllReady() {
@@ -89,13 +98,21 @@ function handleBotRequest(request, responseStatusCode, responseHeaders, remixCon
 function handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext) {
   return new Promise((resolve, reject) => {
     let shellRendered = !1, { pipe, abort } = (0, import_server.renderToPipeableStream)(
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(
         import_react.RemixServer,
         {
           context: remixContext,
           url: request.url,
           abortDelay: ABORT_DELAY
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/entry.server.tsx",
+          lineNumber: 99,
+          columnNumber: 7
+        },
+        this
       ),
       {
         onShellReady() {
@@ -131,7 +148,7 @@ __export(root_exports, {
 });
 
 // app/tailwind.css
-var tailwind_default = "/build/_assets/tailwind-RZKXON3G.css";
+var tailwind_default = "/build/_assets/tailwind-CHCQH3YM.css";
 
 // app/root.tsx
 var import_node3 = require("@remix-run/node"), import_react3 = require("@remix-run/react"), import_react4 = require("react");
@@ -146,7 +163,7 @@ var storage = (0, import_node2.createCookieSessionStorage)({
     // normally you want this to be `secure: true`
     // but that doesn't work on localhost for Safari
     // https://web.dev/when-to-use-local-https/
-    secure: !0,
+    secure: !1,
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
@@ -180,7 +197,7 @@ async function logout(request) {
 
 // app/utils/db.tsx
 var import_client = require("@prisma/client"), db;
-typeof window > "u" && (db = new import_client.PrismaClient());
+typeof window > "u" && (global.db || (global.db = new import_client.PrismaClient()), db = global.db);
 var getUserByEmail = (email) => db.users.findFirst({
   where: { email }
 }), getUserById = (id) => db.users.findFirst({
@@ -210,11 +227,11 @@ var getUserByEmail = (email) => db.users.findFirst({
 
 // app/components/NavBar.tsx
 var import_react2 = require("react");
-var import_jsx_runtime2 = require("react/jsx-runtime"), NavBar = () => {
+var import_jsx_dev_runtime2 = require("react/jsx-dev-runtime"), NavBar = () => {
   let user = (0, import_react2.useContext)(UserContext);
-  return user ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "navbar bg-base-100", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "navbar-start", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "dropdown", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { tabIndex: 0, className: "btn btn-ghost btn-circle", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+  return user ? /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "navbar bg-base-100", children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "navbar-start", children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "dropdown", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("label", { tabIndex: 0, className: "btn btn-ghost btn-circle", children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
         "svg",
         {
           xmlns: "http://www.w3.org/2000/svg",
@@ -222,51 +239,147 @@ var import_jsx_runtime2 = require("react/jsx-runtime"), NavBar = () => {
           fill: "none",
           viewBox: "0 0 24 24",
           stroke: "currentColor",
-          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
             "path",
             {
               strokeLinecap: "round",
               strokeLinejoin: "round",
               strokeWidth: "2",
               d: "M4 6h16M4 12h16M4 18h7"
-            }
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 19,
+              columnNumber: 15
+            },
+            this
           )
-        }
-      ) }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/NavBar.tsx",
+          lineNumber: 12,
+          columnNumber: 13
+        },
+        this
+      ) }, void 0, !1, {
+        fileName: "app/components/NavBar.tsx",
+        lineNumber: 11,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
         "ul",
         {
           tabIndex: 0,
           className: "prose prose-li:pl-0 prose-a:no-underline menu dropdown-content mt-2 p-2 shadow bg-base-300 rounded-box z-[1]",
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/", children: "Home" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { children: user.isAdmin ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/users", children: "Users" }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: `/users/${user.id}`, children: "My details" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/quotes", children: "Quotes" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/customers", children: "Customers" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/products", children: "Products" }) })
+            /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/", children: "Home" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 32,
+              columnNumber: 15
+            }, this) }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 31,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: user.isAdmin ? /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/users", children: "Users" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 36,
+              columnNumber: 17
+            }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: `/users/${user.id}`, children: "My details" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 38,
+              columnNumber: 17
+            }, this) }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 34,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/quotes", children: "Quotes" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 42,
+              columnNumber: 15
+            }, this) }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 41,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/customers", children: "Customers" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 45,
+              columnNumber: 15
+            }, this) }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 44,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/products", children: "Products" }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 48,
+              columnNumber: 15
+            }, this) }, void 0, !1, {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 47,
+              columnNumber: 13
+            }, this)
           ]
-        }
+        },
+        void 0,
+        !0,
+        {
+          fileName: "app/components/NavBar.tsx",
+          lineNumber: 27,
+          columnNumber: 11
+        },
+        this
       )
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "navbar-center", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+    ] }, void 0, !0, {
+      fileName: "app/components/NavBar.tsx",
+      lineNumber: 10,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/components/NavBar.tsx",
+      lineNumber: 9,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "navbar-center", children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
       "img",
       {
         className: "h-10 w-auto mx-4",
         src: "https://smartcctvuk.co.uk/img/logo-small.png",
         alt: ""
-      }
-    ) }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "navbar-end", children: user ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "hidden md:block", children: [
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/components/NavBar.tsx",
+        lineNumber: 54,
+        columnNumber: 9
+      },
+      this
+    ) }, void 0, !1, {
+      fileName: "app/components/NavBar.tsx",
+      lineNumber: 53,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "navbar-end", children: user ? /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(import_jsx_dev_runtime2.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("p", { className: "hidden md:block", children: [
         "Hi, ",
         user.firstName
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      ] }, void 0, !0, {
+        fileName: "app/components/NavBar.tsx",
+        lineNumber: 85,
+        columnNumber: 13
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
         "button",
         {
           className: "btn btn-ghost btn-circle tooltip tooltip-left",
           "data-tip": "logout",
-          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/logout", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/logout", children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
             "svg",
             {
               className: "w-6 h-6 mx-auto",
@@ -274,25 +387,57 @@ var import_jsx_runtime2 = require("react/jsx-runtime"), NavBar = () => {
               stroke: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg",
-              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+              children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
                 "path",
                 {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   strokeWidth: "2",
                   d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                }
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/components/NavBar.tsx",
+                  lineNumber: 98,
+                  columnNumber: 19
+                },
+                this
               )
-            }
-          ) })
-        }
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/components/NavBar.tsx",
+              lineNumber: 91,
+              columnNumber: 17
+            },
+            this
+          ) }, void 0, !1, {
+            fileName: "app/components/NavBar.tsx",
+            lineNumber: 90,
+            columnNumber: 15
+          }, this)
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/NavBar.tsx",
+          lineNumber: 86,
+          columnNumber: 13
+        },
+        this
       )
-    ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+    ] }, void 0, !0, {
+      fileName: "app/components/NavBar.tsx",
+      lineNumber: 84,
+      columnNumber: 11
+    }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
       "button",
       {
         className: "btn btn-ghost btn-circle tooltip tooltip-left",
         "data-tip": "login",
-        children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "/login", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("a", { href: "/login", children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
           "svg",
           {
             className: "w-6 h-6 mx-auto",
@@ -300,24 +445,64 @@ var import_jsx_runtime2 = require("react/jsx-runtime"), NavBar = () => {
             stroke: "currentColor",
             viewBox: "0 0 24 24",
             xmlns: "http://www.w3.org/2000/svg",
-            children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(
               "path",
               {
                 strokeLinecap: "round",
                 strokeLinejoin: "round",
                 strokeWidth: "2",
                 d: "M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-              }
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/components/NavBar.tsx",
+                lineNumber: 74,
+                columnNumber: 17
+              },
+              this
             )
-          }
-        ) })
-      }
-    ) })
-  ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "navbar bg-base-100" });
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/NavBar.tsx",
+            lineNumber: 67,
+            columnNumber: 15
+          },
+          this
+        ) }, void 0, !1, {
+          fileName: "app/components/NavBar.tsx",
+          lineNumber: 66,
+          columnNumber: 13
+        }, this)
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/components/NavBar.tsx",
+        lineNumber: 62,
+        columnNumber: 11
+      },
+      this
+    ) }, void 0, !1, {
+      fileName: "app/components/NavBar.tsx",
+      lineNumber: 60,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/NavBar.tsx",
+    lineNumber: 8,
+    columnNumber: 5
+  }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "navbar bg-base-100" }, void 0, !1, {
+    fileName: "app/components/NavBar.tsx",
+    lineNumber: 6,
+    columnNumber: 21
+  }, this);
 }, NavBar_default = NavBar;
 
 // app/root.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime"), SITE_TITLE = "Smart CCTV admin", UserContext = (0, import_react4.createContext)(null), loader = async ({ request }) => {
+var import_jsx_dev_runtime3 = require("react/jsx-dev-runtime"), SITE_TITLE = "Smart CCTV admin", UserContext = (0, import_react4.createContext)(null), loader = async ({ request }) => {
   let uid = await getUserId(request);
   if (!uid)
     return {};
@@ -332,24 +517,80 @@ var import_jsx_runtime3 = require("react/jsx-runtime"), SITE_TITLE = "Smart CCTV
 ];
 function App() {
   let { user } = (0, import_react3.useLoaderData)();
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("html", { lang: "en", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("head", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("meta", { charSet: "utf-8" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("meta", { name: "viewport", content: "width=device-width,initial-scale=1" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("meta", { name: "robots", content: "noindex, nofollow" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.Meta, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.Links, {})
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("body", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(UserContext.Provider, { value: user, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(NavBar_default, {}),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.Outlet, {})
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.ScrollRestoration, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.Scripts, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react3.LiveReload, {})
-    ] })
-  ] });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("html", { lang: "en", children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("head", { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("meta", { charSet: "utf-8" }, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 42,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("meta", { name: "viewport", content: "width=device-width,initial-scale=1" }, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 43,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("meta", { name: "robots", content: "noindex, nofollow" }, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 44,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.Meta, {}, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 45,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.Links, {}, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 46,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/root.tsx",
+      lineNumber: 41,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("body", { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(UserContext.Provider, { value: user, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavBar_default, {}, void 0, !1, {
+          fileName: "app/root.tsx",
+          lineNumber: 50,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.Outlet, {}, void 0, !1, {
+          fileName: "app/root.tsx",
+          lineNumber: 51,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/root.tsx",
+        lineNumber: 49,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.ScrollRestoration, {}, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 53,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.Scripts, {}, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 54,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(import_react3.LiveReload, {}, void 0, !1, {
+        fileName: "app/root.tsx",
+        lineNumber: 55,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/root.tsx",
+      lineNumber: 48,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/root.tsx",
+    lineNumber: 40,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/quotes.$quoteid.generatedquote.tsx
@@ -361,7 +602,7 @@ var import_node4 = require("@remix-run/node");
 
 // app/components/QuotePDFDoc.tsx
 var import_renderer = require("@react-pdf/renderer");
-var import_jsx_runtime4 = require("react/jsx-runtime"), getQuoteBuffer = async (quoteid) => {
+var import_jsx_dev_runtime4 = require("react/jsx-dev-runtime"), getQuoteBuffer = async (quoteid) => {
   if (!quoteid)
     return Promise.reject({ error: "quote id is not defined" });
   let id = quoteid, quote;
@@ -378,7 +619,11 @@ var import_jsx_runtime4 = require("react/jsx-runtime"), getQuoteBuffer = async (
   } catch (error) {
     Promise.reject({ error });
   }
-  let stream = await (0, import_renderer.renderToStream)(/* @__PURE__ */ (0, import_jsx_runtime4.jsx)(QuotePDFDoc, { quote }));
+  let stream = await (0, import_renderer.renderToStream)(/* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(QuotePDFDoc, { quote }, void 0, !1, {
+    fileName: "app/components/QuotePDFDoc.tsx",
+    lineNumber: 40,
+    columnNumber: 37
+  }, this));
   return new Promise((resolve, reject) => {
     let buffers = [];
     stream.on("data", (data) => {
@@ -443,98 +688,282 @@ var import_jsx_runtime4 = require("react/jsx-runtime"), getQuoteBuffer = async (
   let { quote_id, createdAt, customer, labour, quoted_products } = quote, { name, tel, email, address } = customer, date = new Date(createdAt), grandTotal = 0;
   return quoted_products.forEach(
     ({ price, quantity }) => grandTotal += price * quantity
-  ), grandTotal += labour, /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Document, { title: `Smart CCTV quote #${quote_id}, for ${name}`, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Page, { size: "A4", style: styles.page, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.header, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+  ), grandTotal += labour, /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Document, { title: `Smart CCTV quote #${quote_id}, for ${name}`, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Page, { size: "A4", style: styles.page, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.header, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(
         import_renderer.Image,
         {
           src: "https://smartcctvuk.co.uk/img/logo-small.png",
           style: styles.logo
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 123,
+          columnNumber: 11
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: { marginRight: 20 }, children: date.toDateString() })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: { margin: "15 20" }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.customerRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerField, children: "Name:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerValue, children: name })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.customerRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerField, children: "Address:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerValue, children: address })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.customerRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerField, children: "Tel:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerValue, children: tel })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.customerRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerField, children: "Email:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.customerValue, children: email })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.table, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: [styles.tableRow, { borderTop: 0 }], children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: { marginRight: 20 }, children: date.toDateString() }, void 0, !1, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 127,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/components/QuotePDFDoc.tsx",
+      lineNumber: 122,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: { margin: "15 20" }, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.customerRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerField, children: "Name:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 131,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerValue, children: name }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 132,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 130,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.customerRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerField, children: "Address:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 135,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerValue, children: address }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 136,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 134,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.customerRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerField, children: "Tel:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 139,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerValue, children: tel }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 140,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 138,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.customerRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerField, children: "Email:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 143,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.customerValue, children: email }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 144,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 142,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.table, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: [styles.tableRow, { borderTop: 0 }], children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(
             import_renderer.View,
             {
               style: [
                 styles.tableCell,
                 { textAlign: "left", width: "55%", borderLeftWidth: 0 }
               ],
-              children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { children: "Product" })
-            }
+              children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: "Product" }, void 0, !1, {
+                fileName: "app/components/QuotePDFDoc.tsx",
+                lineNumber: 154,
+                columnNumber: 17
+              }, this)
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 148,
+              columnNumber: 15
+            },
+            this
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { children: "Quantity" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { children: "Unit price" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { children: "Total price" }) })
-        ] }),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: "Quantity" }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 157,
+            columnNumber: 17
+          }, this) }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 156,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: "Unit price" }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 160,
+            columnNumber: 17
+          }, this) }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 159,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: "Total price" }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 163,
+            columnNumber: 17
+          }, this) }, void 0, !1, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 162,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 147,
+          columnNumber: 13
+        }, this),
         quoted_products && quoted_products.map(
-          ({ invprod_id, name: name2, quantity, price }) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.tableRow, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          ({ invprod_id, name: name2, quantity, price }) => /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableRow, children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(
               import_renderer.View,
               {
                 style: [
                   styles.tableCell,
                   { textAlign: "left", width: "55%", borderLeftWidth: 0 }
                 ],
-                children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { children: name2 })
-              }
+                children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: name2 }, void 0, !1, {
+                  fileName: "app/components/QuotePDFDoc.tsx",
+                  lineNumber: 176,
+                  columnNumber: 23
+                }, this)
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/components/QuotePDFDoc.tsx",
+                lineNumber: 170,
+                columnNumber: 21
+              },
+              this
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Text, { children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: [
               "\xA3",
               quantity,
               ".00"
-            ] }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Text, { children: [
+            ] }, void 0, !0, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 179,
+              columnNumber: 23
+            }, this) }, void 0, !1, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 178,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: [
               "\xA3",
               price,
               ".00"
-            ] }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Text, { children: [
+            ] }, void 0, !0, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 182,
+              columnNumber: 23
+            }, this) }, void 0, !1, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 181,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.tableCell, children: /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { children: [
               "\xA3",
               price * quantity,
               ".00"
-            ] }) })
-          ] }, invprod_id)
+            ] }, void 0, !0, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 185,
+              columnNumber: 23
+            }, this) }, void 0, !1, {
+              fileName: "app/components/QuotePDFDoc.tsx",
+              lineNumber: 184,
+              columnNumber: 21
+            }, this)
+          ] }, invprod_id, !0, {
+            fileName: "app/components/QuotePDFDoc.tsx",
+            lineNumber: 169,
+            columnNumber: 19
+          }, this)
         )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.endRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.endField, children: "Labour:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Text, { style: styles.endValue, children: [
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 146,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.endRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.endField, children: "Labour:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 192,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.endValue, children: [
           "\xA3",
           labour,
           ".00"
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.View, { style: styles.endRow, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_renderer.Text, { style: styles.endField, children: "Grand total:" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_renderer.Text, { style: styles.endValue, children: [
+        ] }, void 0, !0, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 193,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 191,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.View, { style: styles.endRow, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.endField, children: "Grand total:" }, void 0, !1, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 196,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_renderer.Text, { style: styles.endValue, children: [
           "\xA3",
           grandTotal,
           ".00"
-        ] })
-      ] })
-    ] })
-  ] }) });
+        ] }, void 0, !0, {
+          fileName: "app/components/QuotePDFDoc.tsx",
+          lineNumber: 197,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/QuotePDFDoc.tsx",
+        lineNumber: 195,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/components/QuotePDFDoc.tsx",
+      lineNumber: 129,
+      columnNumber: 9
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/QuotePDFDoc.tsx",
+    lineNumber: 121,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/components/QuotePDFDoc.tsx",
+    lineNumber: 120,
+    columnNumber: 5
+  }, this);
 };
 
 // app/routes/quotes.$quoteid.generatedquote.tsx
@@ -555,14 +984,50 @@ __export(quotes_quoteid_exports, {
 });
 var import_node5 = require("@remix-run/node"), import_react6 = require("@remix-run/react"), import_react7 = require("react");
 
+// app/components/FormAnchorBtn.tsx
+var import_classnames = __toESM(require("classnames")), import_jsx_dev_runtime5 = require("react/jsx-dev-runtime"), FormAnchorButton = ({ isSubmitting, className, ...props }) => {
+  let btnClass = (0, import_classnames.default)({
+    btn: !0,
+    "btn-disabled": isSubmitting,
+    ...className && { [`${className}`]: !0 }
+  });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime5.jsxDEV)("a", { className: btnClass, ...props }, void 0, !1, {
+    fileName: "app/components/FormAnchorBtn.tsx",
+    lineNumber: 15,
+    columnNumber: 5
+  }, this);
+}, FormAnchorBtn_default = FormAnchorButton;
+
+// app/components/FormBtn.tsx
+var import_classnames2 = __toESM(require("classnames")), import_jsx_dev_runtime6 = require("react/jsx-dev-runtime"), FormBtn = ({ isSubmitting, className, disabled, ...props }) => {
+  let btnClass = (0, import_classnames2.default)({
+    btn: !0,
+    loading: isSubmitting && props.type === "submit",
+    ...className && { [`${className}`]: !0 }
+  });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime6.jsxDEV)("button", { className: btnClass, disabled: disabled || isSubmitting, ...props }, void 0, !1, {
+    fileName: "app/components/FormBtn.tsx",
+    lineNumber: 15,
+    columnNumber: 5
+  }, this);
+}, FormBtn_default = FormBtn;
+
 // app/components/Modal.tsx
-var import_classnames = __toESM(require("classnames")), import_jsx_runtime5 = require("react/jsx-runtime"), Modal = ({ children, open }) => {
-  let modalClass = (0, import_classnames.default)({
+var import_classnames3 = __toESM(require("classnames")), import_jsx_dev_runtime7 = require("react/jsx-dev-runtime"), Modal = ({ children, open }) => {
+  let modalClass = (0, import_classnames3.default)({
     "modal modal-bottom sm:modal-middle": !0,
     "modal-open": open,
     hidden: !open
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: modalClass, children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "modal-box prose", children }) });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime7.jsxDEV)("div", { className: modalClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime7.jsxDEV)("div", { className: "modal-box prose", children }, void 0, !1, {
+    fileName: "app/components/Modal.tsx",
+    lineNumber: 16,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/components/Modal.tsx",
+    lineNumber: 15,
+    columnNumber: 5
+  }, this);
 }, Modal_default = Modal;
 
 // app/components/ShareQuoteForm.tsx
@@ -572,122 +1037,216 @@ var import_react5 = require("@remix-run/react");
 var contentBodyClass = "prose md:max-w-screen-xl md:mx-auto p-6", formClass = "bg-base-300 px-4 py-2 rounded-lg", inputClass = "input input-bordered w-full", selectClass = "select select-bordered w-full", resTRClass = "flex flex-col md:table-row", resTDClass = "before:content-[attr(data-label)] before:block before:mb-1 md:before:hidden";
 
 // app/components/ShareQuoteForm.tsx
-var import_jsx_runtime6 = require("react/jsx-runtime"), ShareQuoteForm = ({
+var import_jsx_dev_runtime8 = require("react/jsx-dev-runtime"), ShareQuoteForm = ({
   quoteid,
   navigation,
   customer,
   user,
   onCancel,
   formErrors
-}) => /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react5.Form, { replace: !0, method: "post", className: formClass, children: [
-  /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("input", { type: "hidden", value: quoteid, name: "quoteid", id: "quoteid" }),
-  /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "form-control", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("label", { className: "label cursor-pointer", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("span", { className: "label-text", children: [
-        customer.name,
-        " (",
-        customer.email,
-        ")"
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        "input",
-        {
-          type: "checkbox",
-          className: "checkbox",
-          name: "customerEmail",
-          id: "customerEmail",
-          value: customer.email
-        }
-      )
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "form-control", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("label", { className: "label cursor-pointer", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("span", { className: "label-text", children: [
-        user.firstName,
-        " (",
-        user.email,
-        ")"
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        "input",
-        {
-          type: "checkbox",
-          className: "checkbox",
-          name: "userEmail",
-          id: "userEmail",
-          value: user.email
-        }
-      )
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "form-control", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "label-text", children: "Other(s)" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        "input",
-        {
-          type: "text",
-          name: "otherEmails",
-          id: "otherEmails",
-          placeholder: "john@example.com,jill@example.com,etc",
-          className: inputClass
-        }
-      ),
-      (formErrors == null ? void 0 : formErrors.msg) && /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "label-text-alt text-error", children: formErrors.msg }) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "flex justify-end mt-4 mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        "button",
-        {
-          className: "btn",
-          type: "submit",
-          name: "_action",
-          value: "share_quote",
-          children: navigation.state === "submitting" ? "Submitting..." : "Submit"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        "button",
-        {
-          className: "btn ml-3",
-          onClick: (e) => {
-            e.preventDefault(), onCancel();
+}) => {
+  let isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(import_react5.Form, { replace: !0, method: "post", className: formClass, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("input", { type: "hidden", value: quoteid, name: "quoteid", id: "quoteid" }, void 0, !1, {
+      fileName: "app/components/ShareQuoteForm.tsx",
+      lineNumber: 25,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("div", { className: "form-control", children: /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("label", { className: "label cursor-pointer", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("span", { className: "label-text", children: [
+          customer.name,
+          " (",
+          customer.email,
+          ")"
+        ] }, void 0, !0, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 29,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(
+          "input",
+          {
+            type: "checkbox",
+            className: "checkbox",
+            name: "customerEmail",
+            id: "customerEmail",
+            value: customer.email
           },
-          children: "Cancel"
-        }
-      )
-    ] })
-  ] })
-] }), ShareQuoteForm_default = ShareQuoteForm;
+          void 0,
+          !1,
+          {
+            fileName: "app/components/ShareQuoteForm.tsx",
+            lineNumber: 32,
+            columnNumber: 13
+          },
+          this
+        )
+      ] }, void 0, !0, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 28,
+        columnNumber: 11
+      }, this) }, void 0, !1, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 27,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("div", { className: "form-control", children: /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("label", { className: "label cursor-pointer", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("span", { className: "label-text", children: [
+          user.firstName,
+          " (",
+          user.email,
+          ")"
+        ] }, void 0, !0, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 43,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(
+          "input",
+          {
+            type: "checkbox",
+            className: "checkbox",
+            name: "userEmail",
+            id: "userEmail",
+            value: user.email
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/ShareQuoteForm.tsx",
+            lineNumber: 46,
+            columnNumber: 13
+          },
+          this
+        )
+      ] }, void 0, !0, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 42,
+        columnNumber: 11
+      }, this) }, void 0, !1, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 41,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("div", { className: "form-control", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("span", { className: "label-text", children: "Other(s)" }, void 0, !1, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 57,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 56,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(
+          "input",
+          {
+            type: "text",
+            name: "otherEmails",
+            id: "otherEmails",
+            placeholder: "john@example.com,jill@example.com,etc",
+            className: inputClass
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/ShareQuoteForm.tsx",
+            lineNumber: 59,
+            columnNumber: 11
+          },
+          this
+        ),
+        (formErrors == null ? void 0 : formErrors.msg) && /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.msg }, void 0, !1, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 68,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/ShareQuoteForm.tsx",
+          lineNumber: 67,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 55,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)("div", { className: "flex justify-end mt-4 mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(
+          FormBtn_default,
+          {
+            type: "submit",
+            name: "_action",
+            value: "share_quote",
+            isSubmitting,
+            children: "Submit"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/ShareQuoteForm.tsx",
+            lineNumber: 75,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime8.jsxDEV)(
+          FormBtn_default,
+          {
+            className: "ml-4",
+            isSubmitting,
+            onClick: (e) => {
+              e.preventDefault(), onCancel();
+            },
+            children: "Cancel"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/ShareQuoteForm.tsx",
+            lineNumber: 83,
+            columnNumber: 11
+          },
+          this
+        )
+      ] }, void 0, !0, {
+        fileName: "app/components/ShareQuoteForm.tsx",
+        lineNumber: 74,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/components/ShareQuoteForm.tsx",
+      lineNumber: 26,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/ShareQuoteForm.tsx",
+    lineNumber: 24,
+    columnNumber: 5
+  }, this);
+}, ShareQuoteForm_default = ShareQuoteForm;
 
 // app/utils/mailer.ts
 async function sendEmail(to, attachmentBuffer) {
-  let transporter = mailer.createTransport({
+  return mailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT || "587"),
-    secure: process.env.EMAIL_SECURE === "1" || !1,
-    // secure: false,
+    secure: !1,
+    // upgrade later with STARTTLS
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     }
-  }), isSMTPConnected;
-  try {
-    isSMTPConnected = await transporter.verify();
-  } catch (error) {
-    return error.code === "ETIMEDOUT" ? { error: "error: reeting never received!" } : { error: "unable to verify mail server connection!" };
-  }
-  return isSMTPConnected ? transporter.sendMail({
-    from: "noreply@smartcctvuk.co.uk",
+  }).sendMail({
+    from: process.env.EMAIL_USER,
     to,
-    subject: "Your Smart CCTV UK Quote",
-    html: `<p>Please find your quotation attached.</p>
-    <p>For further enquiries please contact us at <a href="mailto:info@smartcctvuk.co.uk">info@smartcctvuk.co.uk</a>, or call us on 01212710480 or 07486320798</p>
-    <p>Kind regards,<br>Smart CCTV UK<br><a href="https://www.smartcctvuk.co.uk">https://www.smartcctvuk.co.uk</a></p>`,
-    attachments: [
-      {
-        filename: "quote.pdf",
-        content: attachmentBuffer
-      }
-    ]
-  }) : { error: "unable to verify mail server connection!" };
+    subject: "Smart CCTV Quote",
+    html: "Hi. Please find your quotation attached",
+    attachments: [{
+      filename: "quote.pdf",
+      content: attachmentBuffer
+    }]
+  });
 }
 
 // app/utils/validations.tsx
@@ -746,7 +1305,7 @@ var validateTel = (tel) => {
 };
 
 // app/routes/quotes.$quoteid.tsx
-var import_jsx_runtime7 = require("react/jsx-runtime"), meta = () => [{ title: `${SITE_TITLE} - View quote ` }], loader3 = async ({ request, params }) => {
+var import_jsx_dev_runtime9 = require("react/jsx-dev-runtime"), meta = () => [{ title: `${SITE_TITLE} - View quote ` }], loader3 = async ({ request, params }) => {
   if (!await getUserId(request))
     return (0, import_node5.redirect)("/login");
   let { quoteid } = params, id = quoteid;
@@ -781,17 +1340,17 @@ async function action({ request }) {
       let allEmails = [...othEmails];
       customerEmail && allEmails.push(String(customerEmail)), userEmail && allEmails.push(String(userEmail));
       let pdfBuffer = await getQuoteBuffer(quoteid), mailResponse = await sendEmail(allEmails, pdfBuffer);
-      return mailResponse.error ? { shareActionErrors: { msg: mailResponse.error } } : mailResponse.accepted && mailResponse.accepted.length > 0 ? { shareActionErrors: { msg: "mail sent!" } } : {
+      return mailResponse.error ? { shareActionErrors: { msg: mailResponse.error } } : (console.log("message sent:", mailer.getTestMessageUrl(mailResponse)), mailResponse.accepted && mailResponse.accepted.length > 0 ? { shareActionErrors: { msg: "mail sent!" } } : {
         shareActionErrors: {
           msg: "something went wrong (vague, I know, but I haven't handled this error)"
         }
-      };
+      });
   }
   return {};
 }
 var prettifyDateString = (dateString) => new Date(dateString).toDateString();
 function QuoteId() {
-  let user = (0, import_react7.useContext)(UserContext), { quote } = (0, import_react6.useLoaderData)(), { createdAt, labour, customer, quoted_products } = quote, navigation = (0, import_react6.useNavigation)(), data = (0, import_react6.useActionData)(), [grandTotal, setGrandTotal] = (0, import_react7.useState)(0), [showShareModal, setShowShareModal] = (0, import_react7.useState)(!1);
+  let user = (0, import_react7.useContext)(UserContext), { quote } = (0, import_react6.useLoaderData)(), { createdAt, labour, customer, quoted_products } = quote, navigation = (0, import_react6.useNavigation)(), data = (0, import_react6.useActionData)(), isSubmitting = navigation.state === "submitting", [grandTotal, setGrandTotal] = (0, import_react7.useState)(0), [showShareModal, setShowShareModal] = (0, import_react7.useState)(!1);
   return (0, import_react7.useEffect)(() => {
     setGrandTotal(() => {
       let subTotals = 0;
@@ -799,102 +1358,246 @@ function QuoteId() {
         ({ price, quantity }) => subTotals += price * quantity
       ), subTotals + labour;
     });
-  }, [labour, quoted_products]), /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h2", { children: "Quote" }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { children: [
+  }, [labour, quoted_products]), /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("div", { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("h2", { children: "Quote" }, void 0, !1, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 133,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("p", { children: [
       "Created on: ",
       prettifyDateString(createdAt)
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { children: "Customer" }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 134,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("h3", { children: "Customer" }, void 0, !1, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 135,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("p", { children: [
       "Name: ",
       customer.name
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 136,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("p", { children: [
       "Address: ",
       customer.address
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 137,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("p", { children: [
       "Tel: ",
       customer.tel
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 138,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("p", { children: [
       "Email: ",
       customer.email
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { children: "Products" }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("table", { className: "table", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "hidden md:table-row", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("th", { children: "Name" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("th", { children: "Quantity" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("th", { className: "text-right", children: "Unit Price (\xA3)" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("th", { className: "text-right", children: "Subtotal (\xA3)" })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tbody", { children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 139,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("h3", { children: "Products" }, void 0, !1, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 140,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("table", { className: "table", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("th", { children: "Name" }, void 0, !1, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 144,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("th", { children: "Quantity" }, void 0, !1, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 145,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("th", { className: "text-right", children: "Unit Price (\xA3)" }, void 0, !1, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 146,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("th", { className: "text-right", children: "Subtotal (\xA3)" }, void 0, !1, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 147,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/quotes.$quoteid.tsx",
+        lineNumber: 143,
+        columnNumber: 11
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/quotes.$quoteid.tsx",
+        lineNumber: 142,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("tbody", { children: [
         quoted_products && quoted_products.map(
-          ({ invprod_id, name, quantity, price }) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: resTRClass, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { "data-label": "Name", className: resTDClass, children: name }),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { "data-label": "Quantity", className: resTDClass, children: quantity }),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+          ({ invprod_id, name, quantity, price }) => /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("tr", { className: resTRClass, children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { "data-label": "Name", className: resTDClass, children: name }, void 0, !1, {
+              fileName: "app/routes/quotes.$quoteid.tsx",
+              lineNumber: 156,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { "data-label": "Quantity", className: resTDClass, children: quantity }, void 0, !1, {
+              fileName: "app/routes/quotes.$quoteid.tsx",
+              lineNumber: 159,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(
               "td",
               {
                 "data-label": "Unit Price (\xA3)",
                 className: `${resTDClass} md:text-right`,
                 children: price
-              }
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/routes/quotes.$quoteid.tsx",
+                lineNumber: 162,
+                columnNumber: 21
+              },
+              this
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+            /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(
               "td",
               {
                 "data-label": "Subtotal (\xA3)",
                 className: `${resTDClass} md:text-right`,
                 children: price * quantity
-              }
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/routes/quotes.$quoteid.tsx",
+                lineNumber: 168,
+                columnNumber: 21
+              },
+              this
             )
-          ] }, invprod_id)
+          ] }, invprod_id, !0, {
+            fileName: "app/routes/quotes.$quoteid.tsx",
+            lineNumber: 155,
+            columnNumber: 19
+          }, this)
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: resTRClass, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { colSpan: 3, className: "hidden md:table-cell" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("td", { className: "md:text-right", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("tr", { className: resTRClass, children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { colSpan: 3, className: "hidden md:table-cell" }, void 0, !1, {
+            fileName: "app/routes/quotes.$quoteid.tsx",
+            lineNumber: 179,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { className: "md:text-right", children: [
             "Labour cost (\xA3): ",
             labour
-          ] })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: resTRClass, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { colSpan: 3, className: "hidden md:table-cell" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("td", { className: "md:text-right", children: [
+          ] }, void 0, !0, {
+            fileName: "app/routes/quotes.$quoteid.tsx",
+            lineNumber: 180,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 178,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("tr", { className: resTRClass, children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { colSpan: 3, className: "hidden md:table-cell" }, void 0, !1, {
+            fileName: "app/routes/quotes.$quoteid.tsx",
+            lineNumber: 183,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("td", { className: "md:text-right", children: [
             "Total cost (\xA3): ",
             grandTotal
-          ] })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex justify-end mt-4 gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-        "a",
+          ] }, void 0, !0, {
+            fileName: "app/routes/quotes.$quoteid.tsx",
+            lineNumber: 184,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 182,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/quotes.$quoteid.tsx",
+        lineNumber: 150,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 141,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("div", { className: "flex justify-end mt-4 gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(
+        FormAnchorBtn_default,
         {
           href: `/quotes/${quote.quote_id}/generatedquote`,
           target: "_blank",
-          className: "btn",
           rel: "noreferrer",
+          isSubmitting,
           children: "Generate"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-        "button",
+        },
+        void 0,
+        !1,
         {
-          className: "btn",
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 189,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(
+        FormBtn_default,
+        {
+          isSubmitting,
           onClick: () => {
             setShowShareModal(!0);
           },
           children: "Share"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 197,
+          columnNumber: 9
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("a", { href: "/quotes", className: "btn", children: "Back" })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(Modal_default, { open: showShareModal, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { className: "mb-4", children: "Share with:" }),
-      showShareModal && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(FormAnchorBtn_default, { href: "/quotes", isSubmitting, children: "Back" }, void 0, !1, {
+        fileName: "app/routes/quotes.$quoteid.tsx",
+        lineNumber: 205,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 188,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(Modal_default, { open: showShareModal, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)("h3", { className: "mb-4", children: "Share with:" }, void 0, !1, {
+        fileName: "app/routes/quotes.$quoteid.tsx",
+        lineNumber: 210,
+        columnNumber: 9
+      }, this),
+      showShareModal && /* @__PURE__ */ (0, import_jsx_dev_runtime9.jsxDEV)(
         ShareQuoteForm_default,
         {
           quoteid: quote.quote_id,
@@ -905,10 +1608,26 @@ function QuoteId() {
           onCancel: () => {
             setShowShareModal(!1), data && (data.shareActionErrors = {});
           }
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/quotes.$quoteid.tsx",
+          lineNumber: 212,
+          columnNumber: 11
+        },
+        this
       )
-    ] })
-  ] });
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.$quoteid.tsx",
+      lineNumber: 209,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/quotes.$quoteid.tsx",
+    lineNumber: 132,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/users.register.tsx
@@ -919,7 +1638,7 @@ __export(users_register_exports, {
   meta: () => meta2
 });
 var import_node6 = require("@remix-run/node"), import_react8 = require("@remix-run/react"), import_bcryptjs = __toESM(require("bcryptjs"));
-var import_jsx_runtime8 = require("react/jsx-runtime"), meta2 = () => [{ title: `${SITE_TITLE} - Register` }];
+var import_jsx_dev_runtime10 = require("react/jsx-dev-runtime"), meta2 = () => [{ title: `${SITE_TITLE} - Register` }];
 async function action2({ request }) {
   let formData = await request.formData(), fname = formData.get("firstname"), lname = formData.get("lastname"), email = formData.get("email"), rpassword = formData.get("password"), formErrors = {
     fname: validateFname(fname),
@@ -950,11 +1669,19 @@ async function action2({ request }) {
   }
 }
 function Register() {
-  let navigation = (0, import_react8.useNavigation)(), data = (0, import_react8.useActionData)();
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_react8.Form, { method: "post", className: formClass, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("label", { className: "label", htmlFor: "firstname", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "label-text", children: "First name" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+  let navigation = (0, import_react8.useNavigation)(), data = (0, import_react8.useActionData)(), isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(import_react8.Form, { method: "post", className: formClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("label", { className: "label", htmlFor: "firstname", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("span", { className: "label-text", children: "First name" }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 81,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 80,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -962,13 +1689,37 @@ function Register() {
           name: "firstname",
           type: "text",
           placeholder: "First name"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.register.tsx",
+          lineNumber: 83,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.fname && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.fname })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("label", { className: "label", htmlFor: "lastname", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "label-text", children: "Last name" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+      data && data.formErrors && data.formErrors.fname && /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.fname }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 91,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.register.tsx",
+      lineNumber: 79,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("label", { className: "label", htmlFor: "lastname", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("span", { className: "label-text", children: "Last name" }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 98,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 97,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -976,13 +1727,37 @@ function Register() {
           name: "lastname",
           type: "text",
           placeholder: "Last name"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.register.tsx",
+          lineNumber: 100,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.lname && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.lname })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "label-text", children: "Email" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+      data && data.formErrors && data.formErrors.lname && /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.lname }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 108,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.register.tsx",
+      lineNumber: 96,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("span", { className: "label-text", children: "Email" }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 115,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 114,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -990,13 +1765,37 @@ function Register() {
           name: "email",
           type: "text",
           placeholder: "Email"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.register.tsx",
+          lineNumber: 117,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.email && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.email })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("label", { className: "label", htmlFor: "password", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "label-text", children: "Password" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+      data && data.formErrors && data.formErrors.email && /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.email }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 125,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.register.tsx",
+      lineNumber: 113,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("label", { className: "label", htmlFor: "password", children: /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("span", { className: "label-text", children: "Password" }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 132,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 131,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -1004,15 +1803,71 @@ function Register() {
           name: "password",
           type: "password",
           placeholder: "******************"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.register.tsx",
+          lineNumber: 134,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.password && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.password })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "mt-6 mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("button", { className: "btn", type: "submit", children: navigation.state === "submitting" ? "Submitting..." : "Submit" }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("a", { href: "/login", className: "btn ml-3", children: "Cancel" })
-    ] })
-  ] }) }) }) });
+      data && data.formErrors && data.formErrors.password && /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.password }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 142,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.register.tsx",
+      lineNumber: 130,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)("div", { className: "mt-6 mb-2", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(FormBtn_default, { type: "submit", isSubmitting, children: "Submit" }, void 0, !1, {
+        fileName: "app/routes/users.register.tsx",
+        lineNumber: 148,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime10.jsxDEV)(
+        FormAnchorBtn_default,
+        {
+          href: "/login",
+          className: "ml-3",
+          isSubmitting,
+          children: "Cancel"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.register.tsx",
+          lineNumber: 151,
+          columnNumber: 15
+        },
+        this
+      )
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.register.tsx",
+      lineNumber: 147,
+      columnNumber: 13
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/users.register.tsx",
+    lineNumber: 78,
+    columnNumber: 11
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.register.tsx",
+    lineNumber: 77,
+    columnNumber: 9
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.register.tsx",
+    lineNumber: 76,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.register.tsx",
+    lineNumber: 75,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/quotes._index.tsx
@@ -1023,7 +1878,7 @@ __export(quotes_index_exports, {
   meta: () => meta3
 });
 var import_node7 = require("@remix-run/node"), import_react9 = require("@remix-run/react");
-var import_jsx_runtime9 = require("react/jsx-runtime"), meta3 = () => [{ title: `${SITE_TITLE} - Quotes` }], loader4 = async ({ request }) => {
+var import_jsx_dev_runtime11 = require("react/jsx-dev-runtime"), meta3 = () => [{ title: `${SITE_TITLE} - Quotes` }], loader4 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node7.redirect)("/login");
   try {
@@ -1040,46 +1895,127 @@ var import_jsx_runtime9 = require("react/jsx-runtime"), meta3 = () => [{ title: 
 }, prettifyDateString2 = (dateString) => new Date(dateString).toDateString();
 function QuotesIndex() {
   let { quotes } = (0, import_react9.useLoaderData)();
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(import_jsx_runtime9.Fragment, { children: [
-    quotes && quotes.length ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("table", { className: "table static", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("tr", { className: "hidden md:table-row", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("th", { children: "ID" }),
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("th", { children: "Date" }),
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("th", { children: "Customer" }),
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("th", { children: "Amount (\xA3)" }),
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("th", { children: "Actions" })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("tbody", { children: quotes && quotes.map(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)(import_jsx_dev_runtime11.Fragment, { children: [
+    quotes && quotes.length ? /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("table", { className: "table static", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("th", { children: "ID" }, void 0, !1, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 56,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("th", { children: "Date" }, void 0, !1, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 57,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("th", { children: "Customer" }, void 0, !1, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 58,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("th", { children: "Amount (\xA3)" }, void 0, !1, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 59,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("th", { children: "Actions" }, void 0, !1, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 60,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/quotes._index.tsx",
+        lineNumber: 55,
+        columnNumber: 13
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/quotes._index.tsx",
+        lineNumber: 54,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("tbody", { children: quotes && quotes.map(
         ({
           quote_id,
           createdAt,
           customer,
           quoted_products,
           labour
-        }) => /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("tr", { className: resTRClass, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("td", { "data-label": "ID", className: resTDClass, children: quote_id }),
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("td", { "data-label": "Date", className: resTDClass, children: prettifyDateString2(createdAt) }),
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("td", { "data-label": "Customer", className: resTDClass, children: customer.name }),
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("td", { "data-label": "Amount (\xA3)", className: resTDClass, children: quoted_products.reduce(
+        }) => /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("tr", { className: resTRClass, children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("td", { "data-label": "ID", className: resTDClass, children: quote_id }, void 0, !1, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 75,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("td", { "data-label": "Date", className: resTDClass, children: prettifyDateString2(createdAt) }, void 0, !1, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 78,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("td", { "data-label": "Customer", className: resTDClass, children: customer.name }, void 0, !1, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 81,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("td", { "data-label": "Amount (\xA3)", className: resTDClass, children: quoted_products.reduce(
             (partialSum, qp) => partialSum + qp.price * qp.quantity,
             0
-          ) + labour }),
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("td", { "data-label": "Actions", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "btn-group", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
-              "a",
-              {
-                href: `quotes/${quote_id}`,
-                className: "btn",
-                children: "View"
-              }
-            ),
-            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("button", { className: "btn", children: "Delete" })
-          ] }) })
-        ] }, quote_id)
-      ) })
-    ] }) : /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { children: "No quotes found..." }),
-    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("a", { href: "/quotes/create", className: "btn", children: "Add new quote +" }) })
-  ] });
+          ) + labour }, void 0, !1, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 84,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("td", { "data-label": "Actions", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("div", { className: "btn-group", children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)(FormAnchorBtn_default, { href: `quotes/${quote_id}`, children: "View" }, void 0, !1, {
+              fileName: "app/routes/quotes._index.tsx",
+              lineNumber: 93,
+              columnNumber: 27
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)(FormBtn_default, { children: "Delete" }, void 0, !1, {
+              fileName: "app/routes/quotes._index.tsx",
+              lineNumber: 96,
+              columnNumber: 27
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 92,
+            columnNumber: 25
+          }, this) }, void 0, !1, {
+            fileName: "app/routes/quotes._index.tsx",
+            lineNumber: 91,
+            columnNumber: 23
+          }, this)
+        ] }, quote_id, !0, {
+          fileName: "app/routes/quotes._index.tsx",
+          lineNumber: 74,
+          columnNumber: 21
+        }, this)
+      ) }, void 0, !1, {
+        fileName: "app/routes/quotes._index.tsx",
+        lineNumber: 63,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes._index.tsx",
+      lineNumber: 53,
+      columnNumber: 9
+    }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("p", { children: "No quotes found..." }, void 0, !1, {
+      fileName: "app/routes/quotes._index.tsx",
+      lineNumber: 106,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_dev_runtime11.jsxDEV)(FormAnchorBtn_default, { href: "/quotes/create", children: "Add new quote +" }, void 0, !1, {
+      fileName: "app/routes/quotes._index.tsx",
+      lineNumber: 109,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/quotes._index.tsx",
+      lineNumber: 108,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/quotes._index.tsx",
+    lineNumber: 51,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/quotes.create.tsx
@@ -1094,121 +2030,285 @@ var import_node8 = require("@remix-run/node"), import_react14 = require("@remix-
 
 // app/components/CreateCustomerForm.tsx
 var import_react10 = require("@remix-run/react");
-var import_jsx_runtime10 = require("react/jsx-runtime"), CreateCustomerForm = ({
+var import_jsx_dev_runtime12 = require("react/jsx-dev-runtime"), CreateCustomerForm = ({
   navigation,
   formErrors,
   onCancel,
   actionName
-}) => /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(import_react10.Form, { replace: !0, method: "post", className: formClass, children: [
-  formErrors && formErrors.info && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text-alt text-error", children: formErrors.info }) }),
-  /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", htmlFor: "name", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text", children: "Name" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "input",
-        {
-          className: inputClass,
-          id: "name",
-          name: "name",
-          type: "text",
-          placeholder: "John Smith"
-        }
-      ),
-      formErrors && formErrors.name && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text-alt text-error", children: formErrors.name }) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", htmlFor: "tel", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text", children: "Tel" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "input",
-        {
-          className: inputClass,
-          id: "tel",
-          name: "tel",
-          type: "text",
-          placeholder: "07123456789"
-        }
-      ),
-      formErrors && formErrors.tel && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text-alt text-error", children: formErrors.tel }) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text", children: "Email" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "input",
-        {
-          className: inputClass,
-          id: "email",
-          name: "email",
-          type: "text",
-          placeholder: "john@example.com"
-        }
-      ),
-      formErrors && formErrors.email && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text-alt text-error", children: formErrors.email }) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", htmlFor: "address", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text", children: "Address" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "textarea",
-        {
-          className: "textarea textarea-bordered w-full block bg-base-200",
-          id: "address",
-          name: "address",
-          placeholder: "123 somewhere st, somehwere, S03 3EW"
-        }
-      ),
-      formErrors && formErrors.address && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "label-text-alt text-error", children: formErrors.address }) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex justify-end mt-4 mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "button",
-        {
-          className: "btn",
-          type: "submit",
-          name: "_action",
-          value: actionName,
-          children: navigation.state === "submitting" ? "Submitting..." : "Submit"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-        "button",
-        {
-          className: "btn ml-4",
-          onClick: (e) => {
-            e.preventDefault(), onCancel();
+}) => {
+  let isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(import_react10.Form, { replace: !0, method: "post", className: formClass, children: [
+    formErrors && formErrors.info && /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.info }, void 0, !1, {
+      fileName: "app/components/CreateCustomerForm.tsx",
+      lineNumber: 22,
+      columnNumber: 11
+    }, this) }, void 0, !1, {
+      fileName: "app/components/CreateCustomerForm.tsx",
+      lineNumber: 21,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("div", { className: "mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", htmlFor: "name", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text", children: "Name" }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 28,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 27,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          "input",
+          {
+            className: inputClass,
+            id: "name",
+            name: "name",
+            type: "text",
+            placeholder: "John Smith"
           },
-          children: "Cancel"
-        }
-      )
-    ] })
-  ] })
-] }), CreateCustomerForm_default = CreateCustomerForm;
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 30,
+            columnNumber: 11
+          },
+          this
+        ),
+        formErrors && formErrors.name && /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.name }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 39,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 38,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateCustomerForm.tsx",
+        lineNumber: 26,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("div", { className: "mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", htmlFor: "tel", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text", children: "Tel" }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 47,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 46,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          "input",
+          {
+            className: inputClass,
+            id: "tel",
+            name: "tel",
+            type: "text",
+            placeholder: "07123456789"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 49,
+            columnNumber: 11
+          },
+          this
+        ),
+        formErrors && formErrors.tel && /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.tel }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 58,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 57,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateCustomerForm.tsx",
+        lineNumber: 45,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("div", { className: "mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text", children: "Email" }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 66,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 65,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          "input",
+          {
+            className: inputClass,
+            id: "email",
+            name: "email",
+            type: "text",
+            placeholder: "john@example.com"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 68,
+            columnNumber: 11
+          },
+          this
+        ),
+        formErrors && formErrors.email && /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.email }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 77,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 76,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateCustomerForm.tsx",
+        lineNumber: 64,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("div", { className: "mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", htmlFor: "address", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text", children: "Address" }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 85,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 84,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          "textarea",
+          {
+            className: "textarea textarea-bordered w-full block bg-base-200",
+            id: "address",
+            name: "address",
+            placeholder: "123 somewhere st, somehwere, S03 3EW"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 87,
+            columnNumber: 11
+          },
+          this
+        ),
+        formErrors && formErrors.address && /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.address }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 95,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateCustomerForm.tsx",
+          lineNumber: 94,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateCustomerForm.tsx",
+        lineNumber: 83,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)("div", { className: "flex justify-end mt-4 mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          FormBtn_default,
+          {
+            type: "submit",
+            name: "_action",
+            value: actionName,
+            isSubmitting,
+            children: "Submit"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 102,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime12.jsxDEV)(
+          FormBtn_default,
+          {
+            className: "ml-4",
+            isSubmitting,
+            onClick: (e) => {
+              e.preventDefault(), onCancel();
+            },
+            children: "Cancel"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateCustomerForm.tsx",
+            lineNumber: 110,
+            columnNumber: 11
+          },
+          this
+        )
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateCustomerForm.tsx",
+        lineNumber: 101,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/components/CreateCustomerForm.tsx",
+      lineNumber: 25,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/CreateCustomerForm.tsx",
+    lineNumber: 19,
+    columnNumber: 5
+  }, this);
+}, CreateCustomerForm_default = CreateCustomerForm;
 
 // app/components/CreateProductForm.tsx
-var import_react11 = require("@remix-run/react"), import_classnames2 = __toESM(require("classnames")), import_react12 = require("react");
-var import_jsx_runtime11 = require("react/jsx-runtime"), TaxonomyField = ({
+var import_react11 = require("@remix-run/react"), import_classnames4 = __toESM(require("classnames")), import_react12 = require("react");
+var import_jsx_dev_runtime13 = require("react/jsx-dev-runtime"), TaxonomyField = ({
   taxoName,
   taxoItems,
   inputError
 }) => {
-  let hasItems = taxoItems.length > 0, [isNewTaxoItem, setIsNewTaxoItem] = (0, import_react12.useState)(!hasItems), [taxoSelectValue, setTaxoSelectValue] = (0, import_react12.useState)(""), taxoInputClass = (0, import_classnames2.default)({
+  let hasItems = (taxoItems == null ? void 0 : taxoItems.length) > 0, [isNewTaxoItem, setIsNewTaxoItem] = (0, import_react12.useState)(!hasItems), [taxoSelectValue, setTaxoSelectValue] = (0, import_react12.useState)(""), taxoInputClass = (0, import_classnames4.default)({
     [inputClass]: !0,
     "mt-2": isNewTaxoItem,
     hidden: !isNewTaxoItem
   });
   return (0, import_react12.useEffect)(() => {
     setIsNewTaxoItem(taxoSelectValue === "-1");
-  }, [taxoSelectValue]), /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "mb-2", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  }, [taxoSelectValue]), /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("div", { className: "mb-2", children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
       "label",
       {
         className: "label",
         htmlFor: isNewTaxoItem ? `new${taxoName}` : taxoName,
-        children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("span", { className: "label-text", children: [
+        children: /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("span", { className: "label-text", children: [
           "Product ",
           taxoName
-        ] })
-      }
+        ] }, void 0, !0, {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 42,
+          columnNumber: 9
+        }, this)
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/components/CreateProductForm.tsx",
+        lineNumber: 38,
+        columnNumber: 7
+      },
+      this
     ),
-    hasItems && /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
       "select",
       {
         className: selectClass,
@@ -1219,28 +2319,51 @@ var import_jsx_runtime11 = require("react/jsx-runtime"), TaxonomyField = ({
           setTaxoSelectValue(e.target.value);
         },
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("option", { disabled: !0, value: "", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("option", { disabled: !0, value: "", children: [
             "Select a ",
             taxoName,
             "..."
-          ] }),
-          taxoItems.map((taxoItem) => /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          ] }, void 0, !0, {
+            fileName: "app/components/CreateProductForm.tsx",
+            lineNumber: 53,
+            columnNumber: 9
+          }, this),
+          hasItems && taxoItems.map((taxoItem) => /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
             "option",
             {
               value: taxoItem[`${taxoName}_id`],
               children: taxoItem[`${taxoName}_name`]
             },
-            taxoItem[`${taxoName}_id`]
+            taxoItem[`${taxoName}_id`],
+            !1,
+            {
+              fileName: "app/components/CreateProductForm.tsx",
+              lineNumber: 59,
+              columnNumber: 15
+            },
+            this
           )),
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("option", { value: "-1", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("option", { value: "-1", children: [
             "Add new ",
             taxoName,
             " +"
-          ] })
+          ] }, void 0, !0, {
+            fileName: "app/components/CreateProductForm.tsx",
+            lineNumber: 67,
+            columnNumber: 9
+          }, this)
         ]
-      }
+      },
+      void 0,
+      !0,
+      {
+        fileName: "app/components/CreateProductForm.tsx",
+        lineNumber: 44,
+        columnNumber: 7
+      },
+      this
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
       "input",
       {
         disabled: !isNewTaxoItem,
@@ -1249,10 +2372,30 @@ var import_jsx_runtime11 = require("react/jsx-runtime"), TaxonomyField = ({
         name: `new${taxoName}`,
         type: "text",
         placeholder: `Defined new ${taxoName} here...`
-      }
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/components/CreateProductForm.tsx",
+        lineNumber: 69,
+        columnNumber: 7
+      },
+      this
     ),
-    inputError && inputError[taxoName] && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "label-text-alt text-error", children: inputError[taxoName] }) })
-  ] });
+    inputError && inputError[taxoName] && /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("span", { className: "label-text-alt text-error", children: inputError[taxoName] }, void 0, !1, {
+      fileName: "app/components/CreateProductForm.tsx",
+      lineNumber: 79,
+      columnNumber: 11
+    }, this) }, void 0, !1, {
+      fileName: "app/components/CreateProductForm.tsx",
+      lineNumber: 78,
+      columnNumber: 9
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/CreateProductForm.tsx",
+    lineNumber: 37,
+    columnNumber: 5
+  }, this);
 }, CreateProductForm = ({
   selectData,
   navigation,
@@ -1260,37 +2403,77 @@ var import_jsx_runtime11 = require("react/jsx-runtime"), TaxonomyField = ({
   onCancel,
   actionName
 }) => {
-  let { brands, models, types } = selectData;
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_react11.Form, { replace: !0, method: "post", className: formClass, children: [
-    formErrors && formErrors.info && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "label-text-alt text-error", children: formErrors.info }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  let { brands, models, types } = selectData, isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(import_react11.Form, { replace: !0, method: "post", className: formClass, children: [
+    formErrors && formErrors.info && /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.info }, void 0, !1, {
+      fileName: "app/components/CreateProductForm.tsx",
+      lineNumber: 111,
+      columnNumber: 11
+    }, this) }, void 0, !1, {
+      fileName: "app/components/CreateProductForm.tsx",
+      lineNumber: 110,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
         TaxonomyField,
         {
           taxoName: "brand",
           taxoItems: brands,
           inputError: formErrors
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 116,
+          columnNumber: 9
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
         TaxonomyField,
         {
           taxoName: "type",
           taxoItems: types,
           inputError: formErrors
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 121,
+          columnNumber: 9
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
         TaxonomyField,
         {
           taxoName: "model",
           taxoItems: models,
           inputError: formErrors
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 126,
+          columnNumber: 9
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "mb-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("label", { className: "label", htmlFor: "price", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "label-text", children: "Product price (\xA3)" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("div", { className: "mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("label", { className: "label", htmlFor: "price", children: /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("span", { className: "label-text", children: "Product price (\xA3)" }, void 0, !1, {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 133,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 132,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
           "input",
           {
             className: inputClass,
@@ -1298,39 +2481,88 @@ var import_jsx_runtime11 = require("react/jsx-runtime"), TaxonomyField = ({
             name: "price",
             type: "number",
             placeholder: "10.00"
-          }
-        ),
-        formErrors && formErrors.price && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "label-text-alt text-error", children: formErrors.price }) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex justify-end mt-4 mb-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
+          },
+          void 0,
+          !1,
           {
-            className: "btn",
+            fileName: "app/components/CreateProductForm.tsx",
+            lineNumber: 135,
+            columnNumber: 11
+          },
+          this
+        ),
+        formErrors && formErrors.price && /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("span", { className: "label-text-alt text-error", children: formErrors.price }, void 0, !1, {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 144,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/components/CreateProductForm.tsx",
+          lineNumber: 143,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateProductForm.tsx",
+        lineNumber: 131,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)("div", { className: "flex justify-end mt-4 mb-2", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
+          FormBtn_default,
+          {
             type: "submit",
             name: "_action",
             value: actionName,
-            children: navigation.state === "submitting" ? "Submitting..." : "Submit"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
+            isSubmitting,
+            children: "Submit"
+          },
+          void 0,
+          !1,
           {
-            className: "btn ml-3",
+            fileName: "app/components/CreateProductForm.tsx",
+            lineNumber: 151,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime13.jsxDEV)(
+          FormBtn_default,
+          {
+            className: "ml-4",
+            isSubmitting,
             onClick: (e) => {
               e.preventDefault(), onCancel();
             },
             children: "Cancel"
-          }
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/components/CreateProductForm.tsx",
+            lineNumber: 159,
+            columnNumber: 11
+          },
+          this
         )
-      ] })
-    ] })
-  ] });
+      ] }, void 0, !0, {
+        fileName: "app/components/CreateProductForm.tsx",
+        lineNumber: 150,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/components/CreateProductForm.tsx",
+      lineNumber: 115,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/CreateProductForm.tsx",
+    lineNumber: 108,
+    columnNumber: 5
+  }, this);
 }, CreateProductForm_default = CreateProductForm;
 
 // app/components/QuoteProductRow.tsx
 var import_react13 = require("react");
-var import_jsx_runtime12 = require("react/jsx-runtime"), QuoteProductRow = ({
+var import_jsx_dev_runtime14 = require("react/jsx-dev-runtime"), QuoteProductRow = ({
   rowId,
   products,
   productSelectValues,
@@ -1357,14 +2589,14 @@ var import_jsx_runtime12 = require("react/jsx-runtime"), QuoteProductRow = ({
   }, handleQtyInput = (row_id, qty2) => {
     dispatchPSV({ type: "update", row_id, qty: qty2 });
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("tr", { className: resTRClass, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("tr", { className: resTRClass, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)(
       "td",
       {
         colSpan: productSelectValue ? 1 : 4,
         "data-label": "Product",
         className: resTDClass,
-        children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+        children: /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)(
           "select",
           {
             className: selectClass,
@@ -1375,22 +2607,50 @@ var import_jsx_runtime12 = require("react/jsx-runtime"), QuoteProductRow = ({
               handleSelect(rowId, e.target.value);
             },
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("option", { disabled: !0, value: "", children: "Select a product..." }),
-              products.map(({ product_id, brand_name, type_name, model_name }) => /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("option", { value: product_id, children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("option", { disabled: !0, value: "", children: "Select a product..." }, void 0, !1, {
+                fileName: "app/components/QuoteProductRow.tsx",
+                lineNumber: 72,
+                columnNumber: 11
+              }, this),
+              products.map(({ product_id, brand_name, type_name, model_name }) => /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("option", { value: product_id, children: [
                 brand_name,
                 " - ",
                 type_name,
                 " - ",
                 model_name
-              ] }, product_id)),
-              /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("option", { value: "-1", children: "Add new product +" })
+              ] }, product_id, !0, {
+                fileName: "app/components/QuoteProductRow.tsx",
+                lineNumber: 77,
+                columnNumber: 15
+              }, this)),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("option", { value: "-1", children: "Add new product +" }, void 0, !1, {
+                fileName: "app/components/QuoteProductRow.tsx",
+                lineNumber: 82,
+                columnNumber: 11
+              }, this)
             ]
-          }
+          },
+          void 0,
+          !0,
+          {
+            fileName: "app/components/QuoteProductRow.tsx",
+            lineNumber: 63,
+            columnNumber: 9
+          },
+          this
         )
-      }
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/components/QuoteProductRow.tsx",
+        lineNumber: 58,
+        columnNumber: 7
+      },
+      this
     ),
-    productSelectValue && /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_jsx_runtime12.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("td", { "data-label": "Quantity", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+    productSelectValue && /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)(import_jsx_dev_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("td", { "data-label": "Quantity", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -1402,23 +2662,55 @@ var import_jsx_runtime12 = require("react/jsx-runtime"), QuoteProductRow = ({
           onChange: (e) => {
             handleQtyInput(rowId, parseInt(e.target.value));
           }
-        }
-      ) }),
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("td", { "data-label": "Unit (\xA3)", className: `${resTDClass} md:text-right`, children: unitPrice || " - " }),
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/QuoteProductRow.tsx",
+          lineNumber: 88,
+          columnNumber: 13
+        },
+        this
+      ) }, void 0, !1, {
+        fileName: "app/components/QuoteProductRow.tsx",
+        lineNumber: 87,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)("td", { "data-label": "Unit (\xA3)", className: `${resTDClass} md:text-right`, children: unitPrice || " - " }, void 0, !1, {
+        fileName: "app/components/QuoteProductRow.tsx",
+        lineNumber: 100,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime14.jsxDEV)(
         "td",
         {
           "data-label": "Subtotal (\xA3)",
           className: `${resTDClass} md:text-right`,
           children: subtotal || " - "
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/QuoteProductRow.tsx",
+          lineNumber: 103,
+          columnNumber: 11
+        },
+        this
       )
-    ] })
-  ] });
+    ] }, void 0, !0, {
+      fileName: "app/components/QuoteProductRow.tsx",
+      lineNumber: 86,
+      columnNumber: 9
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/QuoteProductRow.tsx",
+    lineNumber: 57,
+    columnNumber: 5
+  }, this);
 }, QuoteProductRow_default = QuoteProductRow;
 
 // app/routes/quotes.create.tsx
-var import_jsx_runtime13 = require("react/jsx-runtime"), meta4 = () => [{ title: `${SITE_TITLE} - Create quote` }], loader5 = async ({ request }) => {
+var import_jsx_dev_runtime15 = require("react/jsx-dev-runtime"), meta4 = () => [{ title: `${SITE_TITLE} - Create quote` }], loader5 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node8.redirect)("/login");
   try {
@@ -1530,7 +2822,7 @@ function QuotesCreate() {
     brands,
     types,
     models
-  } = (0, import_react14.useLoaderData)(), data = (0, import_react14.useActionData)(), [isNewCustomer, setIsNewCustomer] = (0, import_react15.useState)(!1), [customerSelectValue, setCustomerSelectValue] = (0, import_react15.useState)(""), [productCount, setProductCount] = (0, import_react15.useState)(1), [labour, setLabour] = (0, import_react15.useState)(0), [grandtotal, setGrandtotal] = (0, import_react15.useState)(0), [newProductRow, setNewProductRow] = (0, import_react15.useState)(0), [isNewProduct, setIsNewProduct] = (0, import_react15.useState)(!1), [productSelectValues, dispatchPSV] = (0, import_react15.useReducer)(
+  } = (0, import_react14.useLoaderData)(), data = (0, import_react14.useActionData)(), isSubmitting = navigation.state === "submitting", [isNewCustomer, setIsNewCustomer] = (0, import_react15.useState)(!1), [customerSelectValue, setCustomerSelectValue] = (0, import_react15.useState)(""), [productCount, setProductCount] = (0, import_react15.useState)(1), [labour, setLabour] = (0, import_react15.useState)(0), [grandtotal, setGrandtotal] = (0, import_react15.useState)(0), [newProductRow, setNewProductRow] = (0, import_react15.useState)(0), [isNewProduct, setIsNewProduct] = (0, import_react15.useState)(!1), [productSelectValues, dispatchPSV] = (0, import_react15.useReducer)(
     (state, action9) => {
       let { type, ...values } = action9;
       switch (type) {
@@ -1563,22 +2855,50 @@ function QuotesCreate() {
       row_id: newProductRow,
       product_id: `${data.createdProduct.product_id}`
     }));
-  }, [data, newProductRow]), /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("h2", { className: "mb-4 text-center", children: "Create a new quote" }),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(import_react14.Form, { method: "post", className: formClass, children: [
-      ((_a = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _a.info) && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.info }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+  }, [data, newProductRow]), /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("div", { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("h2", { className: "mb-4 text-center", children: "Create a new quote" }, void 0, !1, {
+      fileName: "app/routes/quotes.create.tsx",
+      lineNumber: 277,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(import_react14.Form, { method: "post", className: formClass, children: [
+      ((_a = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _a.info) && /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.info }, void 0, !1, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 281,
+        columnNumber: 13
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 280,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
         "input",
         {
           type: "hidden",
           name: "prodcount",
           id: "prodcount",
           value: productCount
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 286,
+          columnNumber: 9
+        },
+        this
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("fieldset", { disabled: navigation.state === "submitting", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "mb-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label", htmlFor: "customer", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text", children: "Customer" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("fieldset", { disabled: isSubmitting, children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("div", { className: "mb-4", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label", htmlFor: "customer", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text", children: "Customer" }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 295,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 294,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
           "select",
           {
             className: selectClass,
@@ -1589,9 +2909,13 @@ function QuotesCreate() {
               setCustomerSelectValue(e.target.value);
             },
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("option", { disabled: !0, value: "", children: "Select a customer..." }),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("option", { disabled: !0, value: "", children: "Select a customer..." }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 306,
+                columnNumber: 15
+              }, this),
               customers.map(
-                ({ customer_id, name, tel, email, address }) => /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("option", { value: customer_id, children: [
+                ({ customer_id, name, tel, email, address }) => /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("option", { value: customer_id, children: [
                   name,
                   " - ",
                   tel,
@@ -1599,26 +2923,98 @@ function QuotesCreate() {
                   email,
                   " - ",
                   address
-                ] }, customer_id)
+                ] }, customer_id, !0, {
+                  fileName: "app/routes/quotes.create.tsx",
+                  lineNumber: 312,
+                  columnNumber: 21
+                }, this)
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("option", { value: "-1", children: "Add new customer +" })
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("option", { value: "-1", children: "Add new customer +" }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 318,
+                columnNumber: 15
+              }, this)
             ]
-          }
+          },
+          void 0,
+          !0,
+          {
+            fileName: "app/routes/quotes.create.tsx",
+            lineNumber: 297,
+            columnNumber: 13
+          },
+          this
         ),
-        ((_b = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _b.customer) && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.customer }) })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text", children: "Products" }) }),
-        ((_c = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _c.product) && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.product }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("table", { className: "table", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("tr", { className: "hidden md:table-row", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("th", { children: "Product" }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("th", { className: "w-[100px]", children: "Quantity" }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("th", { className: "text-right w-[150px]", children: "Unit (\xA3)" }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("th", { className: "text-right w-[150px]", children: "Subtotal (\xA3)" })
-          ] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("tbody", { children: [
-            [...Array(productCount)].map((e, i) => /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+        ((_b = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _b.customer) && /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.customer }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 322,
+          columnNumber: 17
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 321,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 293,
+        columnNumber: 11
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 292,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text", children: "Products" }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 331,
+          columnNumber: 13
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 330,
+          columnNumber: 11
+        }, this),
+        ((_c = data == null ? void 0 : data.quoteActionErrors) == null ? void 0 : _c.product) && /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text-alt text-error", children: data.quoteActionErrors.product }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 335,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 334,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("table", { className: "table", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("th", { children: "Product" }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 343,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("th", { className: "w-[100px]", children: "Quantity" }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 344,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("th", { className: "text-right w-[150px]", children: "Unit (\xA3)" }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 345,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("th", { className: "text-right w-[150px]", children: "Subtotal (\xA3)" }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 346,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/quotes.create.tsx",
+            lineNumber: 342,
+            columnNumber: 15
+          }, this) }, void 0, !1, {
+            fileName: "app/routes/quotes.create.tsx",
+            lineNumber: 341,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("tbody", { children: [
+            [...Array(productCount)].map((e, i) => /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
               QuoteProductRow_default,
               {
                 rowId: `${i + 1}`,
@@ -1626,14 +3022,21 @@ function QuotesCreate() {
                 productSelectValues,
                 dispatchPSV
               },
-              i
+              i,
+              !1,
+              {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 351,
+                columnNumber: 17
+              },
+              this
             )),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("tr", { className: resTRClass, children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { colSpan: 4, children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "flex md:justify-end join", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-                "button",
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("tr", { className: resTRClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { colSpan: 4, children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("div", { className: "flex md:justify-end btn-group", children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
+                FormBtn_default,
                 {
-                  className: "btn join-item",
                   disabled: productCount === 1,
+                  isSubmitting,
                   onClick: (e) => {
                     e.preventDefault(), setProductCount((pCount) => (dispatchPSV({
                       type: "remove",
@@ -1641,12 +3044,20 @@ function QuotesCreate() {
                     }), pCount - 1));
                   },
                   children: "-"
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-                "button",
+                },
+                void 0,
+                !1,
                 {
-                  className: "btn join-item",
+                  fileName: "app/routes/quotes.create.tsx",
+                  lineNumber: 362,
+                  columnNumber: 21
+                },
+                this
+              ),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
+                FormBtn_default,
+                {
+                  isSubmitting,
                   onClick: (e) => {
                     e.preventDefault(), setProductCount((pCount) => (dispatchPSV({
                       type: "add",
@@ -1657,13 +3068,49 @@ function QuotesCreate() {
                     }), pCount + 1));
                   },
                   children: "+"
-                }
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/quotes.create.tsx",
+                  lineNumber: 378,
+                  columnNumber: 21
+                },
+                this
               )
-            ] }) }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("tr", { className: resTRClass, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { colSpan: 2, className: "hidden md:table-cell" }),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { className: "flex md:table-cell", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label md:justify-end", htmlFor: "labour", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text", children: "Labour cost (\xA3):" }) }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+            ] }, void 0, !0, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 361,
+              columnNumber: 19
+            }, this) }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 360,
+              columnNumber: 17
+            }, this) }, void 0, !1, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 359,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("tr", { className: resTRClass, children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { colSpan: 2, className: "hidden md:table-cell" }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 400,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { className: "flex md:table-cell", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label md:justify-end", htmlFor: "labour", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text", children: "Labour cost (\xA3):" }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 403,
+                columnNumber: 21
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 402,
+                columnNumber: 19
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 401,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
                 "input",
                 {
                   type: "number",
@@ -1675,34 +3122,130 @@ function QuotesCreate() {
                   onChange: (e) => {
                     setLabour(parseInt(e.target.value));
                   }
-                }
-              ) })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("tr", { className: resTRClass, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { colSpan: 2, className: "hidden md:table-cell" }),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label md:justify-end", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text", children: "Total cost (\xA3):" }) }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "label md:justify-end", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "label-text", children: grandtotal }) }) })
-            ] })
-          ] })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "flex md:justify-end mt-4 mb-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-            "button",
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/quotes.create.tsx",
+                  lineNumber: 407,
+                  columnNumber: 19
+                },
+                this
+              ) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 406,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 399,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("tr", { className: resTRClass, children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { colSpan: 2, className: "hidden md:table-cell" }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 421,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label md:justify-end", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text", children: "Total cost (\xA3):" }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 424,
+                columnNumber: 21
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 423,
+                columnNumber: 19
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 422,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("td", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("label", { className: "label md:justify-end", children: /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("span", { className: "label-text", children: grandtotal }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 429,
+                columnNumber: 21
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 428,
+                columnNumber: 19
+              }, this) }, void 0, !1, {
+                fileName: "app/routes/quotes.create.tsx",
+                lineNumber: 427,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 420,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/quotes.create.tsx",
+            lineNumber: 349,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 340,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("div", { className: "flex md:justify-end mt-4 mb-2", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
+            FormBtn_default,
             {
-              className: "btn",
               type: "submit",
               name: "_action",
               value: "create_quote",
-              children: navigation.state === "submitting" ? "Submitting..." : "Submit"
-            }
+              isSubmitting,
+              children: "Submit"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 436,
+              columnNumber: 13
+            },
+            this
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("a", { className: "btn ml-4", href: "/quotes", children: "Cancel" })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Modal_default, { open: isNewCustomer, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("h3", { className: "mb-4", children: "Create new customer" }),
-      isNewCustomer && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+          /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
+            FormAnchorBtn_default,
+            {
+              className: "ml-4",
+              href: "/quotes",
+              isSubmitting,
+              children: "Cancel"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/quotes.create.tsx",
+              lineNumber: 444,
+              columnNumber: 13
+            },
+            this
+          )
+        ] }, void 0, !0, {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 435,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 329,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.create.tsx",
+      lineNumber: 278,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(Modal_default, { open: isNewCustomer, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("h3", { className: "mb-4", children: "Create new customer" }, void 0, !1, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 455,
+        columnNumber: 9
+      }, this),
+      isNewCustomer && /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
         CreateCustomerForm_default,
         {
           actionName: "create_customer",
@@ -1711,12 +3254,28 @@ function QuotesCreate() {
           onCancel: () => {
             setCustomerSelectValue(""), data && (data.customerActionErrors = {});
           }
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 457,
+          columnNumber: 11
+        },
+        this
       )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Modal_default, { open: isNewProduct, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("h3", { className: "mb-4", children: "Create new product" }),
-      isNewProduct && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.create.tsx",
+      lineNumber: 454,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(Modal_default, { open: isNewProduct, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)("h3", { className: "mb-4", children: "Create new product" }, void 0, !1, {
+        fileName: "app/routes/quotes.create.tsx",
+        lineNumber: 469,
+        columnNumber: 9
+      }, this),
+      isNewProduct && /* @__PURE__ */ (0, import_jsx_dev_runtime15.jsxDEV)(
         CreateProductForm_default,
         {
           actionName: "create_product",
@@ -1730,10 +3289,26 @@ function QuotesCreate() {
               product_id: ""
             }), data && (data.productActionErrors = {});
           }
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/quotes.create.tsx",
+          lineNumber: 471,
+          columnNumber: 11
+        },
+        this
       )
-    ] })
-  ] });
+    ] }, void 0, !0, {
+      fileName: "app/routes/quotes.create.tsx",
+      lineNumber: 468,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/quotes.create.tsx",
+    lineNumber: 276,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/users.$userid.tsx
@@ -1745,7 +3320,7 @@ __export(users_userid_exports, {
   meta: () => meta5
 });
 var import_node9 = require("@remix-run/node"), import_react16 = require("@remix-run/react"), import_bcryptjs2 = __toESM(require("bcryptjs")), import_react17 = require("react");
-var import_jsx_runtime14 = require("react/jsx-runtime"), meta5 = () => [{ title: `${SITE_TITLE} - Change user details` }], loader6 = async ({ request }) => await getUserId(request) ? {} : (0, import_node9.redirect)("/login");
+var import_jsx_dev_runtime16 = require("react/jsx-dev-runtime"), meta5 = () => [{ title: `${SITE_TITLE} - Change user details` }], loader6 = async ({ request }) => await getUserId(request) ? {} : (0, import_node9.redirect)("/login");
 async function action4({ request, params }) {
   let formData = await request.formData(), fname = formData.get("firstname"), lname = formData.get("lastname"), email = formData.get("email"), ropassword = formData.get("opassword"), rnpassword = formData.get("npassword"), formErrors = {
     fname: validateFname(fname),
@@ -1785,11 +3360,19 @@ async function action4({ request, params }) {
   console.log("err:", "failed to update the user");
 }
 function UserId() {
-  let user = (0, import_react17.useContext)(UserContext), navigation = (0, import_react16.useNavigation)(), data = (0, import_react16.useActionData)();
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_react16.Form, { method: "post", className: "bg-base-300 px-4 py-2 rounded-lg", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "label", htmlFor: "firstname", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "label-text", children: "First name" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+  let user = (0, import_react17.useContext)(UserContext), navigation = (0, import_react16.useNavigation)(), data = (0, import_react16.useActionData)(), isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(import_react16.Form, { method: "post", className: "bg-base-300 px-4 py-2 rounded-lg", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("label", { className: "label", htmlFor: "firstname", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("span", { className: "label-text", children: "First name" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 115,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 114,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
         "input",
         {
           className: "input input-bordered w-full max-w-xs",
@@ -1797,13 +3380,37 @@ function UserId() {
           name: "firstname",
           type: "text",
           placeholder: user.firstName
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 117,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.fname && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.fname })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "label", htmlFor: "lastname", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "label-text", children: "Last name" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      data && data.formErrors && data.formErrors.fname && /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.fname }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 125,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 113,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("label", { className: "label", htmlFor: "lastname", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("span", { className: "label-text", children: "Last name" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 132,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 131,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
         "input",
         {
           className: "input input-bordered w-full max-w-xs",
@@ -1811,26 +3418,74 @@ function UserId() {
           name: "lastname",
           type: "text",
           placeholder: user.lastName
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 134,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.lname && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.lname })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "label-text", children: "Email" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("input", { type: "hidden", name: "email", value: user.email }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      data && data.formErrors && data.formErrors.lname && /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.lname }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 142,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 130,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("span", { className: "label-text", children: "Email" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 149,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 148,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("input", { type: "hidden", name: "email", value: user.email }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 151,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
         "input",
         {
           className: "input input-bordered w-full max-w-xs",
           type: "text",
           placeholder: user.email,
           disabled: !0
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 152,
+          columnNumber: 15
+        },
+        this
       )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "label", htmlFor: "opassword", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "label-text", children: "Original password" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 147,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("label", { className: "label", htmlFor: "opassword", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("span", { className: "label-text", children: "Original password" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 161,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 160,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
         "input",
         {
           className: "input input-bordered w-full max-w-xs",
@@ -1838,13 +3493,37 @@ function UserId() {
           name: "opassword",
           type: "password",
           placeholder: "******************"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 163,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.opassword && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.opassword })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "label", htmlFor: "npassword", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "label-text", children: "New password" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      data && data.formErrors && data.formErrors.opassword && /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.opassword }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 171,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 159,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("label", { className: "label", htmlFor: "npassword", children: /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("span", { className: "label-text", children: "New password" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 178,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 177,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
         "input",
         {
           className: "input input-bordered w-full max-w-xs",
@@ -1852,15 +3531,71 @@ function UserId() {
           name: "npassword",
           type: "password",
           placeholder: "******************"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 180,
+          columnNumber: 15
+        },
+        this
       ),
-      data && data.formErrors && data.formErrors.npassword && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.npassword })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "mt-6 mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("button", { className: "btn", type: "submit", children: navigation.state === "submitting" ? "Submitting..." : "Submit" }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("a", { href: "/users", className: "btn ml-3", children: "Cancel" })
-    ] })
-  ] }) }) }) });
+      data && data.formErrors && data.formErrors.npassword && /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.formErrors.npassword }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 188,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 176,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)("div", { className: "mt-6 mb-2", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(FormBtn_default, { type: "submit", isSubmitting, children: "Submit" }, void 0, !1, {
+        fileName: "app/routes/users.$userid.tsx",
+        lineNumber: 194,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime16.jsxDEV)(
+        FormAnchorBtn_default,
+        {
+          href: "/users",
+          className: "ml-3",
+          isSubmitting,
+          children: "Cancel"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/users.$userid.tsx",
+          lineNumber: 197,
+          columnNumber: 15
+        },
+        this
+      )
+    ] }, void 0, !0, {
+      fileName: "app/routes/users.$userid.tsx",
+      lineNumber: 193,
+      columnNumber: 13
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/users.$userid.tsx",
+    lineNumber: 112,
+    columnNumber: 11
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.$userid.tsx",
+    lineNumber: 111,
+    columnNumber: 9
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.$userid.tsx",
+    lineNumber: 110,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.$userid.tsx",
+    lineNumber: 109,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/users._index.tsx
@@ -1872,7 +3607,7 @@ __export(users_index_exports, {
   meta: () => meta6
 });
 var import_node10 = require("@remix-run/node"), import_react18 = require("@remix-run/react"), import_react19 = require("react");
-var import_jsx_runtime15 = require("react/jsx-runtime"), meta6 = () => [{ title: `${SITE_TITLE} - Users` }], loader7 = async ({ request }) => {
+var import_jsx_dev_runtime17 = require("react/jsx-dev-runtime"), meta6 = () => [{ title: `${SITE_TITLE} - Users` }], loader7 = async ({ request }) => {
   let uid = await getUserId(request);
   if (!uid)
     return (0, import_node10.redirect)("/login");
@@ -1906,59 +3641,167 @@ async function action5({ request }) {
 }
 function UsersIndex() {
   let { users } = (0, import_react18.useLoaderData)(), isSubmitting = (0, import_react18.useNavigation)().state === "submitting", [deletedUserID, setDeletedUserId] = (0, import_react19.useState)(0), [modelOpen, setModalOpen] = (0, import_react19.useState)(!1), user = (0, import_react19.useContext)(UserContext);
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("table", { className: "table static", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("tr", { className: "hidden md:table-row", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "ID" }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "First Name" }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "Last Name" }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "Email" }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "Approved" }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("th", { children: "Actions" })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tbody", { children: users && users.map((loopedUser) => /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("tr", { className: resTRClass, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "ID", className: resTDClass, children: loopedUser.id }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "First Name", className: resTDClass, children: loopedUser.firstName }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "Last Name", className: resTDClass, children: loopedUser.lastName }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "Email", className: resTDClass, children: loopedUser.email }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "Approved", className: resTDClass, children: loopedUser.isApproved ? "Approved" : /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_react18.Form, { method: "post", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(import_jsx_dev_runtime17.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("table", { className: "table static", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "ID" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 72,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "First Name" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 73,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "Last Name" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 74,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "Email" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 75,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "Approved" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 76,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("th", { children: "Actions" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 77,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 71,
+        columnNumber: 11
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 70,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("tbody", { children: users && users.map((loopedUser) => /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("tr", { className: resTRClass, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "ID", className: resTDClass, children: loopedUser.id }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 85,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "First Name", className: resTDClass, children: loopedUser.firstName }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 88,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "Last Name", className: resTDClass, children: loopedUser.lastName }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 91,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "Email", className: resTDClass, children: loopedUser.email }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 94,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "Approved", className: resTDClass, children: loopedUser.isApproved ? "Approved" : /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(import_react18.Form, { method: "post", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(
             "input",
             {
               type: "hidden",
               name: "approvedUserId",
               value: loopedUser.id
-            }
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/users._index.tsx",
+              lineNumber: 102,
+              columnNumber: 25
+            },
+            this
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("button", { type: "submit", className: "btn", children: "Approve" })
-        ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { "data-label": "Actions", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "btn-group", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-            "a",
+          /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(FormBtn_default, { type: "submit", isSubmitting, children: "Approve" }, void 0, !1, {
+            fileName: "app/routes/users._index.tsx",
+            lineNumber: 107,
+            columnNumber: 25
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 101,
+          columnNumber: 23
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 97,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("td", { "data-label": "Actions", className: resTDClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("div", { className: "btn-group", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(
+            FormAnchorBtn_default,
             {
               href: `users/${loopedUser.id}`,
-              className: "btn",
+              isSubmitting,
               children: "EDIT"
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-            "button",
+            },
+            void 0,
+            !1,
             {
-              className: "btn",
+              fileName: "app/routes/users._index.tsx",
+              lineNumber: 115,
+              columnNumber: 23
+            },
+            this
+          ),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(
+            FormBtn_default,
+            {
               disabled: user.id === loopedUser.id,
+              isSubmitting,
               onClick: () => {
                 setDeletedUserId(loopedUser.id), setModalOpen(!0);
               },
               children: "DELETE"
-            }
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/users._index.tsx",
+              lineNumber: 121,
+              columnNumber: 23
+            },
+            this
           )
-        ] }) })
-      ] }, loopedUser.id)) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Modal_default, { open: modelOpen, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "py-4", children: "Are you sure you want to delete this user?" }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "modal-action", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
+        ] }, void 0, !0, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 114,
+          columnNumber: 21
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 113,
+          columnNumber: 19
+        }, this)
+      ] }, loopedUser.id, !0, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 84,
+        columnNumber: 17
+      }, this)) }, void 0, !1, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 80,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users._index.tsx",
+      lineNumber: 69,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(Modal_default, { open: modelOpen, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("p", { className: "py-4", children: "Are you sure you want to delete this user?" }, void 0, !1, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 139,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("div", { className: "modal-action", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(
           import_react18.Form,
           {
             method: "post",
@@ -1966,31 +3809,47 @@ function UsersIndex() {
               setModalOpen(!1);
             },
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("input", { type: "hidden", name: "uid", value: deletedUserID }),
-              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-                "button",
-                {
-                  className: "btn",
-                  type: "submit",
-                  disabled: isSubmitting,
-                  children: isSubmitting ? "Confirming..." : "Confirm"
-                }
-              )
+              /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)("input", { type: "hidden", name: "uid", value: deletedUserID }, void 0, !1, {
+                fileName: "app/routes/users._index.tsx",
+                lineNumber: 147,
+                columnNumber: 13
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(FormBtn_default, { type: "submit", isSubmitting: !0, children: "Confirm" }, void 0, !1, {
+                fileName: "app/routes/users._index.tsx",
+                lineNumber: 148,
+                columnNumber: 13
+              }, this)
             ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-          "button",
+          },
+          void 0,
+          !0,
           {
-            className: "btn",
-            disabled: isSubmitting,
-            onClick: () => setModalOpen(!1),
-            children: "Close"
-          }
-        )
-      ] })
-    ] })
-  ] });
+            fileName: "app/routes/users._index.tsx",
+            lineNumber: 141,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime17.jsxDEV)(FormBtn_default, { isSubmitting: !0, onClick: () => setModalOpen(!1), children: "Close" }, void 0, !1, {
+          fileName: "app/routes/users._index.tsx",
+          lineNumber: 152,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/users._index.tsx",
+        lineNumber: 140,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/users._index.tsx",
+      lineNumber: 138,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/users._index.tsx",
+    lineNumber: 68,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/customers.tsx
@@ -2002,7 +3861,7 @@ __export(customers_exports, {
   meta: () => meta7
 });
 var import_node11 = require("@remix-run/node"), import_react20 = require("@remix-run/react"), import_react21 = require("react");
-var import_jsx_runtime16 = require("react/jsx-runtime"), meta7 = () => [{ title: `${SITE_TITLE} - Customers` }], loader8 = async ({ request }) => {
+var import_jsx_dev_runtime18 = require("react/jsx-dev-runtime"), meta7 = () => [{ title: `${SITE_TITLE} - Customers` }], loader8 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node11.redirect)("/login");
   try {
@@ -2035,59 +3894,159 @@ async function action6({ request }) {
   return {};
 }
 function Customers() {
-  let { customers } = (0, import_react20.useLoaderData)(), data = (0, import_react20.useActionData)(), navigation = (0, import_react20.useNavigation)(), [deletedCustomerID, setDeletedCustomerID] = (0, import_react21.useState)(0), [deleteModelOpen, setDeleteModalOpen] = (0, import_react21.useState)(!1), [createModalOpen, setCreateModalOpen] = (0, import_react21.useState)(!1);
+  let { customers } = (0, import_react20.useLoaderData)(), data = (0, import_react20.useActionData)(), navigation = (0, import_react20.useNavigation)(), isSubmitting = navigation.state === "submitting", [deletedCustomerID, setDeletedCustomerID] = (0, import_react21.useState)(0), [deleteModelOpen, setDeleteModalOpen] = (0, import_react21.useState)(!1), [createModalOpen, setCreateModalOpen] = (0, import_react21.useState)(!1);
   return (0, import_react21.useEffect)(() => {
     data && (data.customerCreated && setCreateModalOpen(!1), data.customerDeleted && setDeleteModalOpen(!1));
-  }, [data]), /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: contentBodyClass, children: [
-    customers && customers.length ? /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("table", { className: "table static", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("tr", { className: "hidden md:table-row", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { children: "ID" }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { children: "Name" }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { children: "Tel" }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { children: "Email" }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { children: "Address" }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("th", { className: "md:text-right", children: "Actions" })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("tbody", { children: customers && customers.map(
-        ({ customer_id, name, tel, email, address }) => /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("tr", { className: resTRClass, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("td", { "data-label": "ID", className: resTDClass, children: customer_id }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("td", { "data-label": "Name", className: resTDClass, children: name }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("td", { "data-label": "Tel", className: resTDClass, children: tel }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("td", { "data-label": "Email", className: resTDClass, children: email }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("td", { "data-label": "Address", className: resTDClass, children: address }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+  }, [data]), /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("div", { className: contentBodyClass, children: [
+    customers && customers.length ? /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("table", { className: "table static", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { children: "ID" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 92,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { children: "Name" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 93,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { children: "Tel" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 94,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { children: "Email" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 95,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { children: "Address" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 96,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("th", { className: "md:text-right", children: "Actions" }, void 0, !1, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 97,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 91,
+        columnNumber: 13
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 90,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("tbody", { children: customers && customers.map(
+        ({ customer_id, name, tel, email, address }) => /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("tr", { className: resTRClass, children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("td", { "data-label": "ID", className: resTDClass, children: customer_id }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 106,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("td", { "data-label": "Name", className: resTDClass, children: name }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 109,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("td", { "data-label": "Tel", className: resTDClass, children: tel }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 112,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("td", { "data-label": "Email", className: resTDClass, children: email }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 115,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("td", { "data-label": "Address", className: resTDClass, children: address }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 118,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
             "td",
             {
               "data-label": "Actions",
               className: `${resTDClass} md:text-right`,
-              children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-                "button",
+              children: /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
+                FormBtn_default,
                 {
-                  className: "btn",
+                  isSubmitting,
                   onClick: () => {
                     setDeletedCustomerID(customer_id), setDeleteModalOpen(!0);
                   },
                   children: "DELETE"
-                }
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/customers.tsx",
+                  lineNumber: 125,
+                  columnNumber: 25
+                },
+                this
               )
-            }
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/customers.tsx",
+              lineNumber: 121,
+              columnNumber: 23
+            },
+            this
           )
-        ] }, customer_id)
-      ) })
-    ] }) : /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("p", { className: "text-center", children: "No customers found..." }),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-      "button",
+        ] }, customer_id, !0, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 105,
+          columnNumber: 21
+        }, this)
+      ) }, void 0, !1, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 100,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/customers.tsx",
+      lineNumber: 89,
+      columnNumber: 9
+    }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("p", { className: "text-center", children: "No customers found..." }, void 0, !1, {
+      fileName: "app/routes/customers.tsx",
+      lineNumber: 142,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
+      FormBtn_default,
       {
-        className: "btn",
+        isSubmitting,
         onClick: () => {
           setCreateModalOpen(!0);
         },
         children: "Add new customer +"
-      }
-    ) }),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Modal_default, { open: createModalOpen, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("h3", { className: "mb-4", children: "Create new customer" }),
-      createModalOpen && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 145,
+        columnNumber: 9
+      },
+      this
+    ) }, void 0, !1, {
+      fileName: "app/routes/customers.tsx",
+      lineNumber: 144,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(Modal_default, { open: createModalOpen, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("h3", { className: "mb-4", children: "Create new customer" }, void 0, !1, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 155,
+        columnNumber: 9
+      }, this),
+      createModalOpen && /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
         CreateCustomerForm_default,
         {
           actionName: "create",
@@ -2096,39 +4055,94 @@ function Customers() {
           onCancel: () => {
             setCreateModalOpen(!1), data && (data.createActionErrors = {});
           }
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 157,
+          columnNumber: 11
+        },
+        this
       )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Modal_default, { open: deleteModelOpen, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("p", { className: "py-4", children: "Are you sure you want to delete this customer?" }),
-      data && data.deleteActionsErrors && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("p", { className: "text-error mt-1 text-xs", children: data.deleteActionsErrors.info }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "modal-action", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_react20.Form, { replace: !0, method: "post", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("input", { type: "hidden", name: "customer_id", value: deletedCustomerID }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-            "button",
+    ] }, void 0, !0, {
+      fileName: "app/routes/customers.tsx",
+      lineNumber: 154,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(Modal_default, { open: deleteModelOpen, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("p", { className: "py-4", children: "Are you sure you want to delete this customer?" }, void 0, !1, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 169,
+        columnNumber: 9
+      }, this),
+      data && data.deleteActionsErrors && /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("p", { className: "text-error mt-1 text-xs", children: data.deleteActionsErrors.info }, void 0, !1, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 171,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("div", { className: "modal-action", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(import_react20.Form, { replace: !0, method: "post", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)("input", { type: "hidden", name: "customer_id", value: deletedCustomerID }, void 0, !1, {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 177,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
+            FormBtn_default,
             {
-              className: "btn",
               type: "submit",
               name: "_action",
               value: "delete",
-              disabled: navigation.state === "submitting",
-              children: navigation.state === "submitting" ? "Confirming..." : "Confirm"
-            }
+              isSubmitting,
+              children: "Confirm"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/customers.tsx",
+              lineNumber: 178,
+              columnNumber: 13
+            },
+            this
           )
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-          "button",
+        ] }, void 0, !0, {
+          fileName: "app/routes/customers.tsx",
+          lineNumber: 176,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime18.jsxDEV)(
+          FormBtn_default,
           {
-            className: "btn",
-            disabled: navigation.state === "submitting",
+            className: "ml-4",
+            isSubmitting,
             onClick: () => setDeleteModalOpen(!1),
             children: "Cancel"
-          }
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/customers.tsx",
+            lineNumber: 187,
+            columnNumber: 11
+          },
+          this
         )
-      ] })
-    ] })
-  ] });
+      ] }, void 0, !0, {
+        fileName: "app/routes/customers.tsx",
+        lineNumber: 175,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/customers.tsx",
+      lineNumber: 168,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/customers.tsx",
+    lineNumber: 87,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/products.tsx
@@ -2140,7 +4154,7 @@ __export(products_exports, {
   meta: () => meta8
 });
 var import_node12 = require("@remix-run/node"), import_react22 = require("@remix-run/react"), import_react23 = require("react");
-var import_jsx_runtime17 = require("react/jsx-runtime"), meta8 = () => [{ title: `${SITE_TITLE} - Products` }], loader9 = async ({ request }) => {
+var import_jsx_dev_runtime19 = require("react/jsx-dev-runtime"), meta8 = () => [{ title: `${SITE_TITLE} - Products` }], loader9 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node12.redirect)("/login");
   try {
@@ -2196,62 +4210,162 @@ function Products() {
     brands,
     types,
     models
-  } = (0, import_react22.useLoaderData)(), data = (0, import_react22.useActionData)(), navigation = (0, import_react22.useNavigation)(), [deletedProductID, setDeletedProductID] = (0, import_react23.useState)(0), [deleteModelOpen, setDeleteModalOpen] = (0, import_react23.useState)(!1), [createModalOpen, setCreateModalOpen] = (0, import_react23.useState)(!1);
+  } = (0, import_react22.useLoaderData)(), data = (0, import_react22.useActionData)(), navigation = (0, import_react22.useNavigation)(), isSubmitting = navigation.state === "submitting", [deletedProductID, setDeletedProductID] = (0, import_react23.useState)(0), [deleteModelOpen, setDeleteModalOpen] = (0, import_react23.useState)(!1), [createModalOpen, setCreateModalOpen] = (0, import_react23.useState)(!1);
   return (0, import_react23.useEffect)(() => {
     data && (data.productCreated && setCreateModalOpen(!1), data.productDeleted && setDeleteModalOpen(!1));
   }, [data]), (0, import_react23.useEffect)(() => {
     data && (data.productCreated && setCreateModalOpen(!1), data.productDeleted && setDeleteModalOpen(!1));
-  }, [data]), /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: contentBodyClass, children: [
-    products && products.length ? /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("table", { className: "table static", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("tr", { className: "hidden md:table-row", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { children: "ID" }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { children: "Brand" }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { children: "Type" }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { children: "Model" }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { children: "Price" }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("th", { className: "md:text-right", children: "Actions" })
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("tbody", { children: products && products.map((loopedProducts) => /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("tr", { className: resTRClass, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("td", { "data-label": "ID", className: resTDClass, children: loopedProducts.product_id }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("td", { "data-label": "Brand", className: resTDClass, children: loopedProducts.brand.brand_name }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("td", { "data-label": "Type", className: resTDClass, children: loopedProducts.type.type_name }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("td", { "data-label": "Model", className: resTDClass, children: loopedProducts.model.model_name }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("td", { "data-label": "Price", className: resTDClass, children: [
+  }, [data]), /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("div", { className: contentBodyClass, children: [
+    products && products.length ? /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("table", { className: "table static", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("tr", { className: "hidden md:table-row", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { children: "ID" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 135,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { children: "Brand" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 136,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { children: "Type" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 137,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { children: "Model" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 138,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { children: "Price" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 139,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("th", { className: "md:text-right", children: "Actions" }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 140,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 134,
+        columnNumber: 13
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 133,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("tbody", { children: products && products.map((loopedProducts) => /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("tr", { className: resTRClass, children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("td", { "data-label": "ID", className: resTDClass, children: loopedProducts.product_id }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 148,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("td", { "data-label": "Brand", className: resTDClass, children: loopedProducts.brand.brand_name }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 151,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("td", { "data-label": "Type", className: resTDClass, children: loopedProducts.type.type_name }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 154,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("td", { "data-label": "Model", className: resTDClass, children: loopedProducts.model.model_name }, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 157,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("td", { "data-label": "Price", className: resTDClass, children: [
           "\xA3",
           loopedProducts.price
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+        ] }, void 0, !0, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 160,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
           "td",
           {
             "data-label": "Actions",
             className: `${resTDClass} md:text-right`,
-            children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-              "button",
+            children: /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
+              FormBtn_default,
               {
-                className: "btn",
+                isSubmitting,
                 onClick: () => {
                   setDeletedProductID(loopedProducts.product_id), setDeleteModalOpen(!0);
                 },
                 children: "DELETE"
-              }
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/routes/products.tsx",
+                lineNumber: 167,
+                columnNumber: 23
+              },
+              this
             )
-          }
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/products.tsx",
+            lineNumber: 163,
+            columnNumber: 21
+          },
+          this
         )
-      ] }, loopedProducts.product_id)) })
-    ] }) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("p", { className: "text-center", children: "No products found..." }),
-    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-      "button",
+      ] }, loopedProducts.product_id, !0, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 147,
+        columnNumber: 19
+      }, this)) }, void 0, !1, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 143,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/products.tsx",
+      lineNumber: 132,
+      columnNumber: 9
+    }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("p", { className: "text-center", children: "No products found..." }, void 0, !1, {
+      fileName: "app/routes/products.tsx",
+      lineNumber: 183,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("div", { className: "flex justify-end mt-4", children: /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
+      FormBtn_default,
       {
-        className: "btn",
+        isSubmitting,
         onClick: () => {
           setCreateModalOpen(!0);
         },
         children: "Add new product +"
-      }
-    ) }),
-    /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Modal_default, { open: createModalOpen, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("h3", { className: "mb-4", children: "Create new product" }),
-      createModalOpen && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 186,
+        columnNumber: 9
+      },
+      this
+    ) }, void 0, !1, {
+      fileName: "app/routes/products.tsx",
+      lineNumber: 185,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(Modal_default, { open: createModalOpen, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("h3", { className: "mb-4", children: "Create new product" }, void 0, !1, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 196,
+        columnNumber: 9
+      }, this),
+      createModalOpen && /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
         CreateProductForm_default,
         {
           actionName: "create",
@@ -2265,42 +4379,96 @@ function Products() {
           onCancel: () => {
             setCreateModalOpen(!1), data && (data.createActionErrors = {});
           }
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 198,
+          columnNumber: 11
+        },
+        this
       )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Modal_default, { open: deleteModelOpen, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("p", { className: "py-4", children: [
+    ] }, void 0, !0, {
+      fileName: "app/routes/products.tsx",
+      lineNumber: 195,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(Modal_default, { open: deleteModelOpen, children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("p", { className: "py-4", children: [
         "Are you sure you want to delete this product?",
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("br", {}),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("br", {}, void 0, !1, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 217,
+          columnNumber: 11
+        }, this),
         "NOTE: this doesn't delete the associated brand, model and type"
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "modal-action", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(import_react22.Form, { replace: !0, method: "post", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("input", { type: "hidden", name: "product_id", value: deletedProductID }),
-          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-            "button",
+      ] }, void 0, !0, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 215,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("div", { className: "modal-action", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(import_react22.Form, { replace: !0, method: "post", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)("input", { type: "hidden", name: "product_id", value: deletedProductID }, void 0, !1, {
+            fileName: "app/routes/products.tsx",
+            lineNumber: 222,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
+            FormBtn_default,
             {
-              className: "btn",
               type: "submit",
               name: "_action",
               value: "delete",
-              disabled: navigation.state === "submitting",
-              children: navigation.state === "submitting" ? "Confirming..." : "Confirm"
-            }
+              isSubmitting,
+              children: "Confirm"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/products.tsx",
+              lineNumber: 223,
+              columnNumber: 13
+            },
+            this
           )
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-          "button",
+        ] }, void 0, !0, {
+          fileName: "app/routes/products.tsx",
+          lineNumber: 221,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
+          FormBtn_default,
           {
-            className: "btn",
-            disabled: navigation.state === "submitting",
+            isSubmitting,
             onClick: () => setDeleteModalOpen(!1),
             children: "Cancel"
-          }
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/products.tsx",
+            lineNumber: 232,
+            columnNumber: 11
+          },
+          this
         )
-      ] })
-    ] })
-  ] });
+      ] }, void 0, !0, {
+        fileName: "app/routes/products.tsx",
+        lineNumber: 220,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/products.tsx",
+      lineNumber: 214,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/products.tsx",
+    lineNumber: 130,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/_index.tsx
@@ -2311,9 +4479,17 @@ __export(index_exports, {
   meta: () => meta9
 });
 var import_node13 = require("@remix-run/node");
-var import_jsx_runtime18 = require("react/jsx-runtime"), meta9 = () => [{ title: SITE_TITLE }], loader10 = async ({ request }) => await getUserId(request) ? {} : (0, import_node13.redirect)("/login");
+var import_jsx_dev_runtime20 = require("react/jsx-dev-runtime"), meta9 = () => [{ title: SITE_TITLE }], loader10 = async ({ request }) => await getUserId(request) ? {} : (0, import_node13.redirect)("/login");
 function IndexRoute() {
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("p", { children: "Welcome to Smart CCTV admin" }) });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime20.jsxDEV)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime20.jsxDEV)("p", { children: "Welcome to Smart CCTV admin" }, void 0, !1, {
+    fileName: "app/routes/_index.tsx",
+    lineNumber: 23,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/_index.tsx",
+    lineNumber: 22,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/logout.tsx
@@ -2329,9 +4505,17 @@ __export(quotes_exports, {
   default: () => Quotes
 });
 var import_react_router = require("react-router");
-var import_jsx_runtime19 = require("react/jsx-runtime");
+var import_jsx_dev_runtime21 = require("react/jsx-dev-runtime");
 function Quotes() {
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_react_router.Outlet, {}) });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime21.jsxDEV)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime21.jsxDEV)(import_react_router.Outlet, {}, void 0, !1, {
+    fileName: "app/routes/quotes.tsx",
+    lineNumber: 7,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/quotes.tsx",
+    lineNumber: 6,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/login.tsx
@@ -2342,7 +4526,7 @@ __export(login_exports, {
   meta: () => meta10
 });
 var import_node14 = require("@remix-run/node"), import_react24 = require("@remix-run/react"), import_bcryptjs3 = __toESM(require("bcryptjs"));
-var import_jsx_runtime20 = require("react/jsx-runtime"), meta10 = () => [{ title: `${SITE_TITLE} - Login` }];
+var import_jsx_dev_runtime22 = require("react/jsx-dev-runtime"), meta10 = () => [{ title: `${SITE_TITLE} - Login` }];
 async function action8({ request }) {
   let body = await request.formData(), email = body.get("email"), password = body.get("password");
   var mess = "";
@@ -2360,11 +4544,19 @@ async function action8({ request }) {
   return (0, import_node14.json)({ message: mess });
 }
 function Login() {
-  let navigation = (0, import_react24.useNavigation)(), data = (0, import_react24.useActionData)();
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_react24.Form, { method: "post", className: formClass, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("fieldset", { disabled: navigation.state === "submitting", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "mb-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "label-text", children: "Email" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+  let navigation = (0, import_react24.useNavigation)(), data = (0, import_react24.useActionData)(), isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("div", { className: "grid place-items-center", children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("div", { className: "w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)(import_react24.Form, { method: "post", className: formClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("fieldset", { disabled: isSubmitting, children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("div", { className: "mb-4", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("label", { className: "label", htmlFor: "email", children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("span", { className: "label-text", children: "Email" }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 49,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 48,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -2372,12 +4564,32 @@ function Login() {
           id: "email",
           type: "text",
           placeholder: "john@example.com"
-        }
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/login.tsx",
+          lineNumber: 51,
+          columnNumber: 15
+        },
+        this
       )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("label", { className: "label", htmlFor: "password", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "label-text", children: "Password" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+    ] }, void 0, !0, {
+      fileName: "app/routes/login.tsx",
+      lineNumber: 47,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("label", { className: "label", htmlFor: "password", children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("span", { className: "label-text", children: "Password" }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 61,
+        columnNumber: 17
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 60,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)(
         "input",
         {
           className: inputClass,
@@ -2385,22 +4597,63 @@ function Login() {
           id: "password",
           type: "password",
           placeholder: "******************"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex justify-between items-center mt-6 mb-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("button", { className: "btn", type: "submit", children: navigation.state === "submitting" ? "Validating..." : "Log In" }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
-        "a",
+        },
+        void 0,
+        !1,
         {
-          href: "/users/register",
-          className: "block link link-neutral-content",
-          children: "Register"
-        }
-      ),
-      data && data.message && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "label-text-alt text-error", children: data.message }) })
-    ] })
-  ] }) }) }) });
+          fileName: "app/routes/login.tsx",
+          lineNumber: 63,
+          columnNumber: 15
+        },
+        this
+      )
+    ] }, void 0, !0, {
+      fileName: "app/routes/login.tsx",
+      lineNumber: 59,
+      columnNumber: 13
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("div", { className: "mt-6 mb-2", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)(FormBtn_default, { type: "submit", isSubmitting, children: "Log In" }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 72,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)(FormAnchorBtn_default, { className: "ml-4", href: "/users/register", children: "Register" }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 75,
+        columnNumber: 15
+      }, this),
+      data && data.message && /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("label", { className: "label", children: /* @__PURE__ */ (0, import_jsx_dev_runtime22.jsxDEV)("span", { className: "label-text-alt text-error", children: data.message }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 80,
+        columnNumber: 19
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/login.tsx",
+        lineNumber: 79,
+        columnNumber: 17
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/login.tsx",
+      lineNumber: 71,
+      columnNumber: 13
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/login.tsx",
+    lineNumber: 46,
+    columnNumber: 11
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/login.tsx",
+    lineNumber: 45,
+    columnNumber: 9
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/login.tsx",
+    lineNumber: 44,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/login.tsx",
+    lineNumber: 43,
+    columnNumber: 5
+  }, this);
 }
 
 // app/routes/users.tsx
@@ -2409,16 +4662,24 @@ __export(users_exports, {
   default: () => Users
 });
 var import_react_router2 = require("react-router");
-var import_jsx_runtime21 = require("react/jsx-runtime");
+var import_jsx_dev_runtime23 = require("react/jsx-dev-runtime");
 function Users() {
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_react_router2.Outlet, {}) });
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime23.jsxDEV)("div", { className: contentBodyClass, children: /* @__PURE__ */ (0, import_jsx_dev_runtime23.jsxDEV)(import_react_router2.Outlet, {}, void 0, !1, {
+    fileName: "app/routes/users.tsx",
+    lineNumber: 7,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/users.tsx",
+    lineNumber: 6,
+    columnNumber: 5
+  }, this);
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-3HX66KA5.js", imports: ["/build/_shared/chunk-IHFEL2CD.js", "/build/_shared/chunk-XTGBAL5E.js", "/build/_shared/chunk-ADMCF34Z.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-OYJWHNJX.js", imports: ["/build/_shared/chunk-BRYEQANA.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-G3MNEDRJ.js", imports: ["/build/_shared/chunk-4P2AEKIR.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/customers": { id: "routes/customers", parentId: "root", path: "customers", index: void 0, caseSensitive: void 0, module: "/build/routes/customers-6O4UKSVV.js", imports: ["/build/_shared/chunk-XPUKSWXU.js", "/build/_shared/chunk-LWBMBOK4.js", "/build/_shared/chunk-4P2AEKIR.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-X423LJGD.js", imports: ["/build/_shared/chunk-4P2AEKIR.js", "/build/_shared/chunk-2UNAK4LT.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-76YZR4YI.js", imports: void 0, hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/products": { id: "routes/products", parentId: "root", path: "products", index: void 0, caseSensitive: void 0, module: "/build/routes/products-EME4T57X.js", imports: ["/build/_shared/chunk-7MZJJH37.js", "/build/_shared/chunk-LWBMBOK4.js", "/build/_shared/chunk-4P2AEKIR.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes": { id: "routes/quotes", parentId: "root", path: "quotes", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes-FZKCCOQC.js", imports: ["/build/_shared/chunk-4P2AEKIR.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.$quoteid": { id: "routes/quotes.$quoteid", parentId: "routes/quotes", path: ":quoteid", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.$quoteid-VSDN6EYP.js", imports: ["/build/_shared/chunk-LWBMBOK4.js", "/build/_shared/chunk-BRYEQANA.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.$quoteid.generatedquote": { id: "routes/quotes.$quoteid.generatedquote", parentId: "routes/quotes.$quoteid", path: "generatedquote", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.$quoteid.generatedquote-QPZYVFFW.js", imports: void 0, hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes._index": { id: "routes/quotes._index", parentId: "routes/quotes", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/quotes._index-6SF54HG2.js", imports: ["/build/_shared/chunk-BRYEQANA.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.create": { id: "routes/quotes.create", parentId: "routes/quotes", path: "create", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.create-AM6QBLJD.js", imports: ["/build/_shared/chunk-XPUKSWXU.js", "/build/_shared/chunk-7MZJJH37.js", "/build/_shared/chunk-LWBMBOK4.js", "/build/_shared/chunk-BRYEQANA.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users": { id: "routes/users", parentId: "root", path: "users", index: void 0, caseSensitive: void 0, module: "/build/routes/users-B3IO5O7O.js", imports: ["/build/_shared/chunk-4P2AEKIR.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users.$userid": { id: "routes/users.$userid", parentId: "routes/users", path: ":userid", index: void 0, caseSensitive: void 0, module: "/build/routes/users.$userid-6DDVDV7O.js", imports: ["/build/_shared/chunk-2UNAK4LT.js", "/build/_shared/chunk-BRYEQANA.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users._index": { id: "routes/users._index", parentId: "routes/users", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/users._index-CSETRNO7.js", imports: ["/build/_shared/chunk-LWBMBOK4.js", "/build/_shared/chunk-BRYEQANA.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users.register": { id: "routes/users.register", parentId: "routes/users", path: "register", index: void 0, caseSensitive: void 0, module: "/build/routes/users.register-C3ASYYT6.js", imports: ["/build/_shared/chunk-2UNAK4LT.js", "/build/_shared/chunk-BRYEQANA.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 } }, version: "2afe5c15", hmr: void 0, url: "/build/manifest-2AFE5C15.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-4UM2EQFA.js", imports: ["/build/_shared/chunk-OAPPX4FA.js", "/build/_shared/chunk-WEAPBHQG.js", "/build/_shared/chunk-FKB2SGI5.js", "/build/_shared/chunk-2QJY4JOV.js", "/build/_shared/chunk-BQ232ZJA.js", "/build/_shared/chunk-TH3LK4B7.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-CJ4MY3PQ.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-QGDVQGT3.js", imports: ["/build/_shared/chunk-EWGQC7VD.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-BBVYZMW4.js", imports: ["/build/_shared/chunk-YSKQXYUK.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/customers": { id: "routes/customers", parentId: "root", path: "customers", index: void 0, caseSensitive: void 0, module: "/build/routes/customers-64K75FYE.js", imports: ["/build/_shared/chunk-PFQU7YSQ.js", "/build/_shared/chunk-HXJWSP2T.js", "/build/_shared/chunk-YSKQXYUK.js", "/build/_shared/chunk-MKXCJEVK.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-3IAIF2LQ.js", imports: ["/build/_shared/chunk-YSKQXYUK.js", "/build/_shared/chunk-MT6OIOVU.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-5GTPI7EF.js", imports: void 0, hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/products": { id: "routes/products", parentId: "root", path: "products", index: void 0, caseSensitive: void 0, module: "/build/routes/products-UYPGPCS7.js", imports: ["/build/_shared/chunk-QOHE33S7.js", "/build/_shared/chunk-HXJWSP2T.js", "/build/_shared/chunk-YSKQXYUK.js", "/build/_shared/chunk-MKXCJEVK.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes": { id: "routes/quotes", parentId: "root", path: "quotes", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes-NCKKACDD.js", imports: ["/build/_shared/chunk-YSKQXYUK.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.$quoteid": { id: "routes/quotes.$quoteid", parentId: "routes/quotes", path: ":quoteid", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.$quoteid-SQWXF75V.js", imports: ["/build/_shared/chunk-HXJWSP2T.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.$quoteid.generatedquote": { id: "routes/quotes.$quoteid.generatedquote", parentId: "routes/quotes.$quoteid", path: "generatedquote", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.$quoteid.generatedquote-PGCXKCXU.js", imports: void 0, hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes._index": { id: "routes/quotes._index", parentId: "routes/quotes", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/quotes._index-OMN4OL5U.js", imports: ["/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/quotes.create": { id: "routes/quotes.create", parentId: "routes/quotes", path: "create", index: void 0, caseSensitive: void 0, module: "/build/routes/quotes.create-MD6CGSUC.js", imports: ["/build/_shared/chunk-PFQU7YSQ.js", "/build/_shared/chunk-QOHE33S7.js", "/build/_shared/chunk-HXJWSP2T.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users": { id: "routes/users", parentId: "root", path: "users", index: void 0, caseSensitive: void 0, module: "/build/routes/users-7XHE2JWS.js", imports: ["/build/_shared/chunk-YSKQXYUK.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users.$userid": { id: "routes/users.$userid", parentId: "routes/users", path: ":userid", index: void 0, caseSensitive: void 0, module: "/build/routes/users.$userid-ZZWNCYYQ.js", imports: ["/build/_shared/chunk-MT6OIOVU.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users._index": { id: "routes/users._index", parentId: "routes/users", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/users._index-ZBJ6TCNA.js", imports: ["/build/_shared/chunk-HXJWSP2T.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/users.register": { id: "routes/users.register", parentId: "routes/users", path: "register", index: void 0, caseSensitive: void 0, module: "/build/routes/users.register-PVQZSGKM.js", imports: ["/build/_shared/chunk-MT6OIOVU.js", "/build/_shared/chunk-5I2QP7L3.js", "/build/_shared/chunk-MKXCJEVK.js", "/build/_shared/chunk-EWGQC7VD.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 } }, version: "ca40e20f", hmr: { runtime: "/build/_shared/chunk-TH3LK4B7.js", timestamp: 1690558199123 }, url: "/build/manifest-CA40E20F.js" };
 
 // server-entry-module:@remix-run/dev/server-build
-var assetsBuildDirectory = "public/build", future = { v2_dev: !0, unstable_postcss: !1, unstable_tailwind: !1, v2_errorBoundary: !0, v2_headers: !0, v2_meta: !0, v2_normalizeFormMethod: !0, v2_routeConvention: !0 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
+var assetsBuildDirectory = "public/build", future = { v2_dev: !0, unstable_postcss: !1, unstable_tailwind: !1, v2_errorBoundary: !0, v2_headers: !0, v2_meta: !0, v2_normalizeFormMethod: !0, v2_routeConvention: !0 }, publicPath = "/build/", entry = { module: entry_server_exports }, dev = { port: 3001 }, routes = {
   root: {
     id: "root",
     parentId: void 0,
@@ -2544,8 +4805,10 @@ var assetsBuildDirectory = "public/build", future = { v2_dev: !0, unstable_postc
 0 && (module.exports = {
   assets,
   assetsBuildDirectory,
+  dev,
   entry,
   future,
   publicPath,
   routes
 });
+//# sourceMappingURL=index.js.map

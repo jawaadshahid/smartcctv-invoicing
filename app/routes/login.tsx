@@ -2,6 +2,8 @@ import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE } from "~/root";
 import { getUserByEmail } from "~/utils/db";
 import { createUserSession } from "~/utils/session";
@@ -36,12 +38,12 @@ export async function action({ request }: ActionArgs) {
 export default function Login() {
   const navigation = useNavigation();
   const data = useActionData();
-
+  const isSubmitting = navigation.state === "submitting";
   return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
         <Form method="post" className={formClass}>
-          <fieldset disabled={navigation.state === "submitting"}>
+          <fieldset disabled={isSubmitting}>
             <div className="mb-4">
               <label className="label" htmlFor="email">
                 <span className="label-text">Email</span>
@@ -66,16 +68,13 @@ export default function Login() {
                 placeholder="******************"
               />
             </div>
-            <div className="flex justify-between items-center mt-6 mb-2">
-              <button className="btn" type="submit">
-                {navigation.state === "submitting" ? "Validating..." : "Log In"}
-              </button>
-              <a
-                href="/users/register"
-                className="block link link-neutral-content"
-              >
+            <div className="mt-6 mb-2">
+              <FormBtn type="submit" isSubmitting={isSubmitting}>
+                Log In
+              </FormBtn>
+              <FormAnchorButton className="ml-4" href="/users/register">
                 Register
-              </a>
+              </FormAnchorButton>
               {data && data.message && (
                 <label className="label">
                   <span className="label-text-alt text-error">

@@ -3,13 +3,20 @@ import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import { useContext } from "react";
+import FormAnchorButton from "~/components/FormAnchorBtn";
+import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE, UserContext } from "~/root";
 import { db, getUserByEmail } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { validateEmail, validateFname, validateLname, validatePassword } from "~/utils/validations";
+import {
+  validateEmail,
+  validateFname,
+  validateLname,
+  validatePassword,
+} from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - Change user details`}];
+  return [{ title: `${SITE_TITLE} - Change user details` }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -60,10 +67,10 @@ export async function action({ request, params }: ActionArgs) {
   //if there are errors, we return the form errors
   if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
-  let newpassword
+  let newpassword;
   if (rnpassword && rnpassword.length) {
     formErrors.npassword = validatePassword(rnpassword);
-  
+
     //if there are errors, we return the form errors
     if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
@@ -71,20 +78,20 @@ export async function action({ request, params }: ActionArgs) {
     newpassword = await bcrypt.hash(rnpassword, 10);
   }
 
-  const { userid } = params
-  const id = userid as string
+  const { userid } = params;
+  const id = userid as string;
   const updateUser = await db.users.update({
     where: {
-      id: parseInt(id)
+      id: parseInt(id),
     },
     data: {
       firstName: fname,
       lastName: lname,
       email: email,
-      ...(newpassword && {password: newpassword}),
+      ...(newpassword && { password: newpassword }),
       updatedAt: new Date(),
-    }
-  })
+    },
+  });
   if (updateUser) {
     return redirect("/users");
   } else {
@@ -96,12 +103,13 @@ export default function UserId() {
   const user: any = useContext(UserContext);
   const navigation = useNavigation();
   const data = useActionData();
+  const isSubmitting = navigation.state === "submitting";
 
-  return(
+  return (
     <div className="grid place-items-center">
       <div className="w-full max-w-xs">
         <Form method="post" className="bg-base-300 px-4 py-2 rounded-lg">
-          <fieldset disabled={navigation.state === "submitting"}>
+          <fieldset disabled={isSubmitting}>
             <div className="mb-4">
               <label className="label" htmlFor="firstname">
                 <span className="label-text">First name</span>
@@ -183,12 +191,16 @@ export default function UserId() {
               )}
             </div>
             <div className="mt-6 mb-2">
-              <button className="btn" type="submit">
-                {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-              </button>
-              <a href="/users" className="btn ml-3">
+              <FormBtn type="submit" isSubmitting={isSubmitting}>
+                Submit
+              </FormBtn>
+              <FormAnchorButton
+                href="/users"
+                className="ml-3"
+                isSubmitting={isSubmitting}
+              >
                 Cancel
-              </a>
+              </FormAnchorButton>
             </div>
           </fieldset>
         </Form>

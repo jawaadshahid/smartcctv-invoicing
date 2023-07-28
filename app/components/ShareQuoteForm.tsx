@@ -2,6 +2,7 @@ import { Form } from "@remix-run/react";
 import type { customers, users } from "@prisma/client";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
+import FormBtn from "./FormBtn";
 
 const ShareQuoteForm = ({
   quoteid,
@@ -18,11 +19,11 @@ const ShareQuoteForm = ({
   onCancel: Function;
   formErrors: any;
 }) => {
-
+  const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
       <input type="hidden" value={quoteid} name="quoteid" id="quoteid" />
-      <fieldset disabled={navigation.state === "submitting"}>
+      <fieldset disabled={isSubmitting}>
         <div className="form-control">
           <label className="label cursor-pointer">
             <span className="label-text">
@@ -71,23 +72,24 @@ const ShareQuoteForm = ({
           )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
-          <button
-            className="btn"
+          <FormBtn
             type="submit"
             name="_action"
             value="share_quote"
+            isSubmitting={isSubmitting}
           >
-            {navigation.state === "submitting" ? "Submitting..." : "Submit"}
-          </button>
-          <button
-            className="btn ml-3"
+            Submit
+          </FormBtn>
+          <FormBtn
+            className="ml-4"
+            isSubmitting={isSubmitting}
             onClick={(e) => {
               e.preventDefault();
               onCancel();
             }}
           >
             Cancel
-          </button>
+          </FormBtn>
         </div>
       </fieldset>
     </Form>
