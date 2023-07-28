@@ -40,20 +40,20 @@ const TaxonomyField = ({
       >
         <span className="label-text">Product {taxoName}</span>
       </label>
-      {hasItems && (
-        <select
-          className={selectClass}
-          name={taxoName}
-          id={taxoName}
-          value={taxoSelectValue}
-          onChange={(e) => {
-            setTaxoSelectValue(e.target.value);
-          }}
-        >
-          <option disabled value="">
-            Select a {taxoName}...
-          </option>
-          {taxoItems.map((taxoItem: any) => {
+      <select
+        className={selectClass}
+        name={taxoName}
+        id={taxoName}
+        value={taxoSelectValue}
+        onChange={(e) => {
+          setTaxoSelectValue(e.target.value);
+        }}
+      >
+        <option disabled value="">
+          Select a {taxoName}...
+        </option>
+        {hasItems &&
+          taxoItems.map((taxoItem: any) => {
             return (
               <option
                 key={taxoItem[`${taxoName}_id`]}
@@ -63,9 +63,8 @@ const TaxonomyField = ({
               </option>
             );
           })}
-          <option value="-1">Add new {taxoName} +</option>
-        </select>
-      )}
+        <option value="-1">Add new {taxoName} +</option>
+      </select>
       <input
         disabled={!isNewTaxoItem}
         className={taxoInputClass}
