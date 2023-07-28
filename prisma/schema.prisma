@@ -48,7 +48,7 @@ model quoted_products {
 
   @@index([quote_id], map: "quoted_products_quote_id_fkey")
 }
-
+ 
 model products {
   product_id Int            @id @default(autoincrement())
   model_id   Int
