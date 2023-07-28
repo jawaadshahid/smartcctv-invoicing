@@ -18,7 +18,7 @@ const TaxonomyField = ({
   taxoItems: any;
   inputError: any;
 }) => {
-  const hasItems = taxoItems.length > 0;
+  const hasItems = taxoItems?.length > 0;
   const [isNewTaxoItem, setIsNewTaxoItem] = useState(!hasItems);
   const [taxoSelectValue, setTaxoSelectValue] = useState("");
 
