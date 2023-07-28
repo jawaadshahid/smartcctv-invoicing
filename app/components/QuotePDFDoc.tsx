@@ -176,7 +176,7 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
                       <Text>{name}</Text>
                     </View>
                     <View style={styles.tableCell}>
-                      <Text>£{quantity}.00</Text>
+                      <Text>{quantity}</Text>
                     </View>
                     <View style={styles.tableCell}>
                       <Text>£{price}.00</Text>
