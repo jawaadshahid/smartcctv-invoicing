@@ -46,6 +46,22 @@ const deleteCustomerById = (customer_id: number) => {
   });
 };
 
+const deleteQuoteById = (quote_id: number) => {
+  return db.quotes.delete({
+    where: {
+      quote_id,
+    },
+  });
+};
+
+const deleteQuotedProdsById = (quote_id: number) => {
+  return db.quoted_products.deleteMany({
+    where: {
+      quote_id,
+    },
+  });
+};
+
 const createCustomer = (
   name: string,
   tel: string,
@@ -99,5 +115,7 @@ export {
   deleteProductById,
   deleteCustomerById,
   createCustomer,
-  createProduct
+  createProduct,
+  deleteQuoteById,
+  deleteQuotedProdsById,
 };
