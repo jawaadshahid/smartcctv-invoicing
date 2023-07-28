@@ -85,9 +85,20 @@ export async function action({ request }: ActionArgs) {
 
       const pdfBuffer = await getQuoteBuffer(quoteid as string);
 
-      const mailResponse: any = await sendEmail(allEmails, pdfBuffer);
-      if (mailResponse.error)
-        return { shareActionErrors: { msg: mailResponse.error } };
+      let mailResponse: any;
+      try {
+        mailResponse = await sendEmail(allEmails, pdfBuffer);
+      } catch (error: any) {
+        if (error.code === "ETIMEDOUT")
+          return { shareActionErrors: { msg: "Error: send request timeout!" } };
+        else
+          return {
+            shareActionErrors: {
+              msg: "Error: something went wrong (unhandled)!",
+            },
+          };
+      }
+
       if (process.env.NODE_ENV === "development") {
         console.log("message sent:", mailer.getTestMessageUrl(mailResponse));
       }
@@ -96,7 +107,7 @@ export async function action({ request }: ActionArgs) {
         return { shareActionErrors: { msg: "mail sent!" } };
       return {
         shareActionErrors: {
-          msg: "something went wrong (vague, I know, but I haven't handled this error)",
+          msg: "Error: something went wrong (unhandled)!",
         },
       };
   }
