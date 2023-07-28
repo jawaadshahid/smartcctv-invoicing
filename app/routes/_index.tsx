@@ -6,7 +6,7 @@ import {
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import { contentBodyClass } from "~/utils/styleClasses";
-
+ 
 export const meta: V2_MetaFunction = () => {
   return [{ title: SITE_TITLE }];
 };
