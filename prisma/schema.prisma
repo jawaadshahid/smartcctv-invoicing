@@ -9,9 +9,9 @@ datasource db {
 
 model users {
   id         Int      @id @default(autoincrement())
-  firstName  String   @db.VarChar(255)
-  lastName   String   @db.VarChar(255)
-  password   String   @db.VarChar(255)
+  firstName  String   @db.VarChar(190)
+  lastName   String   @db.VarChar(190)
+  password   String   @db.VarChar(190)
   email      String   @unique
   createdAt  DateTime @db.DateTime(0)
   updatedAt  DateTime @db.DateTime(0)
@@ -21,10 +21,10 @@ model users {
 
 model customers {
   customer_id Int     @id @default(autoincrement())
-  name        String  @db.VarChar(255)
-  tel         String  @db.VarChar(255)
-  email       String  @db.VarChar(255)
-  address     String  @db.VarChar(255)
+  name        String  @db.VarChar(190)
+  tel         String  @db.VarChar(190)
+  email       String  @db.VarChar(190)
+  address     String  @db.VarChar(190)
   quote       quotes?
 }
 
@@ -41,7 +41,7 @@ model quotes {
 model quoted_products {
   invprod_id Int    @id @default(autoincrement())
   quote_id   Int
-  name       String @db.VarChar(255)
+  name       String @db.VarChar(190)
   quantity   Int    @default(1) @db.SmallInt
   price      Int
   quote      quotes @relation(fields: [quote_id], references: [quote_id])
@@ -72,7 +72,7 @@ model products {
 
 model product_brands {
   brand_id   Int        @id @default(autoincrement())
-  brand_name String     @db.VarChar(255)
+  brand_name String     @db.VarChar(190)
   products   products[]
 
   @@unique([brand_id, brand_name])
@@ -80,7 +80,7 @@ model product_brands {
 
 model product_models {
   model_id   Int        @id @default(autoincrement())
-  model_name String     @db.VarChar(255)
+  model_name String     @db.VarChar(190)
   products   products[]
 
   @@unique([model_id, model_name])
@@ -88,7 +88,7 @@ model product_models {
 
 model product_types {
   type_id   Int        @id @default(autoincrement())
-  type_name String     @db.VarChar(255)
+  type_name String     @db.VarChar(190)
   products  products[]
 
   @@unique([type_id, type_name])
