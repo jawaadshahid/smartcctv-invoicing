@@ -91,6 +91,7 @@ export async function action({ request }: ActionArgs) {
 
       if (Object.values(productActionErrors).some(Boolean))
         return { productActionErrors };
+
       try {
         const createdProduct = await createProduct(
           `${brand}`,
@@ -102,14 +103,18 @@ export async function action({ request }: ActionArgs) {
           `${price}`
         );
         return { createdProduct };
-      } catch (error) {
+      } catch (error: any) {
         console.log({ error });
-        productActionErrors.info =
-          "There was a problem creating the product...";
+        if (error.code) {
+          productActionErrors.info = error.msg;
+        } else
+          productActionErrors.info =
+            "There was a problem creating the product...";
         return { productActionErrors };
       }
     case "create_quote":
-      const { customer, labour, prodcount, ...productValues } = values;
+      const { customer, labour, discount, prodcount, ...productValues } =
+        values;
       const quoteActionErrors: any = {};
 
       if (!customer)
@@ -173,6 +178,7 @@ export async function action({ request }: ActionArgs) {
           },
         },
         labour: Number(`${labour}`),
+        discount: Number(`${discount}`),
       };
 
       try {
@@ -204,12 +210,13 @@ export default function QuotesCreate() {
     types: product_types[];
     models: product_models[];
   } = useLoaderData();
-  const data = useActionData();
+  let data = useActionData();
   const isSubmitting = navigation.state === "submitting";
   const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [customerSelectValue, setCustomerSelectValue] = useState("");
   const [productCount, setProductCount] = useState(1);
   const [labour, setLabour] = useState(0);
+  const [discount, setDiscount] = useState(0);
   const [grandtotal, setGrandtotal] = useState(0);
   const [newProductRow, setNewProductRow] = useState(0);
   const [isNewProduct, setIsNewProduct] = useState(false);
@@ -251,9 +258,11 @@ export default function QuotesCreate() {
       productSelectValues.reduce(
         (partialSum, a: any) => partialSum + a.price * a.qty,
         0
-      ) + labour
+      ) +
+        labour -
+        discount
     );
-  }, [productSelectValues, labour]);
+  }, [productSelectValues, labour, discount]);
 
   useEffect(() => {
     setIsNewCustomer(customerSelectValue === "-1");
@@ -263,12 +272,16 @@ export default function QuotesCreate() {
     if (!data) return;
     if (data.createdCustomer)
       setCustomerSelectValue(`${data.createdCustomer.customer_id}`);
+    data.createdCustomer = null;
     if (data.createdProduct) {
+      const { product_id, price }: products = data.createdProduct;
       dispatchPSV({
         type: "update",
         row_id: newProductRow,
-        product_id: `${data.createdProduct.product_id}`,
+        product_id: `${product_id}`,
+        price,
       });
+      data.createdProduct = null;
     }
   }, [data, newProductRow]);
 
@@ -413,6 +426,27 @@ export default function QuotesCreate() {
                     className={`${inputClass} md:text-right`}
                     onChange={(e) => {
                       setLabour(parseInt(e.target.value));
+                    }}
+                  />
+                </td>
+              </tr>
+              <tr className={resTRClass}>
+                <td colSpan={2} className="hidden md:table-cell"></td>
+                <td className="flex md:table-cell">
+                  <label className="label md:justify-end" htmlFor="discount">
+                    <span className="label-text">Discount (£):</span>
+                  </label>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    name="discount"
+                    id="discount"
+                    value={discount}
+                    className={`${inputClass} md:text-right`}
+                    onChange={(e) => {
+                      setDiscount(parseInt(e.target.value));
                     }}
                   />
                 </td>

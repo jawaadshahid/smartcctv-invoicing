@@ -22,6 +22,7 @@ type QuotesType = {
   updatedAt: string;
   customer: customers;
   labour: number;
+  discount: number;
   quoted_products: quoted_products[];
 };
 
@@ -122,7 +123,7 @@ const prettifyDateString = (dateString: string) => {
 export default function QuoteId() {
   const user: any = useContext(UserContext);
   const { quote }: { quote: QuotesType } = useLoaderData();
-  const { createdAt, labour, customer, quoted_products } = quote;
+  const { createdAt, discount, labour, customer, quoted_products } = quote;
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === "submitting";
@@ -135,9 +136,9 @@ export default function QuoteId() {
       quoted_products.forEach(
         ({ price, quantity }) => (subTotals += price * quantity)
       );
-      return subTotals + labour;
+      return subTotals + labour - discount;
     });
-  }, [labour, quoted_products]);
+  }, [discount, labour, quoted_products]);
 
   return (
     <div>
@@ -189,6 +190,10 @@ export default function QuoteId() {
           <tr className={resTRClass}>
             <td colSpan={3} className="hidden md:table-cell"></td>
             <td className="md:text-right">Labour cost (£): {labour}</td>
+          </tr>
+          <tr className={resTRClass}>
+            <td colSpan={3} className="hidden md:table-cell"></td>
+            <td className="md:text-right">Discount (£): {discount}</td>
           </tr>
           <tr className={resTRClass}>
             <td colSpan={3} className="hidden md:table-cell"></td>

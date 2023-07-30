@@ -16,6 +16,7 @@ type QuotesType = {
   updatedAt: string;
   customer: customers;
   labour: number;
+  discount: number;
   quoted_products: quoted_products[];
 };
 
@@ -106,7 +107,8 @@ const styles = StyleSheet.create({
 });
 
 const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
-  const { quote_id, createdAt, customer, labour, quoted_products } = quote;
+  const { quote_id, createdAt, customer, labour, discount, quoted_products } =
+    quote;
   const { name, tel, email, address } = customer;
   const date = new Date(createdAt);
 
@@ -115,6 +117,7 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
     ({ price, quantity }) => (grandTotal += price * quantity)
   );
   grandTotal += labour;
+  grandTotal -= discount;
 
   return (
     <Document title={`Smart CCTV quote #${quote_id}, for ${name}`}>
@@ -192,6 +195,12 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
             <Text style={styles.endField}>Labour:</Text>
             <Text style={styles.endValue}>£{labour}.00</Text>
           </View>
+          {discount && (
+            <View style={styles.endRow}>
+              <Text style={styles.endField}>Discount:</Text>
+              <Text style={styles.endValue}>-£{discount}.00</Text>
+            </View>
+          )}
           <View style={styles.endRow}>
             <Text style={styles.endField}>Grand total:</Text>
             <Text style={styles.endValue}>£{grandTotal}.00</Text>

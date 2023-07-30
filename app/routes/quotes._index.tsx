@@ -22,6 +22,7 @@ type QuotesType = {
   updatedAt: string;
   customer: customers;
   labour: number;
+  discount: number;
   quoted_products: quoted_products[];
 };
 
@@ -105,6 +106,7 @@ export default function QuotesIndex() {
                   customer,
                   quoted_products,
                   labour,
+                  discount,
                 }: QuotesType) => {
                   return (
                     <tr className={resTRClass} key={quote_id}>
@@ -122,7 +124,9 @@ export default function QuotesIndex() {
                           (partialSum, qp) =>
                             partialSum + qp.price * qp.quantity,
                           0
-                        ) + labour}
+                        ) +
+                          labour -
+                          discount}
                       </td>
                       <td data-label="Actions" className={resTDClass}>
                         <div className="btn-group">

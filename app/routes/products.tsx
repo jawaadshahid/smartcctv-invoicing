@@ -87,9 +87,13 @@ export async function action({ request }: ActionArgs) {
           `${price}`
         );
         return { productCreated: true };
-      } catch (err) {
-        console.log(err);
-        createActionErrors.info = "There was a problem creating the product...";
+      } catch (error: any) {
+        console.log({ error });
+        if (error.code) {
+          createActionErrors.info = error.msg;
+        } else
+          createActionErrors.info =
+            "There was a problem creating the product...";
         return { createActionErrors };
       }
   }

@@ -1,6 +1,18 @@
 import type { products } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { inputClass, resTDClass, resTRClass, selectClass } from "~/utils/styleClasses";
+import {
+  inputClass,
+  resTDClass,
+  resTRClass,
+  selectClass,
+} from "~/utils/styleClasses";
+
+type PsvType = {
+  row_id: string;
+  product_id: string;
+  qty: number;
+  price: number;
+};
 
 const QuoteProductRow = ({
   rowId,
@@ -10,53 +22,42 @@ const QuoteProductRow = ({
 }: {
   rowId: string;
   products: products[];
-  productSelectValues: {
-    row_id: string;
-    product_id: string;
-    qty: number;
-    price: number;
-  }[];
+  productSelectValues: PsvType[];
   dispatchPSV: any;
 }) => {
-  const [qty, setQty] = useState(1);
-  const [unitPrice, setUnitPrice] = useState(0);
-  const [subtotal, setSubtotal] = useState(0);
-  const [productSelectValue, setProductSelectValue] = useState("");
+  const currPSV = productSelectValues.find((p) => p.row_id === rowId);
+  const { price, qty, product_id } = currPSV || {
+    price: 0,
+    qty: 1,
+    product_id: "",
+  };
+  const [subtotal, setSubtotal] = useState(price * qty);
 
   useEffect(() => {
-    setSubtotal(Number(unitPrice * qty));
-  }, [qty, unitPrice]);
+    setSubtotal(price * qty);
+  }, [price, qty]);
 
-  useEffect(() => {
-    const currPSV = productSelectValues.find((p) => p.row_id === rowId);
-    if (currPSV) {
-      setProductSelectValue(currPSV.product_id);
-      setQty(currPSV.qty);
-      setUnitPrice(currPSV.price);
-    }
-  }, [productSelectValues, rowId]);
-
-  const handleSelect = (row_id: string, product_id: string) => {
+  const handleSelect = (new_product_id: string) => {
     const selectedProd: products | undefined = products.find(
-      (product) => parseInt(product_id) === product.product_id
+      (product) => parseInt(new_product_id) === product.product_id
     );
     dispatchPSV({
       type: "update",
-      row_id,
-      product_id,
+      row_id: rowId,
+      product_id: new_product_id,
       qty: 1,
       price: selectedProd ? selectedProd.price : 0,
     });
   };
 
-  const handleQtyInput = (row_id: string, qty: number) => {
-    dispatchPSV({ type: "update", row_id, qty });
+  const handleQtyInput = (new_qty: number) => {
+    dispatchPSV({ type: "update", row_id: rowId, qty: new_qty });
   };
 
   return (
     <tr className={resTRClass}>
       <td
-        colSpan={productSelectValue ? 1 : 4}
+        colSpan={product_id ? 1 : 4}
         data-label="Product"
         className={resTDClass}
       >
@@ -64,9 +65,9 @@ const QuoteProductRow = ({
           className={selectClass}
           name={`p_${rowId}_id`}
           id={`p_${rowId}_id`}
-          value={productSelectValue}
+          value={product_id}
           onChange={(e) => {
-            handleSelect(rowId, e.target.value);
+            handleSelect(e.target.value);
           }}
         >
           <option disabled value="">
@@ -82,7 +83,7 @@ const QuoteProductRow = ({
           <option value="-1">Add new product +</option>
         </select>
       </td>
-      {productSelectValue && (
+      {product_id && (
         <>
           <td data-label="Quantity" className={resTDClass}>
             <input
@@ -93,12 +94,12 @@ const QuoteProductRow = ({
               min="1"
               value={qty}
               onChange={(e) => {
-                handleQtyInput(rowId, parseInt(e.target.value));
+                handleQtyInput(parseInt(e.target.value));
               }}
             />
           </td>
           <td data-label="Unit (£)" className={`${resTDClass} md:text-right`}>
-            {unitPrice ? unitPrice : " - "}
+            {price ? price : " - "}
           </td>
           <td
             data-label="Subtotal (£)"
