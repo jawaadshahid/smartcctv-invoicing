@@ -94,7 +94,8 @@ const QuoteProductRow = ({
               min="1"
               value={qty}
               onChange={(e) => {
-                handleQtyInput(parseInt(e.target.value));
+                const numval = parseInt(e.target.value)
+                handleQtyInput(!isNaN(numval) ? numval : 1);
               }}
             />
           </td>
