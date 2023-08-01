@@ -425,7 +425,7 @@ export default function QuotesCreate() {
                     value={labour}
                     className={`${inputClass} md:text-right`}
                     onChange={(e) => {
-                      const numval = parseInt(e.target.value)
+                      const numval = parseInt(e.target.value);
                       setLabour(!isNaN(numval) ? numval : 0);
                     }}
                   />
@@ -447,7 +447,7 @@ export default function QuotesCreate() {
                     value={discount}
                     className={`${inputClass} md:text-right`}
                     onChange={(e) => {
-                      const numval = parseInt(e.target.value)
+                      const numval = parseInt(e.target.value);
                       setDiscount(!isNaN(numval) ? numval : 0);
                     }}
                   />

@@ -104,7 +104,7 @@ const CreateProductForm = ({
 }) => {
   const { brands, models, types } = selectData;
   const isSubmitting = navigation.state === "submitting";
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState(0);
   return (
     <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
@@ -142,7 +142,7 @@ const CreateProductForm = ({
             placeholder="10"
             value={price}
             onChange={(e) => {
-              const numval = parseInt(e.target.value)
+              const numval = parseInt(e.target.value);
               setPrice(!isNaN(numval) ? numval : 0);
             }}
           />
