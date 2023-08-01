@@ -25,7 +25,7 @@ export const UserContext = createContext(null);
 
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
-  if (!uid) return redirect("/login");
+  if (!uid) return {};
   try {
     const user = await getUserById(uid);
     return json({ user });
