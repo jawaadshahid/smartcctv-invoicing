@@ -1,5 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { cors } from "remix-utils";
 import { db } from "~/utils/db";
 import { authAPIReq } from "~/utils/session";
 
@@ -16,9 +17,10 @@ export const loader = async ({ request }: LoaderArgs) => {
         type_name: true,
       },
     });
-    return json({ products });
+    return await cors(request, json({ products }));
+    // return json({ products });
   } catch (err) {
     console.error(err);
-    return {};
+    return { status: 500, message: "server error" };
   }
 };
