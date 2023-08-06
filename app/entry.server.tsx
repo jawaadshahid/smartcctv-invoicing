@@ -11,7 +11,7 @@ import { Response } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 export const mailer = nodemailer;
 
 const ABORT_DELAY = 5_000;
@@ -107,6 +107,7 @@ function handleBrowserRequest(
           const body = new PassThrough();
 
           responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("Access-Control-Allow-Origin", "*");
 
           resolve(
             new Response(body, {
