@@ -58,6 +58,8 @@ function handleBotRequest(
           const body = new PassThrough();
 
           responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("Access-Control-Allow-Origin", "*");
+          responseHeaders.set("Access-Control-Allow-Headers", "*");
 
           resolve(
             new Response(body, {
