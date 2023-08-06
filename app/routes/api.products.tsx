@@ -17,7 +17,9 @@ export const loader = async ({ request }: LoaderArgs) => {
         type_name: true,
       },
     });
-    return await cors(request, json({ products }));
+    return await cors(request, json({ products }), {
+      allowedHeaders: ["api_key"],
+    });
     // return json({ products });
   } catch (err) {
     console.error(err);
