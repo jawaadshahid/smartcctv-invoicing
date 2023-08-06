@@ -1,8 +1,15 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { cors } from "remix-utils";
 import { db } from "~/utils/db";
 import { authAPIReq } from "~/utils/session";
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*"
+  }
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   const isAuthentic = await authAPIReq(request);
