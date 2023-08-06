@@ -94,3 +94,9 @@ model product_types {
 
   @@unique([type_id, type_name])
 }
+
+model jobs {
+  job_id Int @id @default(autoincrement())
+  job_title String @db.VarChar(190)
+  job_body String @db.Text
+}
