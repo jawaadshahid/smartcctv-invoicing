@@ -40,6 +40,13 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+  if (!(typeof document === "undefined") && (typeof document.hasStorageAccess === "function")) {
+    document.hasStorageAccess().then((hasAccess) => {
+      if (!hasAccess) {
+        console.log("no access!!")
+      }
+    });
+  }
   const { user } = useLoaderData();
   return (
     <html lang="en">
