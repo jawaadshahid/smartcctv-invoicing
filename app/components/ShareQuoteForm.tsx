@@ -46,7 +46,7 @@ const ShareQuoteForm = ({
               <input
                 key={ind + 1}
                 type="hidden"
-                value={`${name} x${quantity}: £${price}`}
+                value={`${name} x${quantity}: £${price * quantity}`}
                 name={`prod_${ind + 1}`}
                 id={`prod_${ind + 1}`}
               />
