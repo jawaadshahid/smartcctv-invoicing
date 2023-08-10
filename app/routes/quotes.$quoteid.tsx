@@ -52,43 +52,88 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 };
 
+const getEmailsFromEntry = (emailsEntry: FormDataEntryValue) => {
+  return emailsEntry
+    ? String(emailsEntry)
+        .split(",")
+        .map((othEmail: string) => othEmail.trim())
+    : [];
+};
+
+const constructEmailBody = (
+  labour: FormDataEntryValue,
+  discount: FormDataEntryValue,
+  grandTotal: FormDataEntryValue,
+  productCount: FormDataEntryValue,
+  productData: any
+) => {
+  const pCount: number = parseInt(`${productCount}`);
+  let htmlStr = `<p>Hi,<br>Please see below for your quotation:</p>`;
+  htmlStr += `<p>`;
+  for (let ind = 0; ind < pCount; ind++) {
+    const productValue: FormDataEntryValue = productData[`prod_${ind + 1}`];
+    htmlStr += `${productValue}<br>`;
+  }
+  htmlStr += `Labour: £${labour}<br>`;
+  if (parseInt(`${discount}`) > 0) htmlStr += `Discount: £${discount}<br>`;
+  htmlStr += `Total: £${grandTotal}`;
+  htmlStr += `</p>`;
+  htmlStr += `<p>A PDF containing you quotation is also attached for your records.</p>`;
+  htmlStr += `<p>Kind Regards,<br>Smart CCTV</p>`;
+  return htmlStr;
+};
+
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
     case "share_quote":
-      const { quoteid, customerEmail, userEmail, otherEmails } = values;
+      const {
+        quoteid,
+        customerEmail,
+        userEmail,
+        otherEmails,
+        labour,
+        discount,
+        grandTotal,
+        productCount,
+        ...productData
+      } = values;
       const shareActionErrors: any = {};
 
       if (!customerEmail && !userEmail && !otherEmails)
-        shareActionErrors.msg = "One option has to be selected or defined!";
+        return {
+          shareActionErrors: {
+            msg: "One option has to be selected or defined!",
+          },
+        };
+
+      const othEmails = getEmailsFromEntry(otherEmails);
+
+      othEmails.forEach((oe) => (shareActionErrors.msg = validateEmail(oe)));
 
       if (Object.values(shareActionErrors).some(Boolean))
         return { shareActionErrors };
 
-      const othEmails = otherEmails
-        ? String(otherEmails)
-            .split(",")
-            .map((othEmail: string) => {
-              const trimmed = othEmail.trim();
-              shareActionErrors.msg = validateEmail(trimmed);
-              return trimmed;
-            })
-        : [];
+      const allEmails: string[] = [
+        ...othEmails,
+        ...(customerEmail ? [String(customerEmail)] : []),
+        ...(userEmail ? [String(userEmail)] : []),
+      ];
 
-      if (Object.values(shareActionErrors).some(Boolean))
-        return { shareActionErrors };
-
-      const allEmails: string[] = [...othEmails];
-
-      if (customerEmail) allEmails.push(String(customerEmail));
-      if (userEmail) allEmails.push(String(userEmail));
+      const emailBody = constructEmailBody(
+        labour,
+        discount,
+        grandTotal,
+        productCount,
+        productData
+      );
 
       const pdfBuffer = await getQuoteBuffer(quoteid as string);
 
       let mailResponse: any;
       try {
-        mailResponse = await sendEmail(allEmails, pdfBuffer);
+        mailResponse = await sendEmail(allEmails, emailBody, pdfBuffer);
       } catch (error: any) {
         if (error.code === "ETIMEDOUT")
           return { shareActionErrors: { msg: "Error: send request timeout!" } };
@@ -228,6 +273,7 @@ export default function QuoteId() {
           <ShareQuoteForm
             quoteid={quote.quote_id}
             customer={customer}
+            productData={{ quoted_products, labour, discount, grandTotal }}
             user={user}
             navigation={navigation}
             formErrors={data?.shareActionErrors}

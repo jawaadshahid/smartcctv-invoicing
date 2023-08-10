@@ -1,6 +1,6 @@
 import { mailer } from "~/entry.server";
 
-export async function sendEmail(to: string[], attachmentBuffer:any) {
+export async function sendEmail(to: string[], emailBody:string, attachmentBuffer:any) {
   let transporter = mailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT || "587"),
@@ -14,7 +14,7 @@ export async function sendEmail(to: string[], attachmentBuffer:any) {
     from: process.env.EMAIL_USER,
     to,
     subject: "Smart CCTV Quote",
-    html: "Hi. Please find your quotation attached",
+    html: emailBody,
     attachments: [{
       filename: "quote.pdf",
       content: attachmentBuffer

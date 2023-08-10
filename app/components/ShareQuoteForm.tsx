@@ -1,13 +1,21 @@
 import { Form } from "@remix-run/react";
-import type { customers, users } from "@prisma/client";
+import type { customers, quoted_products, users } from "@prisma/client";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
+
+type ProductDataType = {
+  quoted_products: quoted_products[];
+  labour: number;
+  discount: number;
+  grandTotal: number;
+};
 
 const ShareQuoteForm = ({
   quoteid,
   navigation,
   customer,
+  productData,
   user,
   onCancel,
   formErrors,
@@ -15,14 +23,44 @@ const ShareQuoteForm = ({
   quoteid: number;
   navigation: Navigation;
   customer: customers;
+  productData: ProductDataType;
   user: users;
   onCancel: Function;
   formErrors: any;
 }) => {
+  const { quoted_products, labour, discount, grandTotal } = productData;
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
       <input type="hidden" value={quoteid} name="quoteid" id="quoteid" />
+      <input
+        type="hidden"
+        value={quoted_products ? quoted_products.length : 0}
+        name="productCount"
+        id="productCount"
+      />
+      {quoted_products &&
+        quoted_products.map(
+          ({ name, quantity, price }: quoted_products, ind) => {
+            return (
+              <input
+                key={ind + 1}
+                type="hidden"
+                value={`${name} x${quantity}: £${price}`}
+                name={`prod_${ind + 1}`}
+                id={`prod_${ind + 1}`}
+              />
+            );
+          }
+        )}
+      <input type="hidden" value={labour} name="labour" id="labour" />
+      <input type="hidden" value={discount} name="discount" id="discount" />
+      <input
+        type="hidden"
+        value={grandTotal}
+        name="grandTotal"
+        id="grandTotal"
+      />
       <fieldset disabled={isSubmitting}>
         <div className="form-control">
           <label className="label cursor-pointer">
