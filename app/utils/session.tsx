@@ -13,7 +13,7 @@ const storage = createCookieSessionStorage({
     // https://web.dev/when-to-use-local-https/
     secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
     httpOnly: true,
