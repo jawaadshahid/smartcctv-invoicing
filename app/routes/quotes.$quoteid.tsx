@@ -78,7 +78,7 @@ const constructEmailBody = (
   if (parseInt(`${discount}`) > 0) htmlStr += `Discount: £${discount}<br>`;
   htmlStr += `Total: £${grandTotal}`;
   htmlStr += `</p>`;
-  htmlStr += `<p>A PDF containing you quotation is also attached for your records.</p>`;
+  htmlStr += `<p>A PDF containing your quotation is also attached for your records.</p>`;
   htmlStr += `<p>Kind Regards,<br>Smart CCTV</p>`;
   return htmlStr;
 };

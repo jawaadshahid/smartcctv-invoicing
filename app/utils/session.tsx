@@ -7,7 +7,7 @@ if (!sessionSecret) {
 }
 const storage = createCookieSessionStorage({
   cookie: {
-    name: "user_session"
+    name: "user_session",
   },
 });
 export async function createUserSession(userId: number, redirectTo: string) {
