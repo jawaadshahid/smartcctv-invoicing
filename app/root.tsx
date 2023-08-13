@@ -1,10 +1,4 @@
-import stylesheet from "~/tailwind.css";
-import {
-  json,
-  redirect,
-  type LinksFunction,
-  type LoaderArgs,
-} from "@remix-run/node";
+import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -15,9 +9,10 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { createContext } from "react";
-import { getUserId } from "./utils/session";
-import { getUserById } from "./utils/db";
+import stylesheet from "~/tailwind.css";
 import NavBar from "./components/NavBar";
+import { getUserById } from "./utils/db";
+import { getUserId } from "./utils/session";
 
 export const SITE_TITLE = "Smart CCTV admin";
 
