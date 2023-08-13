@@ -34,7 +34,7 @@ const QuoteProductRow = ({
   const [subtotal, setSubtotal] = useState(price * qty);
 
   useEffect(() => {
-    setSubtotal(price * qty);
+    setSubtotal(price * (qty || 1));
   }, [price, qty]);
 
   const handleSelect = (new_product_id: string) => {
@@ -73,13 +73,15 @@ const QuoteProductRow = ({
           <option disabled value="">
             Select a product...
           </option>
-          {products.map(({ product_id, brand_name, type_name, model_name, price }) => {
-            return (
-              <option key={product_id} value={product_id}>
-                {brand_name} - {type_name} - {model_name} - {price}
-              </option>
-            );
-          })}
+          {products.map(
+            ({ product_id, brand_name, type_name, model_name, price }) => {
+              return (
+                <option key={product_id} value={product_id}>
+                  {brand_name} - {type_name} - {model_name} - {price}
+                </option>
+              );
+            }
+          )}
           <option value="-1">Add new product +</option>
         </select>
       </td>
@@ -93,9 +95,11 @@ const QuoteProductRow = ({
               type="number"
               min="1"
               value={qty}
-              onChange={(e) => {
-                const numval = parseInt(e.target.value);
-                handleQtyInput(!isNaN(numval) && numval >= 1 ? numval : 1);
+              onChange={(e) => handleQtyInput(parseInt(e.target.value))}
+              onBlur={(e) => {
+                if (isNaN(parseInt(e.target.value))) {
+                  handleQtyInput(1);
+                }
               }}
             />
           </td>

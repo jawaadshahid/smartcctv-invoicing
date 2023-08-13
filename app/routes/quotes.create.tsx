@@ -256,11 +256,11 @@ export default function QuotesCreate() {
   useEffect(() => {
     setGrandtotal(
       productSelectValues.reduce(
-        (partialSum, a: any) => partialSum + a.price * a.qty,
+        (partialSum, a: any) => partialSum + a.price * (a.qty || 1),
         0
       ) +
-        labour -
-        discount
+        (labour || 0) -
+        (discount || 0)
     );
   }, [productSelectValues, labour, discount]);
 
@@ -424,7 +424,8 @@ export default function QuotesCreate() {
                     id="labour"
                     value={labour}
                     className={`${inputClass} md:text-right`}
-                    onChange={(e) => {
+                    onChange={(e) => setLabour(parseInt(e.target.value))}
+                    onBlur={(e) => {
                       const numval = parseInt(e.target.value);
                       setLabour(!isNaN(numval) ? numval : 0);
                     }}
@@ -446,7 +447,8 @@ export default function QuotesCreate() {
                     id="discount"
                     value={discount}
                     className={`${inputClass} md:text-right`}
-                    onChange={(e) => {
+                    onChange={(e) => setDiscount(parseInt(e.target.value))}
+                    onBlur={(e) => {
                       const numval = parseInt(e.target.value);
                       setDiscount(!isNaN(numval) ? numval : 0);
                     }}

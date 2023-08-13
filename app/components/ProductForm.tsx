@@ -23,7 +23,9 @@ const TaxonomyField = ({
 }) => {
   const hasItems = taxoItems?.length > 0;
   const [isNewTaxoItem, setIsNewTaxoItem] = useState(!hasItems);
-  const [taxoSelectValue, setTaxoSelectValue] = useState(selectedValue ? selectedValue : "");
+  const [taxoSelectValue, setTaxoSelectValue] = useState(
+    selectedValue ? selectedValue : ""
+  );
 
   const taxoInputClass = cn({
     [inputClass]: true,
@@ -86,7 +88,7 @@ const TaxonomyField = ({
     </div>
   );
 };
- 
+
 const ProductForm = ({
   selectData,
   navigation,
@@ -125,7 +127,11 @@ const ProductForm = ({
         </label>
       )}
       {!isNew && (
-        <input type="hidden" value={existingData.product_id} name="product_id" />
+        <input
+          type="hidden"
+          value={existingData.product_id}
+          name="product_id"
+        />
       )}
 
       <fieldset disabled={isSubmitting}>
@@ -159,10 +165,7 @@ const ProductForm = ({
             min="0"
             placeholder="10"
             value={price}
-            onChange={(e) => {
-              const numval = parseInt(e.target.value);
-              setPrice(!isNaN(numval) ? numval : 0);
-            }}
+            onChange={(e) => setPrice(parseInt(e.target.value))}
           />
           {formErrors && formErrors.price && (
             <label className="label">
