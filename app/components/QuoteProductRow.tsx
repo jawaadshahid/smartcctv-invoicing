@@ -73,10 +73,10 @@ const QuoteProductRow = ({
           <option disabled value="">
             Select a product...
           </option>
-          {products.map(({ product_id, brand_name, type_name, model_name }) => {
+          {products.map(({ product_id, brand_name, type_name, model_name, price }) => {
             return (
               <option key={product_id} value={product_id}>
-                {brand_name} - {type_name} - {model_name}
+                {brand_name} - {type_name} - {model_name} - {price}
               </option>
             );
           })}
