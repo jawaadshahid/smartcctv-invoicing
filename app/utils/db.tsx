@@ -125,25 +125,6 @@ const createProduct = async (
   const isBrandSelected = brand && parseInt(brand) > 0;
   const isTypeSelected = type && parseInt(type) > 0;
   const isModelSelected = model && parseInt(model) > 0;
-  let existingProduct: products | unknown;
-
-  if (isBrandSelected && isTypeSelected && isModelSelected) {
-    // check if the combination exists
-    try {
-      existingProduct = await db.products.findFirst({
-        where: {
-          brand_id: parseInt(brand),
-          type_id: parseInt(type),
-          model_id: parseInt(model),
-        },
-      });
-      if (existingProduct)
-        return Promise.reject({ code: 400, msg: "product already exists!" });
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
-  }
 
   const newProduct: Prisma.productsCreateInput = {
     brand: isBrandSelected
