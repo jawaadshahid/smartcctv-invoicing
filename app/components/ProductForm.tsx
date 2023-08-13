@@ -86,7 +86,7 @@ const TaxonomyField = ({
     </div>
   );
 };
-
+ 
 const ProductForm = ({
   selectData,
   navigation,
