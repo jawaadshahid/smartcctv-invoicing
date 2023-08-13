@@ -78,6 +78,41 @@ const createCustomer = (
   });
 };
 
+const editProduct = async (
+  product_id: number,
+  brand: string,
+  newbrand: string,
+  type: string,
+  newtype: string,
+  model: string,
+  newmodel: string,
+  price: string
+) => {
+  const isBrandSelected = brand && parseInt(brand) > 0;
+  const isTypeSelected = type && parseInt(type) > 0;
+  const isModelSelected = model && parseInt(model) > 0;
+
+  const updatedProduct: Prisma.productsCreateInput = {
+    brand: isBrandSelected
+      ? { connect: { brand_id: parseInt(brand) } }
+      : { create: { brand_name: newbrand } },
+    type: isTypeSelected
+      ? { connect: { type_id: parseInt(type) } }
+      : { create: { type_name: newtype } },
+    model: isModelSelected
+      ? { connect: { model_id: parseInt(model) } }
+      : { create: { model_name: newmodel } },
+    price: Number(price),
+  };
+
+  return db.products.update({
+    where: {
+      product_id
+    },
+    data: updatedProduct
+  })
+};
+
 const createProduct = async (
   brand: string,
   newbrand: string,
@@ -135,6 +170,7 @@ export {
   deleteCustomerById,
   createCustomer,
   createProduct,
+  editProduct,
   deleteQuoteById,
   deleteQuotedProdsById,
 };

@@ -13,11 +13,11 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import CreateProductForm from "~/components/CreateProductForm";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import ProductForm from "~/components/ProductForm";
 import { SITE_TITLE } from "~/root";
-import { createProduct, db, deleteProductById } from "~/utils/db";
+import { createProduct, db, deleteProductById, editProduct } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import { contentBodyClass, resTDClass, resTRClass } from "~/utils/styleClasses";
 import { validateProductData } from "~/utils/validations";
@@ -54,49 +54,90 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 };
 
+const deleteProdAction = async (values: any) => {
+  const { product_id } = values;
+  const deleteActionsErrors: any = {};
+  try {
+    await deleteProductById(parseInt(`${product_id}`));
+    return { productDeleted: true };
+  } catch (err) {
+    console.error(err);
+    deleteActionsErrors.info = `There was a problem deleting product with id: ${product_id}`;
+    return { deleteActionsErrors };
+  }
+};
+
+const createProdAction = async (values: any) => {
+  const createActionErrors: any = validateProductData(values);
+
+  if (Object.values(createActionErrors).some(Boolean))
+    return { createActionErrors };
+
+  const { brand, newbrand, type, newtype, model, newmodel, price } = values;
+
+  try {
+    await createProduct(
+      `${brand}`,
+      `${newbrand}`,
+      `${type}`,
+      `${newtype}`,
+      `${model}`,
+      `${newmodel}`,
+      `${price}`
+    );
+    return { productCreated: true };
+  } catch (error: any) {
+    console.log({ error });
+    if (error.code) {
+      createActionErrors.info = error.msg;
+    } else
+      createActionErrors.info = "There was a problem creating the product...";
+    return { createActionErrors };
+  }
+};
+
+const editProdAction = async (values: any) => {
+  const editActionErrors: any = validateProductData(values);
+
+  if (Object.values(editActionErrors).some(Boolean))
+    return { editActionErrors };
+
+  const { product_id, brand, newbrand, type, newtype, model, newmodel, price } =
+    values;
+
+  try {
+    await editProduct(
+      parseInt(`${product_id}`),
+      `${brand}`,
+      `${newbrand}`,
+      `${type}`,
+      `${newtype}`,
+      `${model}`,
+      `${newmodel}`,
+      `${price}`
+    );
+    return { productEdited: true };
+  } catch (error: any) {
+    console.log({ error });
+    if (error.code) {
+      editActionErrors.info = error.msg;
+    } else editActionErrors.info = "There was a problem editing the product...";
+    return { editActionErrors };
+  }
+};
+
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
     case "delete":
-      const { product_id } = values;
-      const deleteActionsErrors: any = {};
-      try {
-        await deleteProductById(parseInt(`${product_id}`));
-        return { productDeleted: true };
-      } catch (err) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting product with id: ${product_id}`;
-        return { deleteActionsErrors };
-      }
+      return await deleteProdAction(values);
     case "create":
-      const { brand, newbrand, type, newtype, model, newmodel, price } = values;
-      const createActionErrors: any = validateProductData(values);
-
-      if (Object.values(createActionErrors).some(Boolean))
-        return { createActionErrors };
-
-      try {
-        await createProduct(
-          `${brand}`,
-          `${newbrand}`,
-          `${type}`,
-          `${newtype}`,
-          `${model}`,
-          `${newmodel}`,
-          `${price}`
-        );
-        return { productCreated: true };
-      } catch (error: any) {
-        console.log({ error });
-        if (error.code) {
-          createActionErrors.info = error.msg;
-        } else
-          createActionErrors.info =
-            "There was a problem creating the product...";
-        return { createActionErrors };
-      }
+      return await createProdAction(values);
+    case "edit":
+      return await editProdAction(values);
   }
+  return {};
 }
 
 export default function Products() {
@@ -115,19 +156,22 @@ export default function Products() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const [deletedProductID, setDeletedProductID] = useState(0);
+  const [editProduct, setEditProduct] = useState({
+    product_id: 0,
+    price: 0,
+    brand_id: 0,
+    model_id: 0,
+    type_id: 0,
+  });
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (!data) return;
     if (data.productCreated) setCreateModalOpen(false);
     if (data.productDeleted) setDeleteModalOpen(false);
-  }, [data]);
-
-  useEffect(() => {
-    if (!data) return;
-    if (data.productCreated) setCreateModalOpen(false);
-    if (data.productDeleted) setDeleteModalOpen(false);
+    if (data.productEdited) setEditModalOpen(false);
   }, [data]);
 
   return (
@@ -146,37 +190,61 @@ export default function Products() {
           </thead>
           <tbody>
             {products &&
-              products.map((loopedProducts: any) => {
+              products.map((loopedProduct: any) => {
                 return (
-                  <tr className={resTRClass} key={loopedProducts.product_id}>
+                  <tr className={resTRClass} key={loopedProduct.product_id}>
                     <td data-label="ID" className={resTDClass}>
-                      {loopedProducts.product_id}
+                      {loopedProduct.product_id}
                     </td>
                     <td data-label="Brand" className={resTDClass}>
-                      {loopedProducts.brand.brand_name}
+                      {loopedProduct.brand.brand_name}
                     </td>
                     <td data-label="Type" className={resTDClass}>
-                      {loopedProducts.type.type_name}
+                      {loopedProduct.type.type_name}
                     </td>
                     <td data-label="Model" className={resTDClass}>
-                      {loopedProducts.model.model_name}
+                      {loopedProduct.model.model_name}
                     </td>
                     <td data-label="Price" className={resTDClass}>
-                      £{loopedProducts.price}
+                      £{loopedProduct.price}
                     </td>
                     <td
                       data-label="Actions"
                       className={`${resTDClass} md:text-right`}
                     >
-                      <FormBtn
-                        isSubmitting={isSubmitting}
-                        onClick={() => {
-                          setDeletedProductID(loopedProducts.product_id);
-                          setDeleteModalOpen(true);
-                        }}
-                      >
-                        DELETE
-                      </FormBtn>
+                      <div className="btn-group">
+                        <FormBtn
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            const {
+                              product_id,
+                              price,
+                              brand_id,
+                              model_id,
+                              type_id,
+                            } = loopedProduct;
+                            setEditProduct({
+                              product_id,
+                              price,
+                              brand_id,
+                              model_id,
+                              type_id,
+                            });
+                            setEditModalOpen(true);
+                          }}
+                        >
+                          EDIT
+                        </FormBtn>
+                        <FormBtn
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            setDeletedProductID(loopedProduct.product_id);
+                            setDeleteModalOpen(true);
+                          }}
+                        >
+                          DELETE
+                        </FormBtn>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -196,10 +264,30 @@ export default function Products() {
           Add new product +
         </FormBtn>
       </div>
+      <Modal open={editModalOpen}>
+        <h3 className="mb-4">Edit product</h3>
+        {editModalOpen && (
+          <ProductForm
+            actionName="edit"
+            selectData={{
+              brands,
+              types,
+              models,
+            }}
+            existingData={editProduct}
+            navigation={navigation}
+            formErrors={data?.editActionErrors}
+            onCancel={() => {
+              setEditModalOpen(false);
+              if (data) data.editActionErrors = {};
+            }}
+          />
+        )}
+      </Modal>
       <Modal open={createModalOpen}>
         <h3 className="mb-4">Create new product</h3>
         {createModalOpen && (
-          <CreateProductForm
+          <ProductForm
             actionName="create"
             selectData={{
               brands,

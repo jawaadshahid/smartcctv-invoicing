@@ -14,14 +14,16 @@ const TaxonomyField = ({
   taxoName,
   taxoItems,
   inputError,
+  selectedValue,
 }: {
   taxoName: string;
   taxoItems: any;
   inputError: any;
+  selectedValue?: number;
 }) => {
   const hasItems = taxoItems?.length > 0;
   const [isNewTaxoItem, setIsNewTaxoItem] = useState(!hasItems);
-  const [taxoSelectValue, setTaxoSelectValue] = useState("");
+  const [taxoSelectValue, setTaxoSelectValue] = useState(selectedValue ? selectedValue : "");
 
   const taxoInputClass = cn({
     [inputClass]: true,
@@ -85,12 +87,13 @@ const TaxonomyField = ({
   );
 };
 
-const CreateProductForm = ({
+const ProductForm = ({
   selectData,
   navigation,
   formErrors,
   onCancel,
   actionName,
+  existingData,
 }: {
   selectData: {
     brands: product_brands[];
@@ -101,10 +104,19 @@ const CreateProductForm = ({
   formErrors?: any;
   onCancel: Function;
   actionName: string;
+  existingData?: {
+    product_id: number;
+    price: number;
+    brand_id: number;
+    model_id: number;
+    type_id: number;
+  };
 }) => {
+  // if existingData, then edit, else new
+  const isNew = !existingData;
   const { brands, models, types } = selectData;
   const isSubmitting = navigation.state === "submitting";
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(!isNew ? existingData.price : 0);
   return (
     <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
@@ -112,22 +124,28 @@ const CreateProductForm = ({
           <span className="label-text-alt text-error">{formErrors.info}</span>
         </label>
       )}
+      {!isNew && (
+        <input type="hidden" value={existingData.product_id} name="product_id" />
+      )}
 
       <fieldset disabled={isSubmitting}>
         <TaxonomyField
           taxoName="brand"
           taxoItems={brands}
           inputError={formErrors}
+          selectedValue={!isNew ? existingData.brand_id : undefined}
         />
         <TaxonomyField
           taxoName="type"
           taxoItems={types}
           inputError={formErrors}
+          selectedValue={!isNew ? existingData.type_id : undefined}
         />
         <TaxonomyField
           taxoName="model"
           taxoItems={models}
           inputError={formErrors}
+          selectedValue={!isNew ? existingData.model_id : undefined}
         />
         <div className="mb-2">
           <label className="label" htmlFor="price">
@@ -179,4 +197,4 @@ const CreateProductForm = ({
   );
 };
 
-export default CreateProductForm;
+export default ProductForm;

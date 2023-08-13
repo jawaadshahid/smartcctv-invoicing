@@ -16,7 +16,7 @@ import {
 } from "@remix-run/react";
 import { useEffect, useReducer, useState } from "react";
 import CreateCustomerForm from "~/components/CreateCustomerForm";
-import CreateProductForm from "~/components/CreateProductForm";
+import ProductForm from "~/components/ProductForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
@@ -504,7 +504,7 @@ export default function QuotesCreate() {
       <Modal open={isNewProduct}>
         <h3 className="mb-4">Create new product</h3>
         {isNewProduct && (
-          <CreateProductForm
+          <ProductForm
             actionName="create_product"
             selectData={{ brands, types, models }}
             navigation={navigation}
