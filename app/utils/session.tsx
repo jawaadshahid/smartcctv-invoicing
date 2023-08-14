@@ -1,13 +1,14 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { db } from "./db";
 
-const sessionSecret = "sessionYsecret";
+const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set");
 }
 const storage = createCookieSessionStorage({
   cookie: {
     name: "user_session",
+    secrets: [sessionSecret],
   },
 });
 export async function createUserSession(userId: number, redirectTo: string) {
