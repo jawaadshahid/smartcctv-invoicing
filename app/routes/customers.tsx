@@ -14,7 +14,12 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, db, deleteCustomerById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { contentBodyClass, resTDClass, resTRClass } from "~/utils/styleClasses";
+import {
+  contentBodyClass,
+  createBtnContainerClass,
+  resTDClass,
+  resTRClass,
+} from "~/utils/styleClasses";
 import { validateCustomerData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -141,7 +146,7 @@ export default function Customers() {
       ) : (
         <p className="text-center">No customers found...</p>
       )}
-      <div className="flex justify-end mt-4">
+      <div className={createBtnContainerClass}>
         <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {

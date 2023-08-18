@@ -19,7 +19,12 @@ import ProductForm from "~/components/ProductForm";
 import { SITE_TITLE } from "~/root";
 import { createProduct, db, deleteProductById, editProduct } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { contentBodyClass, resTDClass, resTRClass } from "~/utils/styleClasses";
+import {
+  contentBodyClass,
+  createBtnContainerClass,
+  resTDClass,
+  resTRClass,
+} from "~/utils/styleClasses";
 import { validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -254,7 +259,7 @@ export default function Products() {
       ) : (
         <p className="text-center">No products found...</p>
       )}
-      <div className="flex justify-end mt-4">
+      <div className={createBtnContainerClass}>
         <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {

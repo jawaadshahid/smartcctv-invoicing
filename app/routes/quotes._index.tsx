@@ -14,7 +14,11 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
 import { db, deleteQuoteById, deleteQuotedProdsById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { resTDClass, resTRClass } from "~/utils/styleClasses";
+import {
+  createBtnContainerClass,
+  resTDClass,
+  resTRClass,
+} from "~/utils/styleClasses";
 
 type QuotesType = {
   quote_id: number;
@@ -156,7 +160,7 @@ export default function QuotesIndex() {
       ) : (
         <p>No quotes found...</p>
       )}
-      <div className="flex justify-end mt-4">
+      <div className={createBtnContainerClass}>
         <FormAnchorButton href="/quotes/create">
           Add new quote +
         </FormAnchorButton>
