@@ -53,9 +53,8 @@ export const validatePassword = (password: string) => {
 export const validateCustomerData = ({ name, tel, email, address }: any) => {
   const errors: any = {};
   errors.name = validateName(`${name}`);
-  errors.tel = validateTel(`${tel}`);
-  errors.email = validateEmail(`${email}`);
-  if (!address) errors.address = "address is required!";
+  if (!address && !tel && (!email || `${email}` === "sunny@smartcctvuk.co.uk"))
+  errors.info = "come on bro, capture some contact info!";
   return errors;
 };
 
