@@ -8,7 +8,7 @@ import Modal from "~/components/Modal";
 import { SITE_TITLE, UserContext } from "~/root";
 import { db, deleteUserById, getUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
-import { resTDClass, resTRClass } from "~/utils/styleClasses";
+import { respTDClass, respTRClass } from "~/utils/styleClasses";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Users` }];
@@ -66,75 +66,77 @@ export default function UsersIndex() {
 
   return (
     <>
-      <table className="table static">
-        <thead>
-          <tr className="hidden md:table-row">
-            <th>ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Approved</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users &&
-            users.map((loopedUser: any) => {
-              return (
-                <tr className={resTRClass} key={loopedUser.id}>
-                  <td data-label="ID" className={resTDClass}>
-                    {loopedUser.id}
-                  </td>
-                  <td data-label="First Name" className={resTDClass}>
-                    {loopedUser.firstName}
-                  </td>
-                  <td data-label="Last Name" className={resTDClass}>
-                    {loopedUser.lastName}
-                  </td>
-                  <td data-label="Email" className={resTDClass}>
-                    {loopedUser.email}
-                  </td>
-                  <td data-label="Approved" className={resTDClass}>
-                    {loopedUser.isApproved ? (
-                      "Approved"
-                    ) : (
-                      <Form method="post">
-                        <input
-                          type="hidden"
-                          name="approvedUserId"
-                          value={loopedUser.id}
-                        />
-                        <FormBtn type="submit" isSubmitting={isSubmitting}>
-                          Approve
+      <div className="-mx-4 md:mx-0">
+        <table className="table">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Approved</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users &&
+              users.map((loopedUser: any) => {
+                return (
+                  <tr className={respTRClass} key={loopedUser.id}>
+                    <td data-label="ID" className={respTDClass}>
+                      {loopedUser.id}
+                    </td>
+                    <td data-label="First Name" className={respTDClass}>
+                      {loopedUser.firstName}
+                    </td>
+                    <td data-label="Last Name" className={respTDClass}>
+                      {loopedUser.lastName}
+                    </td>
+                    <td data-label="Email" className={respTDClass}>
+                      {loopedUser.email}
+                    </td>
+                    <td data-label="Approved" className={respTDClass}>
+                      {loopedUser.isApproved ? (
+                        "Approved"
+                      ) : (
+                        <Form method="post">
+                          <input
+                            type="hidden"
+                            name="approvedUserId"
+                            value={loopedUser.id}
+                          />
+                          <FormBtn type="submit" isSubmitting={isSubmitting}>
+                            Approve
+                          </FormBtn>
+                        </Form>
+                      )}
+                    </td>
+                    <td data-label="Actions" className={respTDClass}>
+                      <div className="btn-group">
+                        <FormAnchorButton
+                          href={`users/${loopedUser.id}`}
+                          isSubmitting={isSubmitting}
+                        >
+                          EDIT
+                        </FormAnchorButton>
+                        <FormBtn
+                          disabled={user.id === loopedUser.id}
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            setDeletedUserId(loopedUser.id);
+                            setModalOpen(true);
+                          }}
+                        >
+                          DELETE
                         </FormBtn>
-                      </Form>
-                    )}
-                  </td>
-                  <td data-label="Actions" className={resTDClass}>
-                    <div className="btn-group">
-                      <FormAnchorButton
-                        href={`users/${loopedUser.id}`}
-                        isSubmitting={isSubmitting}
-                      >
-                        EDIT
-                      </FormAnchorButton>
-                      <FormBtn
-                        disabled={user.id === loopedUser.id}
-                        isSubmitting={isSubmitting}
-                        onClick={() => {
-                          setDeletedUserId(loopedUser.id);
-                          setModalOpen(true);
-                        }}
-                      >
-                        DELETE
-                      </FormBtn>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
       <Modal open={modelOpen}>
         <p className="py-4">Are you sure you want to delete this user?</p>
         <div className="modal-action">

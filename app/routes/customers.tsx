@@ -17,8 +17,8 @@ import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,
   createBtnContainerClass,
-  resTDClass,
-  resTRClass,
+  respTDClass,
+  respTRClass,
 } from "~/utils/styleClasses";
 import { validateCustomerData } from "~/utils/validations";
 
@@ -91,58 +91,60 @@ export default function Customers() {
   return (
     <div className={contentBodyClass}>
       {customers && customers.length ? (
-        <table className="table static">
-          <thead>
-            <tr className="hidden md:table-row">
-              <th>ID</th>
-              <th>Name</th>
-              <th>Tel</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th className="md:text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers &&
-              customers.map(
-                ({ customer_id, name, tel, email, address }: customers) => {
-                  return (
-                    <tr className={resTRClass} key={customer_id}>
-                      <td data-label="ID" className={resTDClass}>
-                        {customer_id}
-                      </td>
-                      <td data-label="Name" className={resTDClass}>
-                        {name}
-                      </td>
-                      <td data-label="Tel" className={resTDClass}>
-                        {tel}
-                      </td>
-                      <td data-label="Email" className={resTDClass}>
-                        {email}
-                      </td>
-                      <td data-label="Address" className={resTDClass}>
-                        {address}
-                      </td>
-                      <td
-                        data-label="Actions"
-                        className={`${resTDClass} md:text-right`}
-                      >
-                        <FormBtn
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            setDeletedCustomerID(customer_id);
-                            setDeleteModalOpen(true);
-                          }}
+        <div className="-mx-4 md:mx-0">
+          <table className="table">
+            <thead>
+              <tr className="hidden md:table-row">
+                <th>ID</th>
+                <th>Name</th>
+                <th>Tel</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th className="md:text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers &&
+                customers.map(
+                  ({ customer_id, name, tel, email, address }: customers) => {
+                    return (
+                      <tr className={respTRClass} key={customer_id}>
+                        <td data-label="ID" className={respTDClass}>
+                          {customer_id}
+                        </td>
+                        <td data-label="Name" className={respTDClass}>
+                          {name}
+                        </td>
+                        <td data-label="Tel" className={respTDClass}>
+                          {tel}
+                        </td>
+                        <td data-label="Email" className={respTDClass}>
+                          {email}
+                        </td>
+                        <td data-label="Address" className={respTDClass}>
+                          {address}
+                        </td>
+                        <td
+                          data-label="Actions"
+                          className={`${respTDClass} md:text-right`}
                         >
-                          DELETE
-                        </FormBtn>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-          </tbody>
-        </table>
+                          <FormBtn
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              setDeletedCustomerID(customer_id);
+                              setDeleteModalOpen(true);
+                            }}
+                          >
+                            DELETE
+                          </FormBtn>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p className="text-center">No customers found...</p>
       )}

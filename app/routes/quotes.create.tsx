@@ -25,9 +25,10 @@ import { SITE_TITLE } from "~/root";
 import { createCustomer, createProduct, db } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
+  TDClass,
   formClass,
   inputClass,
-  resTRClass,
+  respTRClass,
   selectClass,
 } from "~/utils/styleClasses";
 import { validateCustomerData, validateProductData } from "~/utils/validations";
@@ -350,126 +351,140 @@ export default function QuotesCreate() {
               </span>
             </label>
           )}
-          <table className="table">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>Product</th>
-                <th className="w-[100px]">Quantity</th>
-                <th className="text-right w-[150px]">Unit (£)</th>
-                <th className="text-right w-[150px]">Subtotal (£)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(productCount)].map((e, i) => (
-                <QuoteProductRow
-                  key={i}
-                  rowId={`${i + 1}`}
-                  products={products}
-                  productSelectValues={productSelectValues}
-                  dispatchPSV={dispatchPSV}
-                />
-              ))}
-              <tr className={resTRClass}>
-                <td colSpan={4}>
-                  <div className="flex md:justify-end btn-group">
-                    <FormBtn
-                      disabled={productCount === 1}
-                      isSubmitting={isSubmitting}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setProductCount((pCount) => {
-                          dispatchPSV({
-                            type: "remove",
-                            row_id: `${pCount}`,
-                          });
-                          return pCount - 1;
-                        });
-                      }}
-                    >
-                      -
-                    </FormBtn>
-                    <FormBtn
-                      isSubmitting={isSubmitting}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setProductCount((pCount) => {
-                          dispatchPSV({
-                            type: "add",
-                            row_id: `${pCount + 1}`,
-                            product_id: "",
-                            qty: 1,
-                            price: 0,
-                          });
-                          return pCount + 1;
-                        });
-                      }}
-                    >
-                      +
-                    </FormBtn>
-                  </div>
-                </td>
-              </tr>
-              <tr className={resTRClass}>
-                <td colSpan={2} className="hidden md:table-cell"></td>
-                <td className="flex md:table-cell">
-                  <label className="label md:justify-end" htmlFor="labour">
-                    <span className="label-text">Labour cost (£):</span>
-                  </label>
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="0"
-                    name="labour"
-                    id="labour"
-                    value={labour}
-                    className={`${inputClass} md:text-right`}
-                    onChange={(e) => setLabour(parseInt(e.target.value))}
-                    onBlur={(e) => {
-                      const numval = parseInt(e.target.value);
-                      setLabour(!isNaN(numval) ? numval : 0);
-                    }}
+          <div className="-mx-4 md:mx-0">
+            <table className="table">
+              <thead>
+                <tr className="hidden md:table-row">
+                  <th>Product</th>
+                  <th className="w-[100px]">Quantity</th>
+                  <th className="text-right w-[150px]">Unit (£)</th>
+                  <th className="text-right w-[150px]">Subtotal (£)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...Array(productCount)].map((e, i) => (
+                  <QuoteProductRow
+                    key={i}
+                    rowId={`${i + 1}`}
+                    products={products}
+                    productSelectValues={productSelectValues}
+                    dispatchPSV={dispatchPSV}
                   />
-                </td>
-              </tr>
-              <tr className={resTRClass}>
-                <td colSpan={2} className="hidden md:table-cell"></td>
-                <td className="flex md:table-cell">
-                  <label className="label md:justify-end" htmlFor="discount">
-                    <span className="label-text">Discount (£):</span>
-                  </label>
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="0"
-                    name="discount"
-                    id="discount"
-                    value={discount}
-                    className={`${inputClass} md:text-right`}
-                    onChange={(e) => setDiscount(parseInt(e.target.value))}
-                    onBlur={(e) => {
-                      const numval = parseInt(e.target.value);
-                      setDiscount(!isNaN(numval) ? numval : 0);
-                    }}
-                  />
-                </td>
-              </tr>
-              <tr className={resTRClass}>
-                <td colSpan={2} className="hidden md:table-cell"></td>
-                <td>
-                  <label className="label md:justify-end">
-                    <span className="label-text">Total cost (£):</span>
-                  </label>
-                </td>
-                <td>
-                  <label className="label md:justify-end">
-                    <span className="label-text">{grandtotal}</span>
-                  </label>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                ))}
+                <tr className={respTRClass}>
+                  <td colSpan={4} className={TDClass}>
+                    <div className="flex md:justify-end btn-group">
+                      <FormBtn
+                        disabled={productCount === 1}
+                        isSubmitting={isSubmitting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setProductCount((pCount) => {
+                            dispatchPSV({
+                              type: "remove",
+                              row_id: `${pCount}`,
+                            });
+                            return pCount - 1;
+                          });
+                        }}
+                      >
+                        -
+                      </FormBtn>
+                      <FormBtn
+                        isSubmitting={isSubmitting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setProductCount((pCount) => {
+                            dispatchPSV({
+                              type: "add",
+                              row_id: `${pCount + 1}`,
+                              product_id: "",
+                              qty: 1,
+                              price: 0,
+                            });
+                            return pCount + 1;
+                          });
+                        }}
+                      >
+                        +
+                      </FormBtn>
+                    </div>
+                  </td>
+                </tr>
+                <tr className={respTRClass}>
+                  <td
+                    colSpan={2}
+                    className={`${TDClass} hidden md:table-cell`}
+                  ></td>
+                  <td className={`${TDClass} flex md:table-cell`}>
+                    <label className="label md:justify-end" htmlFor="labour">
+                      <span className="label-text">Labour cost (£):</span>
+                    </label>
+                  </td>
+                  <td className={TDClass}>
+                    <input
+                      type="number"
+                      min="0"
+                      name="labour"
+                      id="labour"
+                      value={labour}
+                      className={`${inputClass} md:text-right`}
+                      onChange={(e) => setLabour(parseInt(e.target.value))}
+                      onBlur={(e) => {
+                        const numval = parseInt(e.target.value);
+                        setLabour(!isNaN(numval) ? numval : 0);
+                      }}
+                    />
+                  </td>
+                </tr>
+                <tr className={respTRClass}>
+                  <td
+                    colSpan={2}
+                    className={`${TDClass} hidden md:table-cell`}
+                  ></td>
+                  <td className={`${TDClass} flex md:table-cell`}>
+                    <label className="label md:justify-end" htmlFor="discount">
+                      <span className="label-text">Discount (£):</span>
+                    </label>
+                  </td>
+                  <td className={TDClass}>
+                    <input
+                      type="number"
+                      min="0"
+                      name="discount"
+                      id="discount"
+                      value={discount}
+                      className={`${inputClass} md:text-right`}
+                      onChange={(e) => setDiscount(parseInt(e.target.value))}
+                      onBlur={(e) => {
+                        const numval = parseInt(e.target.value);
+                        setDiscount(!isNaN(numval) ? numval : 0);
+                      }}
+                    />
+                  </td>
+                </tr>
+                <tr className={respTRClass}>
+                  <td
+                    colSpan={2}
+                    className={`${TDClass} hidden md:table-cell`}
+                  ></td>
+                  <td className={`${TDClass} flex md:table-cell`}>
+                    <label className="label md:justify-end">
+                      <span className="label-text">Total cost (£):</span>
+                    </label>
+                  </td>
+                  <td className={TDClass}>
+                    <input
+                      type="number"
+                      disabled
+                      value={grandtotal}
+                      className={`${inputClass} md:text-right`}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div className="flex md:justify-end mt-4 mb-2">
             <FormBtn
               type="submit"

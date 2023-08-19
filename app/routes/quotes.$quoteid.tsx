@@ -13,7 +13,7 @@ import { SITE_TITLE, UserContext } from "~/root";
 import { db } from "~/utils/db";
 import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
-import { resTDClass, resTRClass } from "~/utils/styleClasses";
+import { TDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
 import { validateEmail } from "~/utils/validations";
 
 type QuotesType = {
@@ -195,57 +195,74 @@ export default function QuoteId() {
       <p>Tel: {customer.tel}</p>
       <p>Email: {customer.email}</p>
       <h3>Products</h3>
-      <table className="table">
-        <thead>
-          <tr className="hidden md:table-row">
-            <th>Name</th>
-            <th>Quantity</th>
-            <th className="text-right">Unit Price (£)</th>
-            <th className="text-right">Subtotal (£)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {quoted_products &&
-            quoted_products.map(
-              ({ invprod_id, name, quantity, price }: quoted_products) => {
-                return (
-                  <tr key={invprod_id} className={resTRClass}>
-                    <td data-label="Name" className={resTDClass}>
-                      {name}
-                    </td>
-                    <td data-label="Quantity" className={resTDClass}>
-                      {quantity}
-                    </td>
-                    <td
-                      data-label="Unit Price (£)"
-                      className={`${resTDClass} md:text-right`}
-                    >
-                      {price}
-                    </td>
-                    <td
-                      data-label="Subtotal (£)"
-                      className={`${resTDClass} md:text-right`}
-                    >
-                      {price * quantity}
-                    </td>
-                  </tr>
-                );
-              }
-            )}
-          <tr className={resTRClass}>
-            <td colSpan={3} className="hidden md:table-cell"></td>
-            <td className="md:text-right">Labour cost (£): {labour}</td>
-          </tr>
-          <tr className={resTRClass}>
-            <td colSpan={3} className="hidden md:table-cell"></td>
-            <td className="md:text-right">Discount (£): {discount}</td>
-          </tr>
-          <tr className={resTRClass}>
-            <td colSpan={3} className="hidden md:table-cell"></td>
-            <td className="md:text-right">Total cost (£): {grandTotal}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="-mx-4 md:mx-0">
+        <table className="table">
+          <thead>
+            <tr className="hidden md:table-row">
+              <th>Name</th>
+              <th>Quantity</th>
+              <th className="text-right">Unit Price (£)</th>
+              <th className="text-right">Subtotal (£)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quoted_products &&
+              quoted_products.map(
+                ({ invprod_id, name, quantity, price }: quoted_products) => {
+                  return (
+                    <tr key={invprod_id} className={respTRClass}>
+                      <td data-label="Name" className={respTDClass}>
+                        {name}
+                      </td>
+                      <td data-label="Quantity" className={respTDClass}>
+                        {quantity}
+                      </td>
+                      <td
+                        data-label="Unit Price (£)"
+                        className={`${respTDClass} md:text-right`}
+                      >
+                        {price}
+                      </td>
+                      <td
+                        data-label="Subtotal (£)"
+                        className={`${respTDClass} md:text-right`}
+                      >
+                        {price * quantity}
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+            <tr className={respTRClass}>
+              <td
+                colSpan={3}
+                className={`${TDClass} hidden md:table-cell`}
+              ></td>
+              <td className={`${TDClass} md:text-right`}>
+                Labour cost (£): {labour}
+              </td>
+            </tr>
+            <tr className={respTRClass}>
+              <td
+                colSpan={3}
+                className={`${TDClass} hidden md:table-cell`}
+              ></td>
+              <td className={`${TDClass} md:text-right`}>
+                Discount (£): {discount}
+              </td>
+            </tr>
+            <tr className={respTRClass}>
+              <td
+                colSpan={3}
+                className={`${TDClass} hidden md:table-cell`}
+              ></td>
+              <td className={`${TDClass} md:text-right`}>
+                Total cost (£): {grandTotal}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div className="flex justify-end mt-4 gap-4">
         <FormAnchorButton
           href={`/quotes/${quote.quote_id}/generatedquote`}

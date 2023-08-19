@@ -22,8 +22,8 @@ import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,
   createBtnContainerClass,
-  resTDClass,
-  resTRClass,
+  respTDClass,
+  respTRClass,
 } from "~/utils/styleClasses";
 import { validateProductData } from "~/utils/validations";
 
@@ -182,80 +182,82 @@ export default function Products() {
   return (
     <div className={contentBodyClass}>
       {products && products.length ? (
-        <table className="table static">
-          <thead>
-            <tr className="hidden md:table-row">
-              <th>ID</th>
-              <th>Brand</th>
-              <th>Type</th>
-              <th>Model</th>
-              <th>Price</th>
-              <th className="md:text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products &&
-              products.map((loopedProduct: any) => {
-                return (
-                  <tr className={resTRClass} key={loopedProduct.product_id}>
-                    <td data-label="ID" className={resTDClass}>
-                      {loopedProduct.product_id}
-                    </td>
-                    <td data-label="Brand" className={resTDClass}>
-                      {loopedProduct.brand.brand_name}
-                    </td>
-                    <td data-label="Type" className={resTDClass}>
-                      {loopedProduct.type.type_name}
-                    </td>
-                    <td data-label="Model" className={resTDClass}>
-                      {loopedProduct.model.model_name}
-                    </td>
-                    <td data-label="Price" className={resTDClass}>
-                      £{loopedProduct.price}
-                    </td>
-                    <td
-                      data-label="Actions"
-                      className={`${resTDClass} md:text-right`}
-                    >
-                      <div className="btn-group">
-                        <FormBtn
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            const {
-                              product_id,
-                              price,
-                              brand_id,
-                              model_id,
-                              type_id,
-                            } = loopedProduct;
-                            setEditProduct({
-                              product_id,
-                              price,
-                              brand_id,
-                              model_id,
-                              type_id,
-                            });
-                            setEditModalOpen(true);
-                          }}
-                        >
-                          EDIT
-                        </FormBtn>
-                        <FormBtn
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            setDeletedProductID(loopedProduct.product_id);
-                            setDeleteModalOpen(true);
-                          }}
-                        >
-                          DELETE
-                        </FormBtn>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+        <div className="-mx-4 md:mx-0">
+          <table className="table">
+            <thead>
+              <tr className="hidden md:table-row">
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Type</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th className="md:text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products &&
+                products.map((loopedProduct: any) => {
+                  return (
+                    <tr className={respTRClass} key={loopedProduct.product_id}>
+                      <td data-label="ID" className={respTDClass}>
+                        {loopedProduct.product_id}
+                      </td>
+                      <td data-label="Brand" className={respTDClass}>
+                        {loopedProduct.brand.brand_name}
+                      </td>
+                      <td data-label="Type" className={respTDClass}>
+                        {loopedProduct.type.type_name}
+                      </td>
+                      <td data-label="Model" className={respTDClass}>
+                        {loopedProduct.model.model_name}
+                      </td>
+                      <td data-label="Price" className={respTDClass}>
+                        £{loopedProduct.price}
+                      </td>
+                      <td
+                        data-label="Actions"
+                        className={`${respTDClass} md:text-right`}
+                      >
+                        <div className="btn-group">
+                          <FormBtn
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              const {
+                                product_id,
+                                price,
+                                brand_id,
+                                model_id,
+                                type_id,
+                              } = loopedProduct;
+                              setEditProduct({
+                                product_id,
+                                price,
+                                brand_id,
+                                model_id,
+                                type_id,
+                              });
+                              setEditModalOpen(true);
+                            }}
+                          >
+                            EDIT
+                          </FormBtn>
+                          <FormBtn
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              setDeletedProductID(loopedProduct.product_id);
+                              setDeleteModalOpen(true);
+                            }}
+                          >
+                            DELETE
+                          </FormBtn>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p className="text-center">No products found...</p>
       )}

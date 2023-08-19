@@ -2,8 +2,8 @@ import type { products } from "@prisma/client";
 import { useEffect, useState } from "react";
 import {
   inputClass,
-  resTDClass,
-  resTRClass,
+  respTDClass,
+  respTRClass,
   selectClass,
 } from "~/utils/styleClasses";
 
@@ -55,11 +55,11 @@ const QuoteProductRow = ({
   };
 
   return (
-    <tr className={resTRClass}>
+    <tr className={respTRClass}>
       <td
         colSpan={product_id ? 1 : 4}
         data-label="Product"
-        className={resTDClass}
+        className={respTDClass}
       >
         <select
           className={selectClass}
@@ -87,7 +87,7 @@ const QuoteProductRow = ({
       </td>
       {product_id && (
         <>
-          <td data-label="Quantity" className={resTDClass}>
+          <td data-label="Quantity" className={respTDClass}>
             <input
               className={inputClass}
               name={`p_${rowId}_qty`}
@@ -103,12 +103,12 @@ const QuoteProductRow = ({
               }}
             />
           </td>
-          <td data-label="Unit (£)" className={`${resTDClass} md:text-right`}>
+          <td data-label="Unit (£)" className={`${respTDClass} md:text-right`}>
             {price ? price : " - "}
           </td>
           <td
             data-label="Subtotal (£)"
-            className={`${resTDClass} md:text-right`}
+            className={`${respTDClass} md:text-right`}
           >
             {subtotal ? subtotal : " - "}
           </td>

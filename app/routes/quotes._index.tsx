@@ -16,8 +16,8 @@ import { db, deleteQuoteById, deleteQuotedProdsById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
-  resTDClass,
-  resTRClass,
+  respTDClass,
+  respTRClass,
 } from "~/utils/styleClasses";
 
 type QuotesType = {
@@ -91,72 +91,74 @@ export default function QuotesIndex() {
   return (
     <>
       {quotes && quotes.length ? (
-        <table className="table static">
-          <thead>
-            <tr className="hidden md:table-row">
-              <th>ID</th>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Amount (£)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {quotes &&
-              quotes.map(
-                ({
-                  quote_id,
-                  createdAt,
-                  customer,
-                  quoted_products,
-                  labour,
-                  discount,
-                }: QuotesType) => {
-                  return (
-                    <tr className={resTRClass} key={quote_id}>
-                      <td data-label="ID" className={resTDClass}>
-                        {quote_id}
-                      </td>
-                      <td data-label="Date" className={resTDClass}>
-                        {prettifyDateString(createdAt)}
-                      </td>
-                      <td data-label="Customer" className={resTDClass}>
-                        {customer.name}
-                      </td>
-                      <td data-label="Amount (£)" className={resTDClass}>
-                        {quoted_products.reduce(
-                          (partialSum, qp) =>
-                            partialSum + qp.price * qp.quantity,
-                          0
-                        ) +
-                          labour -
-                          discount}
-                      </td>
-                      <td data-label="Actions" className={resTDClass}>
-                        <div className="btn-group">
-                          <FormAnchorButton
-                            isSubmitting={isSubmitting}
-                            href={`quotes/${quote_id}`}
-                          >
-                            View
-                          </FormAnchorButton>
-                          <FormBtn
-                            isSubmitting={isSubmitting}
-                            onClick={() => {
-                              setDeletedQuoteId(quote_id);
-                              setDeleteModalOpen(true);
-                            }}
-                          >
-                            DELETE
-                          </FormBtn>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-          </tbody>
-        </table>
+        <div className="-mx-4 md:mx-0">
+          <table className="table">
+            <thead>
+              <tr className="hidden md:table-row">
+                <th>ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Amount (£)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quotes &&
+                quotes.map(
+                  ({
+                    quote_id,
+                    createdAt,
+                    customer,
+                    quoted_products,
+                    labour,
+                    discount,
+                  }: QuotesType) => {
+                    return (
+                      <tr className={respTRClass} key={quote_id}>
+                        <td data-label="ID" className={respTDClass}>
+                          {quote_id}
+                        </td>
+                        <td data-label="Date" className={respTDClass}>
+                          {prettifyDateString(createdAt)}
+                        </td>
+                        <td data-label="Customer" className={respTDClass}>
+                          {customer.name}
+                        </td>
+                        <td data-label="Amount (£)" className={respTDClass}>
+                          {quoted_products.reduce(
+                            (partialSum, qp) =>
+                              partialSum + qp.price * qp.quantity,
+                            0
+                          ) +
+                            labour -
+                            discount}
+                        </td>
+                        <td data-label="Actions" className={respTDClass}>
+                          <div className="btn-group">
+                            <FormAnchorButton
+                              isSubmitting={isSubmitting}
+                              href={`quotes/${quote_id}`}
+                            >
+                              View
+                            </FormAnchorButton>
+                            <FormBtn
+                              isSubmitting={isSubmitting}
+                              onClick={() => {
+                                setDeletedQuoteId(quote_id);
+                                setDeleteModalOpen(true);
+                              }}
+                            >
+                              DELETE
+                            </FormBtn>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>No quotes found...</p>
       )}
