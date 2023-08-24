@@ -340,6 +340,7 @@ export default function QuotesCreate() {
               <option disabled value="">
                 Select a customer...
               </option>
+              <option value="-1">Add new customer +</option>
               {customers.map(
                 ({ customer_id, name, tel, email, address }: customers) => {
                   return (
@@ -349,7 +350,6 @@ export default function QuotesCreate() {
                   );
                 }
               )}
-              <option value="-1">Add new customer +</option>
             </select>
             {data?.quoteActionErrors?.customer && (
               <label className="label">
