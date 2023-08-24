@@ -251,10 +251,17 @@ export default function QuotesCreate() {
           const doesExist = Boolean(
             state.find((psv) => psv.row_id === values.row_id)
           );
-          if (!doesExist) return [...state, { ...values }];
+          if (!doesExist) {
+            setProductCount((pCount) => pCount + 1);
+            return [...state, { ...values }];
+          }
           return state;
         case "remove":
-          return state.filter((psv) => psv.row_id !== values.row_id);
+          const newState = state.filter((psv) => psv.row_id !== values.row_id);
+          setProductCount((pCount) => pCount - 1);
+          return newState.map((psv, i) => {
+            return { ...psv, row_id: `${i + 1}` };
+          });
         default:
           return state;
       }
@@ -376,13 +383,13 @@ export default function QuotesCreate() {
               <thead>
                 <tr className="hidden md:table-row">
                   <th>Product</th>
-                  <th className="w-[100px]">Quantity</th>
+                  <th className="w-[150px]">Quantity</th>
                   <th className="text-right w-[150px]">Unit price</th>
                   <th className="text-right w-[150px]">Item total</th>
                 </tr>
               </thead>
               <tbody>
-                {[...Array(productCount)].map((e, i) => (
+                {productSelectValues.map((e, i) => (
                   <QuoteProductRow
                     key={i}
                     rowId={`${i + 1}`}
@@ -399,12 +406,9 @@ export default function QuotesCreate() {
                         isSubmitting={isSubmitting}
                         onClick={(e) => {
                           e.preventDefault();
-                          setProductCount((pCount) => {
-                            dispatchPSV({
-                              type: "remove",
-                              row_id: `${pCount}`,
-                            });
-                            return pCount - 1;
+                          dispatchPSV({
+                            type: "remove",
+                            row_id: `${productCount}`,
                           });
                         }}
                       >
@@ -414,15 +418,12 @@ export default function QuotesCreate() {
                         isSubmitting={isSubmitting}
                         onClick={(e) => {
                           e.preventDefault();
-                          setProductCount((pCount) => {
-                            dispatchPSV({
-                              type: "add",
-                              row_id: `${pCount + 1}`,
-                              product_id: "",
-                              quantity: 1,
-                              price: 0,
-                            });
-                            return pCount + 1;
+                          dispatchPSV({
+                            type: "add",
+                            row_id: `${productCount + 1}`,
+                            product_id: "",
+                            quantity: 1,
+                            price: 0,
                           });
                         }}
                       >

@@ -1,12 +1,13 @@
 import type { products } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { getCurrencyString } from "../utils/formatters";
 import {
   inputClass,
   respTDClass,
   respTRClass,
   selectClass,
 } from "~/utils/styleClasses";
+import { getCurrencyString } from "../utils/formatters";
+import FormBtn from "./FormBtn";
 
 type PsvType = {
   row_id: string;
@@ -55,6 +56,10 @@ const QuoteProductRow = ({
     dispatchPSV({ type: "update", row_id: rowId, quantity: new_qty });
   };
 
+  const handleDeleteBtn = (deletedRow_id: string) => {
+    dispatchPSV({ type: "remove", row_id: deletedRow_id });
+  };
+
   return (
     <tr className={respTRClass}>
       <td
@@ -90,21 +95,34 @@ const QuoteProductRow = ({
       {product_id && (
         <>
           <td data-label="Quantity" className={respTDClass}>
-            <input
-              className={inputClass}
-              name={`p_${rowId}_qty`}
-              id={`p_${rowId}_qty`}
-              type="number"
-              min="1"
-              value={quantity}
-              onChange={(e) => handleQtyInput(parseInt(e.target.value))}
-              onBlur={(e) => {
-                const val = parseInt(e.target.value);
-                if (isNaN(val) || val < 1) {
-                  handleQtyInput(1);
-                }
-              }}
-            />
+            <div className="relative">
+              <input
+                className={inputClass}
+                name={`p_${rowId}_qty`}
+                id={`p_${rowId}_qty`}
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => handleQtyInput(parseInt(e.target.value))}
+                onBlur={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val) || val < 1) {
+                    handleQtyInput(1);
+                  }
+                }}
+              />
+              {productSelectValues.length > 1 && (
+                <FormBtn
+                  className="absolute right-0 bg-transparent border-0 rounded-l-none"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDeleteBtn(rowId);
+                  }}
+                >
+                  &#10005;
+                </FormBtn>
+              )}
+            </div>
           </td>
           <td
             data-label="Unit price"
