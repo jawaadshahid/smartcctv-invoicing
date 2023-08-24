@@ -1,14 +1,17 @@
 import { Form } from "@remix-run/react";
-import type { customers, quoted_products, users } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import type { customers, users } from "@prisma/client";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
+import type { QuotedProductsType } from "~/utils/types";
+import { getCurrencyString, getSubtotal, getTwoDecimalPlaces } from "../utils/formatters";
 
 type ProductDataType = {
-  quoted_products: quoted_products[];
-  labour: number;
-  discount: number;
-  grandTotal: number;
+  quoted_products: QuotedProductsType[];
+  labour: Prisma.Decimal;
+  discount: Prisma.Decimal;
+  grandTotal: Prisma.Decimal;
 };
 
 const ShareQuoteForm = ({
@@ -29,6 +32,9 @@ const ShareQuoteForm = ({
   formErrors: any;
 }) => {
   const { quoted_products, labour, discount, grandTotal } = productData;
+  const labourDec = new Prisma.Decimal(labour);
+  const discountDec = new Prisma.Decimal(discount);
+  const subtotalDec = getSubtotal(quoted_products)
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
@@ -41,23 +47,42 @@ const ShareQuoteForm = ({
       />
       {quoted_products &&
         quoted_products.map(
-          ({ name, quantity, price }: quoted_products, ind) => {
+          ({ name, quantity, price }: QuotedProductsType, ind) => {
+            const priceDec = new Prisma.Decimal(price);
             return (
               <input
                 key={ind + 1}
                 type="hidden"
-                value={`${name} x${quantity}: £${price * quantity}`}
+                value={`${name} x${quantity}: ${getCurrencyString(
+                  priceDec.toNumber() * quantity
+                )}`}
                 name={`prod_${ind + 1}`}
                 id={`prod_${ind + 1}`}
               />
             );
           }
         )}
-      <input type="hidden" value={labour} name="labour" id="labour" />
-      <input type="hidden" value={discount} name="discount" id="discount" />
       <input
         type="hidden"
-        value={grandTotal}
+        value={getTwoDecimalPlaces(subtotalDec)}
+        name="subtotal"
+        id="subtotal"
+      />
+      <input
+        type="hidden"
+        value={getTwoDecimalPlaces(labourDec)}
+        name="labour"
+        id="labour"
+      />
+      <input
+        type="hidden"
+        value={getTwoDecimalPlaces(discountDec)}
+        name="discount"
+        id="discount"
+      />
+      <input
+        type="hidden"
+        value={getTwoDecimalPlaces(grandTotal)}
         name="grandTotal"
         id="grandTotal"
       />

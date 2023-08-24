@@ -1,4 +1,4 @@
-import type { customers, quoted_products } from "@prisma/client";
+import { Prisma, type quoted_products } from "@prisma/client";
 import {
   Document,
   Image,
@@ -9,21 +9,17 @@ import {
   renderToStream,
 } from "@react-pdf/renderer";
 import { db } from "~/utils/db";
-
-type QuotesType = {
-  quote_id: number;
-  createdAt: string;
-  updatedAt: string;
-  customer: customers;
-  labour: number;
-  discount: number;
-  quoted_products: quoted_products[];
-};
+import {
+  getCurrencyString,
+  getGrandTotal,
+  getSubtotal,
+} from "~/utils/formatters";
+import type { QuotesType } from "~/utils/types";
 
 export const getQuoteBuffer = async (quoteid: string | undefined) => {
   if (!quoteid) return Promise.reject({ error: "quote id is not defined" });
   const id = quoteid as string;
-  let quote: any;
+  let quote: QuotesType | any;
   try {
     quote = await db.quotes.findUnique({
       where: {
@@ -35,8 +31,10 @@ export const getQuoteBuffer = async (quoteid: string | undefined) => {
       },
     });
   } catch (error) {
-    Promise.reject({ error });
+    return Promise.reject({ error });
   }
+
+  if (!quote) return Promise.reject({ msg: "quote not found!" });
 
   let stream = await renderToStream(<QuotePDFDoc quote={quote} />);
   // and transform it to a Buffer to send in the Response
@@ -111,14 +109,8 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
     quote;
   const { name, tel, email, address } = customer;
   const date = new Date(createdAt);
-
-  let grandTotal = 0;
-  quoted_products.forEach(
-    ({ price, quantity }) => (grandTotal += price * quantity)
-  );
-  grandTotal += labour;
-  grandTotal -= discount;
-
+  const subtotal = getSubtotal(quoted_products);
+  const grandTotal = getGrandTotal(subtotal, labour, discount);
   return (
     <Document title={`Smart CCTV quote #${quote_id}, for ${name}`}>
       <Page size="A4" style={styles.page}>
@@ -163,7 +155,7 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
                 <Text>Unit price</Text>
               </View>
               <View style={styles.tableCell}>
-                <Text>Total price</Text>
+                <Text>Item total</Text>
               </View>
             </View>
             {quoted_products &&
@@ -182,28 +174,36 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
                       <Text>{quantity}</Text>
                     </View>
                     <View style={styles.tableCell}>
-                      <Text>£{price}.00</Text>
+                      <Text>{getCurrencyString(price)}</Text>
                     </View>
                     <View style={styles.tableCell}>
-                      <Text>£{price * quantity}.00</Text>
+                      <Text>
+                        {getCurrencyString(Prisma.Decimal.mul(price, quantity))}
+                      </Text>
                     </View>
                   </View>
                 )
               )}
           </View>
           <View style={styles.endRow}>
-            <Text style={styles.endField}>Labour:</Text>
-            <Text style={styles.endValue}>£{labour}.00</Text>
+            <Text style={styles.endField}>Subtotal:</Text>
+            <Text style={styles.endValue}>{getCurrencyString(subtotal)}</Text>
           </View>
-          {discount && (
+          <View style={styles.endRow}>
+            <Text style={styles.endField}>Labour:</Text>
+            <Text style={styles.endValue}>{getCurrencyString(labour)}</Text>
+          </View>
+          {discount.toNumber() > 0 && (
             <View style={styles.endRow}>
               <Text style={styles.endField}>Discount:</Text>
-              <Text style={styles.endValue}>-£{discount}.00</Text>
+              <Text style={styles.endValue}>
+                -{getCurrencyString(discount)}
+              </Text>
             </View>
           )}
           <View style={styles.endRow}>
             <Text style={styles.endField}>Grand total:</Text>
-            <Text style={styles.endValue}>£{grandTotal}.00</Text>
+            <Text style={styles.endValue}>{getCurrencyString(grandTotal)}</Text>
           </View>
         </View>
       </Page>

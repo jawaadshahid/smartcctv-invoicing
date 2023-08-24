@@ -1,5 +1,6 @@
 import type { products } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { getCurrencyString } from "../utils/formatters";
 import {
   inputClass,
   respTDClass,
@@ -10,7 +11,7 @@ import {
 type PsvType = {
   row_id: string;
   product_id: string;
-  qty: number;
+  quantity: number;
   price: number;
 };
 
@@ -26,16 +27,16 @@ const QuoteProductRow = ({
   dispatchPSV: any;
 }) => {
   const currPSV = productSelectValues.find((p) => p.row_id === rowId);
-  const { price, qty, product_id } = currPSV || {
+  const { price, quantity, product_id } = currPSV || {
     price: 0,
-    qty: 1,
+    quantity: 1,
     product_id: "",
   };
-  const [subtotal, setSubtotal] = useState(price * qty);
+  const [itemTotal, setItemTotal] = useState(price * quantity);
 
   useEffect(() => {
-    setSubtotal(price * (qty || 1));
-  }, [price, qty]);
+    setItemTotal(price * (quantity || 1));
+  }, [price, quantity]);
 
   const handleSelect = (new_product_id: string) => {
     const selectedProd: products | undefined = products.find(
@@ -51,7 +52,7 @@ const QuoteProductRow = ({
   };
 
   const handleQtyInput = (new_qty: number) => {
-    dispatchPSV({ type: "update", row_id: rowId, qty: new_qty });
+    dispatchPSV({ type: "update", row_id: rowId, quantity: new_qty });
   };
 
   return (
@@ -77,7 +78,8 @@ const QuoteProductRow = ({
             ({ product_id, brand_name, type_name, model_name, price }) => {
               return (
                 <option key={product_id} value={product_id}>
-                  {brand_name} - {type_name} - {model_name} - {price}
+                  {brand_name} - {type_name} - {model_name} -{" "}
+                  {getCurrencyString(price)}
                 </option>
               );
             }
@@ -94,23 +96,27 @@ const QuoteProductRow = ({
               id={`p_${rowId}_qty`}
               type="number"
               min="1"
-              value={qty}
+              value={quantity}
               onChange={(e) => handleQtyInput(parseInt(e.target.value))}
               onBlur={(e) => {
-                if (isNaN(parseInt(e.target.value))) {
+                const val = parseInt(e.target.value);
+                if (isNaN(val) || val < 1) {
                   handleQtyInput(1);
                 }
               }}
             />
           </td>
-          <td data-label="Unit (£)" className={`${respTDClass} md:text-right`}>
-            {price ? price : " - "}
-          </td>
           <td
-            data-label="Subtotal (£)"
+            data-label="Unit price"
             className={`${respTDClass} md:text-right`}
           >
-            {subtotal ? subtotal : " - "}
+            {price ? getCurrencyString(price) : " - "}
+          </td>
+          <td
+            data-label="Item total"
+            className={`${respTDClass} md:text-right`}
+          >
+            {itemTotal ? getCurrencyString(itemTotal) : " - "}
           </td>
         </>
       )}

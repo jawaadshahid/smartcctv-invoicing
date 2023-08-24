@@ -1,8 +1,9 @@
-import type {
-  product_brands,
-  product_models,
-  product_types,
-  products,
+import {
+  Prisma,
+  type product_brands,
+  type product_models,
+  type product_types,
+  type products,
 } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -18,6 +19,7 @@ import Modal from "~/components/Modal";
 import ProductForm from "~/components/ProductForm";
 import { SITE_TITLE } from "~/root";
 import { createProduct, db, deleteProductById, editProduct } from "~/utils/db";
+import { getCurrencyString } from "~/utils/formatters";
 import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,
@@ -35,12 +37,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const [brands, types, models, products]: [
-      brands: product_brands[],
-      types: product_types[],
-      models: product_models[],
-      products: products[]
-    ] = await Promise.all([
+    const [brands, types, models, products] = await Promise.all([
       db.product_brands.findMany(),
       db.product_types.findMany(),
       db.product_models.findMany(),
@@ -152,7 +149,7 @@ export default function Products() {
     types,
     models,
   }: {
-    products: products[];
+    products: products[] | any[];
     brands: product_brands[];
     types: product_types[];
     models: product_models[];
@@ -161,9 +158,9 @@ export default function Products() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const [deletedProductID, setDeletedProductID] = useState(0);
-  const [editProduct, setEditProduct] = useState({
+  const [productToEdit, setProductToEdit] = useState({
     product_id: 0,
-    price: 0,
+    price: new Prisma.Decimal(0),
     brand_id: 0,
     model_id: 0,
     type_id: 0,
@@ -196,65 +193,69 @@ export default function Products() {
             </thead>
             <tbody>
               {products &&
-                products.map((loopedProduct: any) => {
-                  return (
-                    <tr className={respTRClass} key={loopedProduct.product_id}>
-                      <td data-label="ID" className={respTDClass}>
-                        {loopedProduct.product_id}
-                      </td>
-                      <td data-label="Brand" className={respTDClass}>
-                        {loopedProduct.brand.brand_name}
-                      </td>
-                      <td data-label="Type" className={respTDClass}>
-                        {loopedProduct.type.type_name}
-                      </td>
-                      <td data-label="Model" className={respTDClass}>
-                        {loopedProduct.model.model_name}
-                      </td>
-                      <td data-label="Price" className={respTDClass}>
-                        £{loopedProduct.price}
-                      </td>
-                      <td
-                        data-label="Actions"
-                        className={`${respTDClass} md:text-right`}
-                      >
-                        <div className="btn-group">
-                          <FormBtn
-                            isSubmitting={isSubmitting}
-                            onClick={() => {
-                              const {
-                                product_id,
-                                price,
-                                brand_id,
-                                model_id,
-                                type_id,
-                              } = loopedProduct;
-                              setEditProduct({
-                                product_id,
-                                price,
-                                brand_id,
-                                model_id,
-                                type_id,
-                              });
-                              setEditModalOpen(true);
-                            }}
-                          >
-                            EDIT
-                          </FormBtn>
-                          <FormBtn
-                            isSubmitting={isSubmitting}
-                            onClick={() => {
-                              setDeletedProductID(loopedProduct.product_id);
-                              setDeleteModalOpen(true);
-                            }}
-                          >
-                            DELETE
-                          </FormBtn>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                products.map(
+                  ({
+                    product_id,
+                    brand_name,
+                    type_name,
+                    model_name,
+                    brand_id,
+                    model_id,
+                    type_id,
+                    price,
+                  }: products) => {
+                    return (
+                      <tr className={respTRClass} key={product_id}>
+                        <td data-label="ID" className={respTDClass}>
+                          {product_id}
+                        </td>
+                        <td data-label="Brand" className={respTDClass}>
+                          {brand_name}
+                        </td>
+                        <td data-label="Type" className={respTDClass}>
+                          {type_name}
+                        </td>
+                        <td data-label="Model" className={respTDClass}>
+                          {model_name}
+                        </td>
+                        <td data-label="Price" className={respTDClass}>
+                          {getCurrencyString(price)}
+                        </td>
+                        <td
+                          data-label="Actions"
+                          className={`${respTDClass} md:text-right`}
+                        >
+                          <div className="btn-group">
+                            <FormBtn
+                              isSubmitting={isSubmitting}
+                              onClick={() => {
+                                setProductToEdit({
+                                  product_id,
+                                  price,
+                                  brand_id,
+                                  model_id,
+                                  type_id,
+                                });
+                                setEditModalOpen(true);
+                              }}
+                            >
+                              EDIT
+                            </FormBtn>
+                            <FormBtn
+                              isSubmitting={isSubmitting}
+                              onClick={() => {
+                                setDeletedProductID(product_id);
+                                setDeleteModalOpen(true);
+                              }}
+                            >
+                              DELETE
+                            </FormBtn>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
             </tbody>
           </table>
         </div>
@@ -281,7 +282,7 @@ export default function Products() {
               types,
               models,
             }}
-            existingData={editProduct}
+            existingData={productToEdit}
             navigation={navigation}
             formErrors={data?.editActionErrors}
             onCancel={() => {

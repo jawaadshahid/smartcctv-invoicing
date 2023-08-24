@@ -33,19 +33,19 @@ model quotes {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   customer_id     Int               @unique
-  labour          Int               @default(0)
-  discount        Int               @default(0)
+  labour          Decimal           @db.Decimal(8, 2)
+  discount        Decimal           @db.Decimal(8, 2)
   quoted_products quoted_products[]
   customer        customers         @relation(fields: [customer_id], references: [customer_id])
 }
 
 model quoted_products {
-  invprod_id Int    @id @default(autoincrement())
+  invprod_id Int     @id @default(autoincrement())
   quote_id   Int
-  name       String @db.VarChar(190)
-  quantity   Int    @default(1) @db.SmallInt
-  price      Int
-  quote      quotes @relation(fields: [quote_id], references: [quote_id])
+  name       String  @db.VarChar(190)
+  quantity   Int     @default(1) @db.SmallInt
+  price      Decimal @db.Decimal(8, 2)
+  quote      quotes  @relation(fields: [quote_id], references: [quote_id])
 
   @@index([quote_id], map: "quoted_products_quote_id_fkey")
 }
@@ -55,7 +55,7 @@ model products {
   model_id   Int
   brand_id   Int
   type_id    Int
-  price      Int
+  price      Decimal        @db.Decimal(8, 2)
   brand_name String
   model_name String
   type_name  String
@@ -96,7 +96,7 @@ model product_types {
 }
 
 model jobs {
-  job_id Int @id @default(autoincrement())
+  job_id    Int    @id @default(autoincrement())
   job_title String @db.VarChar(190)
-  job_body String @db.Text
+  job_body  String @db.Text
 }

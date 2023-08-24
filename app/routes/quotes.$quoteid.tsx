@@ -1,4 +1,4 @@
-import type { customers, quoted_products } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
@@ -14,17 +14,15 @@ import { db } from "~/utils/db";
 import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import { TDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
+import type { QuotedProductsType, QuotesType } from "~/utils/types";
 import { validateEmail } from "~/utils/validations";
-
-type QuotesType = {
-  quote_id: number;
-  createdAt: string;
-  updatedAt: string;
-  customer: customers;
-  labour: number;
-  discount: number;
-  quoted_products: quoted_products[];
-};
+import {
+  constructEmailBody,
+  getCurrencyString,
+  getGrandTotal,
+  getSubtotal,
+  prettifyDateString,
+} from "../utils/formatters";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - View quote ` }];
@@ -60,29 +58,6 @@ const getEmailsFromEntry = (emailsEntry: FormDataEntryValue) => {
     : [];
 };
 
-const constructEmailBody = (
-  labour: FormDataEntryValue,
-  discount: FormDataEntryValue,
-  grandTotal: FormDataEntryValue,
-  productCount: FormDataEntryValue,
-  productData: any
-) => {
-  const pCount: number = parseInt(`${productCount}`);
-  let htmlStr = `<p>Hi,<br>Please see below for your quotation:</p>`;
-  htmlStr += `<p>`;
-  for (let ind = 0; ind < pCount; ind++) {
-    const productValue: FormDataEntryValue = productData[`prod_${ind + 1}`];
-    htmlStr += `${productValue}<br>`;
-  }
-  htmlStr += `Labour: £${labour}<br>`;
-  if (parseInt(`${discount}`) > 0) htmlStr += `Discount: -£${discount}<br>`;
-  htmlStr += `Total: £${grandTotal}`;
-  htmlStr += `</p>`;
-  htmlStr += `<p>A PDF containing your quotation is also attached for your records.</p>`;
-  htmlStr += `<p>Kind Regards,<br>Smart CCTV</p>`;
-  return htmlStr;
-};
-
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
@@ -93,6 +68,7 @@ export async function action({ request }: ActionArgs) {
         customerEmail,
         userEmail,
         otherEmails,
+        subtotal,
         labour,
         discount,
         grandTotal,
@@ -122,6 +98,7 @@ export async function action({ request }: ActionArgs) {
       ];
 
       const emailBody = constructEmailBody(
+        subtotal,
         labour,
         discount,
         grandTotal,
@@ -160,30 +137,31 @@ export async function action({ request }: ActionArgs) {
   return {};
 }
 
-const prettifyDateString = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toDateString();
-};
-
 export default function QuoteId() {
   const user: any = useContext(UserContext);
-  const { quote }: { quote: QuotesType } = useLoaderData();
-  const { createdAt, discount, labour, customer, quoted_products } = quote;
+  const { quote } = useLoaderData();
+  const { createdAt, discount, labour, customer, quoted_products }: QuotesType =
+    quote;
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === "submitting";
-  const [grandTotal, setGrandTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(new Prisma.Decimal(0));
+  const [grandTotal, setGrandTotal] = useState(new Prisma.Decimal(0));
   const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
-    setGrandTotal(() => {
-      let subTotals = 0;
-      quoted_products.forEach(
-        ({ price, quantity }) => (subTotals += price * quantity)
-      );
-      return subTotals + labour - discount;
-    });
-  }, [discount, labour, quoted_products]);
+    setSubtotal(getSubtotal(quoted_products));
+  }, [quoted_products]);
+
+  useEffect(() => {
+    setGrandTotal(
+      getGrandTotal(
+        subtotal,
+        new Prisma.Decimal(labour),
+        new Prisma.Decimal(discount)
+      )
+    );
+  }, [discount, labour, subtotal]);
 
   return (
     <div>
@@ -201,14 +179,14 @@ export default function QuoteId() {
             <tr className="hidden md:table-row">
               <th>Name</th>
               <th>Quantity</th>
-              <th className="text-right">Unit Price (£)</th>
-              <th className="text-right">Subtotal (£)</th>
+              <th className="text-right">Unit price</th>
+              <th className="text-right">Item total</th>
             </tr>
           </thead>
           <tbody>
             {quoted_products &&
               quoted_products.map(
-                ({ invprod_id, name, quantity, price }: quoted_products) => {
+                ({ invprod_id, name, quantity, price }: QuotedProductsType) => {
                   return (
                     <tr key={invprod_id} className={respTRClass}>
                       <td data-label="Name" className={respTDClass}>
@@ -218,16 +196,16 @@ export default function QuoteId() {
                         {quantity}
                       </td>
                       <td
-                        data-label="Unit Price (£)"
+                        data-label="Unit price"
                         className={`${respTDClass} md:text-right`}
                       >
-                        {price}
+                        {getCurrencyString(price)}
                       </td>
                       <td
-                        data-label="Subtotal (£)"
+                        data-label="Item total"
                         className={`${respTDClass} md:text-right`}
                       >
-                        {price * quantity}
+                        {getCurrencyString(Prisma.Decimal.mul(price, quantity))}
                       </td>
                     </tr>
                   );
@@ -239,7 +217,7 @@ export default function QuoteId() {
                 className={`${TDClass} hidden md:table-cell`}
               ></td>
               <td className={`${TDClass} md:text-right`}>
-                Labour cost (£): {labour}
+                Subtotal: {getCurrencyString(subtotal)}
               </td>
             </tr>
             <tr className={respTRClass}>
@@ -248,7 +226,7 @@ export default function QuoteId() {
                 className={`${TDClass} hidden md:table-cell`}
               ></td>
               <td className={`${TDClass} md:text-right`}>
-                Discount (£): {discount}
+                Labour: {getCurrencyString(labour)}
               </td>
             </tr>
             <tr className={respTRClass}>
@@ -257,7 +235,16 @@ export default function QuoteId() {
                 className={`${TDClass} hidden md:table-cell`}
               ></td>
               <td className={`${TDClass} md:text-right`}>
-                Total cost (£): {grandTotal}
+                Discount: -{getCurrencyString(discount)}
+              </td>
+            </tr>
+            <tr className={respTRClass}>
+              <td
+                colSpan={3}
+                className={`${TDClass} hidden md:table-cell`}
+              ></td>
+              <td className={`${TDClass} md:text-right`}>
+                Total: {getCurrencyString(grandTotal)}
               </td>
             </tr>
           </tbody>

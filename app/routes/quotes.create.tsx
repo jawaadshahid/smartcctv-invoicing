@@ -1,11 +1,11 @@
 import type {
-  Prisma,
   customers,
   product_brands,
   product_models,
   product_types,
   products,
 } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -16,13 +16,18 @@ import {
 } from "@remix-run/react";
 import { useEffect, useReducer, useState } from "react";
 import CreateCustomerForm from "~/components/CreateCustomerForm";
-import ProductForm from "~/components/ProductForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import ProductForm from "~/components/ProductForm";
 import QuoteProductRow from "~/components/QuoteProductRow";
 import { SITE_TITLE } from "~/root";
 import { createCustomer, createProduct, db } from "~/utils/db";
+import {
+  getGrandTotal,
+  getSubtotal,
+  getTwoDecimalPlaces,
+} from "~/utils/formatters";
 import { getUserId } from "~/utils/session";
 import {
   TDClass,
@@ -206,7 +211,7 @@ export default function QuotesCreate() {
     models,
   }: {
     customers: customers[];
-    products: products[];
+    products: products[] | any[];
     brands: product_brands[];
     types: product_types[];
     models: product_models[];
@@ -216,9 +221,12 @@ export default function QuotesCreate() {
   const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [customerSelectValue, setCustomerSelectValue] = useState("");
   const [productCount, setProductCount] = useState(1);
-  const [labour, setLabour] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [grandtotal, setGrandtotal] = useState(0);
+  const [labour, setLabour] = useState("0");
+  const [discount, setDiscount] = useState("0");
+  const [subtotal, setSubtotal] = useState("0");
+  const [grandtotal, setGrandtotal] = useState("0");
+  const [labourValue, setLabourValue] = useState(0);
+  const [discountValue, setDiscountValue] = useState(0);
   const [newProductRow, setNewProductRow] = useState(0);
   const [isNewProduct, setIsNewProduct] = useState(false);
   const [productSelectValues, dispatchPSV] = useReducer(
@@ -251,19 +259,31 @@ export default function QuotesCreate() {
           return state;
       }
     },
-    [{ row_id: "1", product_id: "", qty: 1, price: 0 }]
+    [{ row_id: "1", product_id: "", quantity: 1, price: new Prisma.Decimal(0) }]
   );
 
   useEffect(() => {
-    setGrandtotal(
-      productSelectValues.reduce(
-        (partialSum, a: any) => partialSum + a.price * (a.qty || 1),
-        0
-      ) +
-        (labour || 0) -
-        (discount || 0)
-    );
-  }, [productSelectValues, labour, discount]);
+    const labourNum = Number(labour);
+    setLabourValue(isNaN(labourNum) ? 0 : labourNum);
+  }, [labour]);
+
+  useEffect(() => {
+    const discountNum = Number(discount);
+    setDiscountValue(isNaN(discountNum) ? 0 : discountNum);
+  }, [discount]);
+
+  useEffect(() => {
+    const subTotalDec = getSubtotal(productSelectValues);
+    setSubtotal(getTwoDecimalPlaces(subTotalDec));
+  }, [productSelectValues]);
+
+  useEffect(() => {
+    const subTotalDec = getSubtotal(productSelectValues);
+    const labourDec = new Prisma.Decimal(labourValue);
+    const discountDec = new Prisma.Decimal(discountValue);
+    const grandTotalDec = getGrandTotal(subTotalDec, labourDec, discountDec);
+    setGrandtotal(getTwoDecimalPlaces(grandTotalDec));
+  }, [productSelectValues, labourValue, discountValue]);
 
   useEffect(() => {
     setIsNewCustomer(customerSelectValue === "-1");
@@ -357,8 +377,8 @@ export default function QuotesCreate() {
                 <tr className="hidden md:table-row">
                   <th>Product</th>
                   <th className="w-[100px]">Quantity</th>
-                  <th className="text-right w-[150px]">Unit (£)</th>
-                  <th className="text-right w-[150px]">Subtotal (£)</th>
+                  <th className="text-right w-[150px]">Unit price</th>
+                  <th className="text-right w-[150px]">Item total</th>
                 </tr>
               </thead>
               <tbody>
@@ -399,7 +419,7 @@ export default function QuotesCreate() {
                               type: "add",
                               row_id: `${pCount + 1}`,
                               product_id: "",
-                              qty: 1,
+                              quantity: 1,
                               price: 0,
                             });
                             return pCount + 1;
@@ -417,22 +437,42 @@ export default function QuotesCreate() {
                     className={`${TDClass} hidden md:table-cell`}
                   ></td>
                   <td className={`${TDClass} flex md:table-cell`}>
-                    <label className="label md:justify-end" htmlFor="labour">
-                      <span className="label-text">Labour cost (£):</span>
+                    <label className="label md:justify-end">
+                      <span className="label-text">Subtotal:</span>
                     </label>
                   </td>
                   <td className={TDClass}>
                     <input
+                      disabled
+                      value={subtotal}
+                      className={`${inputClass} md:text-right`}
+                    />
+                  </td>
+                </tr>
+                <tr className={respTRClass}>
+                  <td
+                    colSpan={2}
+                    className={`${TDClass} hidden md:table-cell`}
+                  ></td>
+                  <td className={`${TDClass} flex md:table-cell`}>
+                    <label className="label md:justify-end" htmlFor="labour">
+                      <span className="label-text">Labour:</span>
+                    </label>
+                  </td>
+                  <td className={TDClass}>
+                    <input type="hidden" name="labour" value={labourValue} />
+                    <input
+                      id="labour"
                       type="number"
                       min="0"
-                      name="labour"
-                      id="labour"
+                      step="any"
                       value={labour}
                       className={`${inputClass} md:text-right`}
-                      onChange={(e) => setLabour(parseInt(e.target.value))}
-                      onBlur={(e) => {
-                        const numval = parseInt(e.target.value);
-                        setLabour(!isNaN(numval) ? numval : 0);
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const pennies = val.split(".")[1];
+                        if (!pennies || (pennies && pennies.length <= 2))
+                          setLabour(val);
                       }}
                     />
                   </td>
@@ -444,21 +484,26 @@ export default function QuotesCreate() {
                   ></td>
                   <td className={`${TDClass} flex md:table-cell`}>
                     <label className="label md:justify-end" htmlFor="discount">
-                      <span className="label-text">Discount (£):</span>
+                      <span className="label-text">Discount:</span>
                     </label>
                   </td>
                   <td className={TDClass}>
                     <input
+                      type="hidden"
+                      name="discount"
+                      value={discountValue}
+                    />
+                    <input
+                      id="discount"
                       type="number"
                       min="0"
-                      name="discount"
-                      id="discount"
                       value={discount}
                       className={`${inputClass} md:text-right`}
-                      onChange={(e) => setDiscount(parseInt(e.target.value))}
-                      onBlur={(e) => {
-                        const numval = parseInt(e.target.value);
-                        setDiscount(!isNaN(numval) ? numval : 0);
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const pennies = val.split(".")[1];
+                        if (!pennies || (pennies && pennies.length <= 2))
+                          setDiscount(val);
                       }}
                     />
                   </td>
@@ -470,12 +515,11 @@ export default function QuotesCreate() {
                   ></td>
                   <td className={`${TDClass} flex md:table-cell`}>
                     <label className="label md:justify-end">
-                      <span className="label-text">Total cost (£):</span>
+                      <span className="label-text">Total:</span>
                     </label>
                   </td>
                   <td className={TDClass}>
                     <input
-                      type="number"
                       disabled
                       value={grandtotal}
                       className={`${inputClass} md:text-right`}

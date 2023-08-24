@@ -1,5 +1,5 @@
-import type { Prisma } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+import { Prisma , PrismaClient } from "@prisma/client";
+
 
 declare const global: Global & { db?: PrismaClient };
 
@@ -102,15 +102,15 @@ const editProduct = async (
     model: isModelSelected
       ? { connect: { model_id: parseInt(model) } }
       : { create: { model_name: newmodel } },
-    price: Number(price),
+    price: new Prisma.Decimal(price),
   };
 
   return db.products.update({
     where: {
-      product_id
+      product_id,
     },
-    data: updatedProduct
-  })
+    data: updatedProduct,
+  });
 };
 
 const createProduct = async (
@@ -136,22 +136,22 @@ const createProduct = async (
     model: isModelSelected
       ? { connect: { model_id: parseInt(model) } }
       : { create: { model_name: newmodel } },
-    price: Number(price),
+    price: new Prisma.Decimal(price),
   };
 
   return db.products.create({ data: newProduct });
 };
 
 export {
-  db,
-  getUserByEmail,
-  getUserById,
-  deleteUserById,
-  deleteProductById,
-  deleteCustomerById,
   createCustomer,
   createProduct,
-  editProduct,
+  db,
+  deleteCustomerById,
+  deleteProductById,
   deleteQuoteById,
   deleteQuotedProdsById,
+  deleteUserById,
+  editProduct,
+  getUserByEmail,
+  getUserById,
 };

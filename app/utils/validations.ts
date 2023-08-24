@@ -80,7 +80,7 @@ export const validateProductData = ({
   if (!isModelSelected && !newmodel) {
     errors.model = "a model must be selected or defined";
   }
-  if (!price || parseInt(price) <= 0) {
+  if (!price || Number(price) <= 0) {
     errors.price = "a valid price must be defined";
   }
   return errors;

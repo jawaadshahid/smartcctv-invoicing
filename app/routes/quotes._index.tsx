@@ -1,4 +1,4 @@
-import type { customers, quoted_products } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -19,16 +19,8 @@ import {
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
-
-type QuotesType = {
-  quote_id: number;
-  createdAt: string;
-  updatedAt: string;
-  customer: customers;
-  labour: number;
-  discount: number;
-  quoted_products: quoted_products[];
-};
+import type { QuotesType } from "~/utils/types";
+import { getCurrencyString, prettifyDateString } from "../utils/formatters";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];
@@ -70,13 +62,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 };
 
-const prettifyDateString = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toDateString();
-};
-
 export default function QuotesIndex() {
-  const { quotes } = useLoaderData();
+  const { quotes }: { quotes: QuotesType[] | any[] } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -98,7 +85,7 @@ export default function QuotesIndex() {
                 <th>ID</th>
                 <th>Date</th>
                 <th>Customer</th>
-                <th>Amount (£)</th>
+                <th>Amount</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -124,14 +111,23 @@ export default function QuotesIndex() {
                         <td data-label="Customer" className={respTDClass}>
                           {customer.name}
                         </td>
-                        <td data-label="Amount (£)" className={respTDClass}>
-                          {quoted_products.reduce(
-                            (partialSum, qp) =>
-                              partialSum + qp.price * qp.quantity,
-                            0
-                          ) +
-                            labour -
-                            discount}
+                        <td data-label="Amount" className={respTDClass}>
+                          {getCurrencyString(
+                            Prisma.Decimal.sub(
+                              Prisma.Decimal.add(
+                                quoted_products.reduce(
+                                  (partialSum, qp) =>
+                                    Prisma.Decimal.mul(
+                                      Prisma.Decimal.add(partialSum, qp.price),
+                                      qp.quantity
+                                    ).toNumber(),
+                                  0
+                                ),
+                                labour
+                              ),
+                              discount
+                            )
+                          )}
                         </td>
                         <td data-label="Actions" className={respTDClass}>
                           <div className="btn-group">

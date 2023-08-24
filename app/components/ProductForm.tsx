@@ -1,4 +1,5 @@
 import type {
+  Prisma,
   product_brands,
   product_models,
   product_types,
@@ -108,7 +109,7 @@ const ProductForm = ({
   actionName: string;
   existingData?: {
     product_id: number;
-    price: number;
+    price: Prisma.Decimal;
     brand_id: number;
     model_id: number;
     type_id: number;
@@ -118,7 +119,9 @@ const ProductForm = ({
   const isNew = !existingData;
   const { brands, models, types } = selectData;
   const isSubmitting = navigation.state === "submitting";
-  const [price, setPrice] = useState(!isNew ? existingData.price : 0);
+  const [price, setPrice] = useState(
+    !isNew ? existingData.price.toString() : "0"
+  );
   return (
     <Form replace method="post" className={formClass}>
       {formErrors && formErrors.info && (
@@ -155,7 +158,7 @@ const ProductForm = ({
         />
         <div className="mb-2">
           <label className="label" htmlFor="price">
-            <span className="label-text">Product price (£)</span>
+            <span className="label-text">Product price</span>
           </label>
           <input
             className={inputClass}
@@ -163,9 +166,20 @@ const ProductForm = ({
             name="price"
             type="number"
             min="0"
-            placeholder="10"
+            step="any"
             value={price}
-            onChange={(e) => setPrice(parseInt(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              const pennies = val.split(".")[1];
+              if (!pennies || (pennies && pennies.length <= 2))
+                setPrice(e.target.value);
+            }}
+            onBlur={(e) => {
+              const val = Number(e.target.value);
+              if (isNaN(val) || val <= 0) {
+                setPrice("0");
+              }
+            }}
           />
           {formErrors && formErrors.price && (
             <label className="label">
