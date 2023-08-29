@@ -16,24 +16,23 @@ type PsvType = {
   price: number;
 };
 
-const QuoteProductRow = ({
+const QuoteNewProductRow = ({
   rowId,
   products,
-  productSelectValues,
-  dispatchPSV,
+  productSelectValue,
+  dispatcher,
 }: {
   rowId: string;
   products: products[];
-  productSelectValues: PsvType[];
-  dispatchPSV: any;
+  productSelectValue: PsvType;
+  dispatcher: React.Dispatch<any>;
 }) => {
-  const currPSV = productSelectValues.find((p) => p.row_id === rowId);
-  const { price, quantity, product_id } = currPSV || {
+  const { price, quantity, product_id } = productSelectValue || {
     price: 0,
     quantity: 1,
     product_id: "",
   };
-  const [itemTotal, setItemTotal] = useState(price * quantity);
+  const [itemTotal, setItemTotal] = useState(price * (quantity || 1));
 
   useEffect(() => {
     setItemTotal(price * (quantity || 1));
@@ -43,7 +42,7 @@ const QuoteProductRow = ({
     const selectedProd: products | undefined = products.find(
       (product) => parseInt(new_product_id) === product.product_id
     );
-    dispatchPSV({
+    dispatcher({
       type: "update",
       row_id: rowId,
       product_id: new_product_id,
@@ -53,11 +52,11 @@ const QuoteProductRow = ({
   };
 
   const handleQtyInput = (new_qty: number) => {
-    dispatchPSV({ type: "update", row_id: rowId, quantity: new_qty });
+    dispatcher({ type: "update", row_id: rowId, quantity: new_qty });
   };
 
   const handleDeleteBtn = (deletedRow_id: string) => {
-    dispatchPSV({ type: "remove", row_id: deletedRow_id });
+    dispatcher({ type: "remove", row_id: deletedRow_id });
   };
 
   return (
@@ -69,8 +68,8 @@ const QuoteProductRow = ({
       >
         <select
           className={selectClass}
-          name={`p_${rowId}_id`}
-          id={`p_${rowId}_id`}
+          name={`np_${rowId}_id`}
+          id={`np_${rowId}_id`}
           value={product_id}
           onChange={(e) => {
             handleSelect(e.target.value);
@@ -98,11 +97,11 @@ const QuoteProductRow = ({
             <div className="relative">
               <input
                 className={inputClass}
-                name={`p_${rowId}_qty`}
-                id={`p_${rowId}_qty`}
+                name={`np_${rowId}_qty`}
+                id={`np_${rowId}_qty`}
                 type="number"
                 min="1"
-                value={quantity}
+                value={quantity.toString()}
                 onChange={(e) => handleQtyInput(parseInt(e.target.value))}
                 onBlur={(e) => {
                   const val = parseInt(e.target.value);
@@ -111,17 +110,15 @@ const QuoteProductRow = ({
                   }
                 }}
               />
-              {productSelectValues.length > 1 && (
-                <FormBtn
-                  className="absolute right-0 bg-transparent border-0 rounded-l-none"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleDeleteBtn(rowId);
-                  }}
-                >
-                  &#10005;
-                </FormBtn>
-              )}
+              <FormBtn
+                className="absolute right-0 bg-transparent border-0 rounded-l-none"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeleteBtn(rowId);
+                }}
+              >
+                &#10005;
+              </FormBtn>
             </div>
           </td>
           <td
@@ -141,4 +138,4 @@ const QuoteProductRow = ({
     </tr>
   );
 };
-export default QuoteProductRow;
+export default QuoteNewProductRow;

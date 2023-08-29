@@ -10,7 +10,7 @@ import { getQuoteBuffer } from "~/components/QuotePDFDoc";
 import ShareQuoteForm from "~/components/ShareQuoteForm";
 import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
-import { db } from "~/utils/db";
+import { getQuoteById } from "~/utils/db";
 import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import { TDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
@@ -34,15 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { quoteid } = params;
   const id = quoteid as string;
   try {
-    const quote = await db.quotes.findUnique({
-      where: {
-        quote_id: parseInt(id),
-      },
-      include: {
-        customer: true,
-        quoted_products: true,
-      },
-    });
+    const quote = await getQuoteById(parseInt(id));
     return json({ quote });
   } catch (err) {
     console.error(err);
@@ -140,7 +132,7 @@ export async function action({ request }: ActionArgs) {
 export default function QuoteId() {
   const user: any = useContext(UserContext);
   const { quote } = useLoaderData();
-  const { createdAt, discount, labour, customer, quoted_products }: QuotesType =
+  const { quote_id, createdAt, discount, labour, customer, quoted_products }: QuotesType =
     quote;
   const navigation = useNavigation();
   const data = useActionData();
@@ -252,7 +244,13 @@ export default function QuoteId() {
       </div>
       <div className="flex justify-end mt-4 gap-4">
         <FormAnchorButton
-          href={`/quotes/${quote.quote_id}/generatedquote`}
+          href={`/quotes/${quote_id}/edit`}
+          isSubmitting={isSubmitting}
+        >
+          Edit
+        </FormAnchorButton>
+        <FormAnchorButton
+          href={`/quotes/${quote_id}/generatedquote`}
           target="_blank"
           rel="noreferrer"
           isSubmitting={isSubmitting}

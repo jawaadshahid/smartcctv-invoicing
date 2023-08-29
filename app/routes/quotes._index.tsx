@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -12,7 +11,7 @@ import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
-import { db, deleteQuoteById, deleteQuotedProdsById } from "~/utils/db";
+import { deleteQuoteById, getQuotes } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
@@ -20,7 +19,13 @@ import {
   respTRClass,
 } from "~/utils/styleClasses";
 import type { QuotesType } from "~/utils/types";
-import { getCurrencyString, prettifyDateString } from "../utils/formatters";
+import {
+  getCurrencyString,
+  getGrandTotal,
+  getSubtotal,
+  prettifyDateString,
+} from "../utils/formatters";
+import { Prisma } from "@prisma/client";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];
@@ -34,7 +39,6 @@ export async function action({ request }: ActionArgs) {
       const { quote_id } = values;
       const deleteActionsErrors: any = {};
       try {
-        await deleteQuotedProdsById(parseInt(`${quote_id}`));
         await deleteQuoteById(parseInt(`${quote_id}`));
         return { quoteDeleted: true };
       } catch (err) {
@@ -49,12 +53,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const quotes = await db.quotes.findMany({
-      include: {
-        customer: true,
-        quoted_products: true,
-      },
-    });
+    const quotes = await getQuotes();
     return json({ quotes });
   } catch (err) {
     console.error(err);
@@ -113,19 +112,10 @@ export default function QuotesIndex() {
                         </td>
                         <td data-label="Amount" className={respTDClass}>
                           {getCurrencyString(
-                            Prisma.Decimal.sub(
-                              Prisma.Decimal.add(
-                                quoted_products.reduce(
-                                  (partialSum, qp) =>
-                                    Prisma.Decimal.mul(
-                                      Prisma.Decimal.add(partialSum, qp.price),
-                                      qp.quantity
-                                    ).toNumber(),
-                                  0
-                                ),
-                                labour
-                              ),
-                              discount
+                            getGrandTotal(
+                              getSubtotal(quoted_products),
+                              new Prisma.Decimal(labour),
+                              new Prisma.Decimal(discount)
                             )
                           )}
                         </td>
@@ -136,6 +126,12 @@ export default function QuotesIndex() {
                               href={`quotes/${quote_id}`}
                             >
                               View
+                            </FormAnchorButton>
+                            <FormAnchorButton
+                              isSubmitting={isSubmitting}
+                              href={`quotes/${quote_id}/edit`}
+                            >
+                              Edit
                             </FormAnchorButton>
                             <FormBtn
                               isSubmitting={isSubmitting}
@@ -164,7 +160,7 @@ export default function QuotesIndex() {
         </FormAnchorButton>
       </div>
       <Modal open={deleteModelOpen}>
-        <p className="py-4">Are you sure you want to delete this quote?</p>
+        <p>Are you sure you want to delete this quote?</p>
         {data && data.deleteActionsErrors && (
           <p className="text-error mt-1 text-xs">
             {data.deleteActionsErrors.info}

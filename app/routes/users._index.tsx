@@ -6,7 +6,12 @@ import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE, UserContext } from "~/root";
-import { db, deleteUserById, getUserById } from "~/utils/db";
+import {
+  approveUserById,
+  deleteUserById,
+  getUserById,
+  getUsers,
+} from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import { respTDClass, respTRClass } from "~/utils/styleClasses";
 
@@ -21,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!user?.isAdmin) return redirect(`/users/${uid}`);
   try {
     let users = {};
-    users = await db.users.findMany();
+    users = await getUsers();
     return json({ users });
   } catch (err) {
     console.error(err);
@@ -44,10 +49,7 @@ export async function action({ request }: ActionArgs) {
   }
   if (approvedUserId) {
     try {
-      await db.users.update({
-        where: { id: parseInt(approvedUserId) },
-        data: { isApproved: 1 },
-      });
+      await approveUserById(parseInt(approvedUserId));
       return redirect("/users");
     } catch (err) {
       console.error(err);
@@ -138,7 +140,7 @@ export default function UsersIndex() {
         </table>
       </div>
       <Modal open={modelOpen}>
-        <p className="py-4">Are you sure you want to delete this user?</p>
+        <p>Are you sure you want to delete this user?</p>
         <div className="modal-action">
           <Form
             method="post"

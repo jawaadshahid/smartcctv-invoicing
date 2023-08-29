@@ -6,7 +6,7 @@ import { useContext } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE, UserContext } from "~/root";
-import { db, getUserByEmail } from "~/utils/db";
+import { getUserByEmail, updateUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   validateEmail,
@@ -27,36 +27,24 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
+  const values = Object.fromEntries(formData);
+  const { firstname, lastname, email, opassword, npassword } = values;
 
-  const fname = formData.get("firstname") as string;
-  const lname = formData.get("lastname") as string;
-  const email = formData.get("email") as string;
-  const ropassword = formData.get("opassword") as string;
-  const rnpassword = formData.get("npassword") as string;
-
-  const formErrors: {
-    fname: string | undefined;
-    lname: string | undefined;
-    email: string | undefined;
-    opassword: string | undefined;
-    npassword: string | undefined;
-  } = {
-    fname: validateFname(fname),
-    lname: validateLname(lname),
-    email: validateEmail(email),
-    opassword: validatePassword(ropassword),
-    npassword: undefined,
+  const formErrors: any = {
+    fname: validateFname(`${firstname}`),
+    lname: validateLname(`${lastname}`),
+    email: validateEmail(`${email}`),
+    opassword: validatePassword(`${opassword}`),
   };
 
-  //if there are errors, we return the form errors
   if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
   // do I have to get user again? (cant use context here)
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmail(`${email}`);
   // validate original password
   if (user) {
     const isCorrectPassword = await bcrypt.compare(
-      ropassword,
+      `${opassword}`,
       `${user.password}`
     );
     if (!isCorrectPassword) formErrors.opassword = "Invalid password!";
@@ -64,33 +52,19 @@ export async function action({ request, params }: ActionArgs) {
     formErrors.opassword = "user not found, unable to verify password!";
   }
 
-  //if there are errors, we return the form errors
   if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
   let newpassword;
-  if (rnpassword && rnpassword.length) {
-    formErrors.npassword = validatePassword(rnpassword);
-
-    //if there are errors, we return the form errors
+  if (`${npassword}` && `${npassword}`.length) {
+    formErrors.npassword = validatePassword(`${npassword}`);
     if (Object.values(formErrors).some(Boolean)) return { formErrors };
-
-    // generate enctypted password
-    newpassword = await bcrypt.hash(rnpassword, 10);
+    newpassword = await bcrypt.hash(`${npassword}`, 10);
   }
 
   const { userid } = params;
-  const id = userid as string;
-  const updateUser = await db.users.update({
-    where: {
-      id: parseInt(id),
-    },
-    data: {
-      firstName: fname,
-      lastName: lname,
-      email: email,
-      ...(newpassword && { password: newpassword }),
-      updatedAt: new Date(),
-    },
+  const updateUser = await updateUserById(parseInt(`${userid}`), {
+    ...values,
+    newpassword,
   });
   if (updateUser) {
     return redirect("/users");

@@ -25,12 +25,14 @@ export const getSubtotal = (
   items: { price: Prisma.Decimal; quantity: number }[]
 ): Prisma.Decimal => {
   let subTotal = new Prisma.Decimal(0);
-  items.forEach(({ price, quantity }) => {
-    subTotal = Prisma.Decimal.add(
-      subTotal,
-      Prisma.Decimal.mul(price, quantity || 1)
-    );
-  });
+  items
+    .filter(({ price, quantity }) => price && quantity)
+    .forEach(({ price, quantity }) => {
+      subTotal = Prisma.Decimal.add(
+        subTotal,
+        Prisma.Decimal.mul(price, quantity || 1)
+      );
+    });
   return subTotal;
 };
 

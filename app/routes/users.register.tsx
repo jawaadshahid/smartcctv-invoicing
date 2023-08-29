@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import { SITE_TITLE } from "~/root";
-import { db } from "~/utils/db";
+import { createUser, getUsers } from "~/utils/db";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import {
   validateEmail,
@@ -20,40 +20,26 @@ export const meta: V2_MetaFunction = () => {
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-
-  const fname = formData.get("firstname") as string;
-  const lname = formData.get("lastname") as string;
-  const email = formData.get("email") as string;
-  const rpassword = formData.get("password") as string;
+  const values = Object.fromEntries(formData);
+  const { firstname, lastname, email, password: rpassword } = values;
 
   const formErrors = {
-    fname: validateFname(fname),
-    lname: validateLname(lname),
-    email: validateEmail(email),
-    password: validatePassword(rpassword),
+    fname: validateFname(`${firstname}`),
+    lname: validateLname(`${lastname}`),
+    email: validateEmail(`${email}`),
+    opassword: validatePassword(`${rpassword}`),
   };
-  //if there are errors, we return the form errors
+
   if (Object.values(formErrors).some(Boolean)) return { formErrors };
 
   // generate enctypted password
-  const password = await bcrypt.hash(rpassword, 10);
+  const password = await bcrypt.hash(`${rpassword}`, 10);
 
-  const currUsers = await db.users.findMany();
+  const currUsers = await getUsers();
   const isFirst = currUsers.length === 0;
 
   try {
-    await db.users.create({
-      data: {
-        firstName: fname,
-        lastName: lname,
-        email: email,
-        password: password,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isAdmin: isFirst ? 1 : 0,
-        isApproved: isFirst ? 1 : 0,
-      },
-    });
+    await createUser(isFirst, { ...values, password });
     return redirect("/login");
   } catch (err: any) {
     if (err.code === "P2002") {
@@ -63,8 +49,6 @@ export async function action({ request }: ActionArgs) {
     console.error(err);
   }
 }
-
-// Note the "action" export name, this will handle our form POST
 
 export default function Register() {
   const navigation = useNavigation();

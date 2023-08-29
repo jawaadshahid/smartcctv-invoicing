@@ -18,7 +18,7 @@ import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import ProductForm from "~/components/ProductForm";
 import { SITE_TITLE } from "~/root";
-import { createProduct, db, deleteProductById, editProduct } from "~/utils/db";
+import { createProduct, db, deleteProductById, updateProduct, getProducts } from "~/utils/db";
 import { getCurrencyString } from "~/utils/formatters";
 import { getUserId } from "~/utils/session";
 import {
@@ -37,17 +37,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
+    // TODO: refactor so taxonomy is retrieved as action
     const [brands, types, models, products] = await Promise.all([
       db.product_brands.findMany(),
       db.product_types.findMany(),
       db.product_models.findMany(),
-      db.products.findMany({
-        include: {
-          brand: true,
-          type: true,
-          model: true,
-        },
-      }),
+      getProducts(),
     ]);
     return json({ brands, types, models, products });
   } catch (err) {
@@ -75,18 +70,8 @@ const createProdAction = async (values: any) => {
   if (Object.values(createActionErrors).some(Boolean))
     return { createActionErrors };
 
-  const { brand, newbrand, type, newtype, model, newmodel, price } = values;
-
   try {
-    await createProduct(
-      `${brand}`,
-      `${newbrand}`,
-      `${type}`,
-      `${newtype}`,
-      `${model}`,
-      `${newmodel}`,
-      `${price}`
-    );
+    await createProduct(values);
     return { productCreated: true };
   } catch (error: any) {
     console.log({ error });
@@ -104,20 +89,8 @@ const editProdAction = async (values: any) => {
   if (Object.values(editActionErrors).some(Boolean))
     return { editActionErrors };
 
-  const { product_id, brand, newbrand, type, newtype, model, newmodel, price } =
-    values;
-
   try {
-    await editProduct(
-      parseInt(`${product_id}`),
-      `${brand}`,
-      `${newbrand}`,
-      `${type}`,
-      `${newtype}`,
-      `${model}`,
-      `${newmodel}`,
-      `${price}`
-    );
+    await updateProduct(values);
     return { productEdited: true };
   } catch (error: any) {
     console.log({ error });
@@ -312,7 +285,7 @@ export default function Products() {
         )}
       </Modal>
       <Modal open={deleteModelOpen}>
-        <p className="py-4">
+        <p>
           Are you sure you want to delete this product?
           <br />
           NOTE: this doesn't delete the associated brand, model and type

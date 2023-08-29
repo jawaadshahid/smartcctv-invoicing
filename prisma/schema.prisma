@@ -41,11 +41,11 @@ model quotes {
 
 model quoted_products {
   invprod_id Int     @id @default(autoincrement())
-  quote_id   Int
+  quote_id   Int?
   name       String  @db.VarChar(190)
   quantity   Int     @default(1) @db.SmallInt
   price      Decimal @db.Decimal(8, 2)
-  quote      quotes  @relation(fields: [quote_id], references: [quote_id])
+  quote      quotes? @relation(fields: [quote_id], references: [quote_id])
 
   @@index([quote_id], map: "quoted_products_quote_id_fkey")
 }

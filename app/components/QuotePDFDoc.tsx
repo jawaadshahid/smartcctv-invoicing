@@ -8,7 +8,7 @@ import {
   View,
   renderToStream,
 } from "@react-pdf/renderer";
-import { db } from "~/utils/db";
+import { getQuoteById } from "~/utils/db";
 import {
   getCurrencyString,
   getGrandTotal,
@@ -21,15 +21,7 @@ export const getQuoteBuffer = async (quoteid: string | undefined) => {
   const id = quoteid as string;
   let quote: QuotesType | any;
   try {
-    quote = await db.quotes.findUnique({
-      where: {
-        quote_id: parseInt(id),
-      },
-      include: {
-        customer: true,
-        quoted_products: true,
-      },
-    });
+    quote = await getQuoteById(parseInt(id));
   } catch (error) {
     return Promise.reject({ error });
   }

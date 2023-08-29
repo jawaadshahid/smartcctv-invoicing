@@ -172,7 +172,7 @@ const ProductForm = ({
               const val = e.target.value;
               const pennies = val.split(".")[1];
               if (!pennies || (pennies && pennies.length <= 2))
-                setPrice(e.target.value);
+                setPrice(val);
             }}
             onBlur={(e) => {
               const val = Number(e.target.value);

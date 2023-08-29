@@ -12,7 +12,7 @@ import CreateCustomerForm from "~/components/CreateCustomerForm";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { SITE_TITLE } from "~/root";
-import { createCustomer, db, deleteCustomerById } from "~/utils/db";
+import { createCustomer, deleteCustomerById, getCustomers } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,
@@ -30,7 +30,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const customers: customers[] = await db.customers.findMany();
+    const customers = await getCustomers();
     return json({ customers });
   } catch (err) {
     console.error(err);
@@ -48,20 +48,22 @@ export async function action({ request }: ActionArgs) {
       try {
         await deleteCustomerById(parseInt(`${customer_id}`));
         return { customerDeleted: true };
-      } catch (err) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting customer with id: ${customer_id}`;
+      } catch (err: any) {
+        console.log(err);
+        if (err.code === "P2003")
+          deleteActionsErrors.info = `Cannot delete. This customer is associated with a quote!`;
+        else
+          deleteActionsErrors.info = `There was a problem deleting customer`;
         return { deleteActionsErrors };
       }
     case "create":
-      const { name, tel, email, address } = values;
       const createActionErrors: any = validateCustomerData(values);
 
       if (Object.values(createActionErrors).some(Boolean))
         return { createActionErrors };
 
       try {
-        await createCustomer(`${name}`, `${tel}`, `${email}`, `${address}`);
+        await createCustomer(values);
         return { customerCreated: true };
       } catch (err) {
         console.log(err);
@@ -173,7 +175,7 @@ export default function Customers() {
         )}
       </Modal>
       <Modal open={deleteModelOpen}>
-        <p className="py-4">Are you sure you want to delete this customer?</p>
+        <p>Are you sure you want to delete this customer?</p>
         {data && data.deleteActionsErrors && (
           <p className="text-error mt-1 text-xs">
             {data.deleteActionsErrors.info}
