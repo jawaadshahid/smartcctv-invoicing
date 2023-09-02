@@ -16,9 +16,19 @@ import {
 import { useEffect, useState } from "react";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import ProductCleanupForm from "~/components/ProductCleanupForm";
 import ProductForm from "~/components/ProductForm";
 import { SITE_TITLE } from "~/root";
-import { createProduct, db, deleteProductById, updateProduct, getProducts } from "~/utils/db";
+import {
+  createProduct,
+  db,
+  deleteProductById,
+  updateProduct,
+  getProducts,
+  deleteOrphanedBrands,
+  deleteOrphanedModels,
+  deleteOrphanedTypes,
+} from "~/utils/db";
 import { getCurrencyString } from "~/utils/formatters";
 import { getUserId } from "~/utils/session";
 import {
@@ -49,6 +59,47 @@ export const loader = async ({ request }: LoaderArgs) => {
     console.error(err);
     return {};
   }
+};
+
+const cleanupProdAction = async (values: any) => {
+  const { brands, models, types } = values;
+  const cleanupActionErrors = {
+    info: "There was a problem cleaning up products. Try again later",
+  };
+  let successInfo = "";
+  if (brands) {
+    try {
+      const { count: brandsCleanedCount } = await deleteOrphanedBrands();
+      console.log({ brandsCleanedCount });
+      successInfo += `${brandsCleanedCount} brands, `;
+    } catch (error) {
+      console.log({ error });
+      return { cleanupActionErrors };
+    }
+  }
+  if (models) {
+    try {
+      const { count: modelsCleanedCount } = await deleteOrphanedModels();
+      console.log({ modelsCleanedCount });
+      successInfo += `${modelsCleanedCount} models, `;
+    } catch (error) {
+      console.log({ error });
+      return { cleanupActionErrors };
+    }
+  }
+  if (types) {
+    try {
+      const { count: typesCleanedCount } = await deleteOrphanedTypes();
+      console.log({ typesCleanedCount });
+      successInfo += `${typesCleanedCount} types, `;
+    } catch (error) {
+      console.log({ error });
+      return { cleanupActionErrors };
+    }
+  }
+  successInfo += "cleaned up.";
+  cleanupActionErrors.info = successInfo;
+  return { cleanupActionErrors };
 };
 
 const deleteProdAction = async (values: any) => {
@@ -111,6 +162,8 @@ export async function action({ request }: ActionArgs) {
       return await createProdAction(values);
     case "edit":
       return await editProdAction(values);
+    case "cleanup":
+      return await cleanupProdAction(values);
   }
   return {};
 }
@@ -140,6 +193,7 @@ export default function Products() {
   });
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [cleanupModalOpen, setCleanupModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
@@ -237,6 +291,15 @@ export default function Products() {
       )}
       <div className={createBtnContainerClass}>
         <FormBtn
+          className="mr-4"
+          isSubmitting={isSubmitting}
+          onClick={() => {
+            setCleanupModalOpen(true);
+          }}
+        >
+          Cleanup
+        </FormBtn>
+        <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {
             setCreateModalOpen(true);
@@ -245,6 +308,19 @@ export default function Products() {
           Add new product +
         </FormBtn>
       </div>
+      <Modal open={cleanupModalOpen}>
+        <h3 className="mb-4">Cleanup products</h3>
+        <p>This will delete orphaned taxonomy items from the following:</p>
+        <ProductCleanupForm
+          navigation={navigation}
+          formData={data?.cleanupActionErrors}
+          actionName="cleanup"
+          onCancel={() => {
+            setCleanupModalOpen(false);
+            if (data) data.cleanupActionErrors = {};
+          }}
+        />
+      </Modal>
       <Modal open={editModalOpen}>
         <h3 className="mb-4">Edit product</h3>
         {editModalOpen && (

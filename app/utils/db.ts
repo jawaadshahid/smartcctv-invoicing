@@ -210,3 +210,33 @@ export const deleteQuoteById = (quote_id: number) => {
     }),
   ]);
 };
+
+export const deleteOrphanedBrands = () => {
+  return db.product_brands.deleteMany({
+    where: {
+      products: {
+        none: {},
+      },
+    },
+  });
+};
+
+export const deleteOrphanedTypes = () => {
+  return db.product_types.deleteMany({
+    where: {
+      products: {
+        none: {},
+      },
+    },
+  });
+};
+
+export const deleteOrphanedModels = () => {
+  return db.product_models.deleteMany({
+    where: {
+      products: {
+        none: {},
+      },
+    },
+  });
+};
