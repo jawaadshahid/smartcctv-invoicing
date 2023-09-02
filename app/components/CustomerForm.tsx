@@ -1,19 +1,29 @@
+import type { customers } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
+import { useState } from "react";
 
-const CreateCustomerForm = ({
+const CustomerForm = ({
   navigation,
   formErrors,
   onCancel,
   actionName,
+  existingData,
 }: {
   navigation: Navigation;
   formErrors?: any;
   onCancel: Function;
   actionName: string;
+  existingData?: customers;
 }) => {
+  // if existingData, then edit, else new
+  const isNew = !existingData;
+  const [name, setName] = useState(!isNew ? existingData.name : "");
+  const [tel, setTel] = useState(!isNew ? existingData.tel : "");
+  const [email, setEmail] = useState(!isNew ? existingData.email : "");
+  const [address, setAddress] = useState(!isNew ? existingData.address : "");
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
@@ -21,6 +31,13 @@ const CreateCustomerForm = ({
         <label className="label">
           <span className="label-text-alt text-error">{formErrors.info}</span>
         </label>
+      )}
+      {!isNew && (
+        <input
+          type="hidden"
+          value={existingData.customer_id}
+          name="customer_id"
+        />
       )}
       <fieldset disabled={isSubmitting}>
         <div className="mb-2">
@@ -33,6 +50,8 @@ const CreateCustomerForm = ({
             name="name"
             type="text"
             placeholder="John Smith"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           {formErrors && formErrors.name && (
             <label className="label">
@@ -52,6 +71,8 @@ const CreateCustomerForm = ({
             name="tel"
             type="text"
             placeholder="07123456789"
+            value={tel}
+            onChange={(e) => setTel(e.target.value)}
           />
           {formErrors && formErrors.tel && (
             <label className="label">
@@ -71,6 +92,8 @@ const CreateCustomerForm = ({
             name="email"
             type="text"
             placeholder="john@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           {formErrors && formErrors.email && (
             <label className="label">
@@ -89,6 +112,8 @@ const CreateCustomerForm = ({
             id="address"
             name="address"
             placeholder="123 somewhere st, somehwere, S03 3EW"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           />
           {formErrors && formErrors.address && (
             <label className="label">
@@ -123,4 +148,4 @@ const CreateCustomerForm = ({
   );
 };
 
-export default CreateCustomerForm;
+export default CustomerForm;

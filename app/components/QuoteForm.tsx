@@ -25,7 +25,7 @@ import type { QuotesType } from "~/utils/types";
 import FormBtn from "./FormBtn";
 import QuoteNewProductRow from "./QuoteNewProductRow";
 import Modal from "./Modal";
-import CreateCustomerForm from "./CreateCustomerForm";
+import CustomerForm from "./CustomerForm";
 import ProductForm from "./ProductForm";
 import QuoteEditProductRow from "./QuoteEditProductRow";
 
@@ -457,7 +457,7 @@ const QuoteForm = ({
       <Modal open={isNewCustomer}>
         <h3 className="mb-4">Create new customer</h3>
         {isNewCustomer && (
-          <CreateCustomerForm
+          <CustomerForm
             actionName="create_customer"
             navigation={navigation}
             formErrors={formData?.customerActionErrors}
