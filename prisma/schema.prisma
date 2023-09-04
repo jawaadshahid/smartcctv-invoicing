@@ -20,23 +20,25 @@ model users {
 }
 
 model customers {
-  customer_id Int     @id @default(autoincrement())
-  name        String  @db.VarChar(190)
-  tel         String  @db.VarChar(190)
-  email       String  @db.VarChar(190)
-  address     String  @db.VarChar(190)
-  quote       quotes?
+  customer_id Int      @id @default(autoincrement())
+  name        String   @db.VarChar(190)
+  tel         String   @db.VarChar(190)
+  email       String   @db.VarChar(190)
+  address     String   @db.VarChar(190)
+  quote       quotes[]
 }
 
 model quotes {
   quote_id        Int               @id @default(autoincrement())
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  customer_id     Int               @unique
+  customer_id     Int
   labour          Decimal           @db.Decimal(8, 2)
   discount        Decimal           @db.Decimal(8, 2)
   quoted_products quoted_products[]
   customer        customers         @relation(fields: [customer_id], references: [customer_id])
+
+  @@index([customer_id], map: "quotes_customer_id_fkey")
 }
 
 model quoted_products {

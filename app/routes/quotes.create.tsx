@@ -145,7 +145,6 @@ export default function QuotesCreate() {
   const navigation = useNavigation();
   const quoteFormData = useLoaderData();
   const data = useActionData();
-  console.log({ data });
   const navigate = useNavigate();
   return (
     <div>

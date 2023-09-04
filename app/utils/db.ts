@@ -177,6 +177,9 @@ export const getQuotes = () => {
       customer: true,
       quoted_products: true,
     },
+    orderBy: {
+      updatedAt: 'desc'
+    }
   });
 };
 
