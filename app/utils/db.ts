@@ -79,7 +79,14 @@ export const deleteUserById = (id: number) => {
 
 // products
 export const getProducts = () => {
-  return db.products.findMany();
+  return db.products.findMany({
+    orderBy: [
+      { brand_name: "asc" },
+      { type_name: "asc" },
+      { model_name: "asc" },
+      { price: "asc" },
+    ],
+  });
 };
 
 export const getProductById = (product_id: number) => {
@@ -178,8 +185,8 @@ export const getQuotes = () => {
       quoted_products: true,
     },
     orderBy: {
-      updatedAt: 'desc'
-    }
+      updatedAt: "desc",
+    },
   });
 };
 

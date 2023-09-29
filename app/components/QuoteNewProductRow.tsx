@@ -78,6 +78,7 @@ const QuoteNewProductRow = ({
           <option disabled value="">
             Select a product...
           </option>
+          <option value="-1">Add new product +</option>
           {products.map(
             ({ product_id, brand_name, type_name, model_name, price }) => {
               return (
@@ -88,7 +89,6 @@ const QuoteNewProductRow = ({
               );
             }
           )}
-          <option value="-1">Add new product +</option>
         </select>
       </td>
       {product_id && (
