@@ -65,6 +65,7 @@ export async function action({ request }: ActionArgs) {
         discount,
         grandTotal,
         productCount,
+        isVatQuote,
         ...productData
       } = values;
       const shareActionErrors: any = {};
@@ -98,7 +99,10 @@ export async function action({ request }: ActionArgs) {
         productData
       );
 
-      const pdfBuffer = await getQuoteBuffer(quoteid as string);
+      const pdfBuffer = await getQuoteBuffer(
+        quoteid as string,
+        isVatQuote === "on"
+      );
 
       let mailResponse: any;
       try {
@@ -132,8 +136,14 @@ export async function action({ request }: ActionArgs) {
 export default function QuoteId() {
   const user: any = useContext(UserContext);
   const { quote } = useLoaderData();
-  const { quote_id, createdAt, discount, labour, customer, quoted_products }: QuotesType =
-    quote;
+  const {
+    quote_id,
+    createdAt,
+    discount,
+    labour,
+    customer,
+    quoted_products,
+  }: QuotesType = quote;
   const navigation = useNavigation();
   const data = useActionData();
   const isSubmitting = navigation.state === "submitting";
@@ -250,12 +260,20 @@ export default function QuoteId() {
           Edit
         </FormAnchorButton>
         <FormAnchorButton
-          href={`/quotes/${quote_id}/generatedquote`}
+          href={`/quotes/${quote_id}/0/generatedquote`}
           target="_blank"
           rel="noreferrer"
           isSubmitting={isSubmitting}
         >
-          Generate
+          Generate PDF
+        </FormAnchorButton>
+        <FormAnchorButton
+          href={`/quotes/${quote_id}/1/generatedquote`}
+          target="_blank"
+          rel="noreferrer"
+          isSubmitting={isSubmitting}
+        >
+          Generate VAT PDF
         </FormAnchorButton>
         <FormBtn
           isSubmitting={isSubmitting}

@@ -5,7 +5,11 @@ import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
 import type { QuotedProductsType } from "~/utils/types";
-import { getCurrencyString, getSubtotal, getTwoDecimalPlaces } from "../utils/formatters";
+import {
+  getCurrencyString,
+  getSubtotal,
+  getTwoDecimalPlaces,
+} from "../utils/formatters";
 
 type ProductDataType = {
   quoted_products: QuotedProductsType[];
@@ -34,7 +38,7 @@ const ShareQuoteForm = ({
   const { quoted_products, labour, discount, grandTotal } = productData;
   const labourDec = new Prisma.Decimal(labour);
   const discountDec = new Prisma.Decimal(discount);
-  const subtotalDec = getSubtotal(quoted_products)
+  const subtotalDec = getSubtotal(quoted_products);
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
@@ -87,20 +91,22 @@ const ShareQuoteForm = ({
         id="grandTotal"
       />
       <fieldset disabled={isSubmitting}>
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">
-              {customer.name} ({customer.email})
-            </span>
-            <input
-              type="checkbox"
-              className="checkbox"
-              name="customerEmail"
-              id="customerEmail"
-              value={customer.email}
-            />
-          </label>
-        </div>
+        {customer.email && (
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">
+                {customer.name} ({customer.email})
+              </span>
+              <input
+                type="checkbox"
+                className="checkbox"
+                name="customerEmail"
+                id="customerEmail"
+                value={customer.email}
+              />
+            </label>
+          </div>
+        )}
         <div className="form-control">
           <label className="label cursor-pointer">
             <span className="label-text">
@@ -126,6 +132,17 @@ const ShareQuoteForm = ({
             placeholder="john@example.com,jill@example.com,etc"
             className={inputClass}
           />
+        </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">VAT Quote</span>
+            <input
+              type="checkbox"
+              className="checkbox"
+              name="isVatQuote"
+              id="isVatQuote"
+            />
+          </label>
           {formErrors?.msg && (
             <label className="label">
               <span className="label-text-alt text-error">

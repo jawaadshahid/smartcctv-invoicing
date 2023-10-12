@@ -16,7 +16,10 @@ import {
 } from "~/utils/formatters";
 import type { QuotesType } from "~/utils/types";
 
-export const getQuoteBuffer = async (quoteid: string | undefined) => {
+export const getQuoteBuffer = async (
+  quoteid: string | undefined,
+  isVat: boolean
+) => {
   if (!quoteid) return Promise.reject({ error: "quote id is not defined" });
   const id = quoteid as string;
   let quote: QuotesType | any;
@@ -28,7 +31,9 @@ export const getQuoteBuffer = async (quoteid: string | undefined) => {
 
   if (!quote) return Promise.reject({ msg: "quote not found!" });
 
-  let stream = await renderToStream(<QuotePDFDoc quote={quote} />);
+  let stream = await renderToStream(
+    <QuotePDFDoc quote={quote} isVat={isVat} />
+  );
   // and transform it to a Buffer to send in the Response
   return new Promise((resolve, reject) => {
     let buffers: Uint8Array[] = [];
@@ -96,13 +101,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
+const QuotePDFDoc = ({
+  quote,
+  isVat,
+}: {
+  quote: QuotesType;
+  isVat: boolean;
+}) => {
   const { quote_id, createdAt, customer, labour, discount, quoted_products } =
     quote;
   const { name, tel, email, address } = customer;
   const date = new Date(createdAt);
   const subtotal = getSubtotal(quoted_products);
   const grandTotal = getGrandTotal(subtotal, labour, discount);
+  const vatTotal = Prisma.Decimal.mul(grandTotal, 0.2);
   return (
     <Document title={`Smart CCTV quote #${quote_id}, for ${name}`}>
       <Page size="A4" style={styles.page}>
@@ -118,18 +130,24 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
             <Text style={styles.customerField}>Name:</Text>
             <Text style={styles.customerValue}>{name}</Text>
           </View>
-          <View style={styles.customerRow}>
-            <Text style={styles.customerField}>Address:</Text>
-            <Text style={styles.customerValue}>{address}</Text>
-          </View>
-          <View style={styles.customerRow}>
-            <Text style={styles.customerField}>Tel:</Text>
-            <Text style={styles.customerValue}>{tel}</Text>
-          </View>
-          <View style={styles.customerRow}>
-            <Text style={styles.customerField}>Email:</Text>
-            <Text style={styles.customerValue}>{email}</Text>
-          </View>
+          {address ? (
+            <View style={styles.customerRow}>
+              <Text style={styles.customerField}>Address:</Text>
+              <Text style={styles.customerValue}>{address}</Text>
+            </View>
+          ) : null}
+          {tel ? (
+            <View style={styles.customerRow}>
+              <Text style={styles.customerField}>Tel:</Text>
+              <Text style={styles.customerValue}>{tel}</Text>
+            </View>
+          ) : null}
+          {email ? (
+            <View style={styles.customerRow}>
+              <Text style={styles.customerField}>Email:</Text>
+              <Text style={styles.customerValue}>{email}</Text>
+            </View>
+          ) : null}
           <View style={styles.table}>
             <View style={[styles.tableRow, { borderTop: 0 }]}>
               <View
@@ -185,18 +203,34 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
             <Text style={styles.endField}>Labour:</Text>
             <Text style={styles.endValue}>{getCurrencyString(labour)}</Text>
           </View>
-          {discount.toNumber() > 0 && (
+          {discount.toNumber() > 0 ? (
             <View style={styles.endRow}>
               <Text style={styles.endField}>Discount:</Text>
               <Text style={styles.endValue}>
                 -{getCurrencyString(discount)}
               </Text>
             </View>
-          )}
+          ) : null}
           <View style={styles.endRow}>
-            <Text style={styles.endField}>Grand total:</Text>
+            <Text style={styles.endField}>Total:</Text>
             <Text style={styles.endValue}>{getCurrencyString(grandTotal)}</Text>
           </View>
+          {isVat ? (
+            <>
+              <View style={styles.endRow}>
+                <Text style={styles.endField}>VAT:</Text>
+                <Text style={styles.endValue}>
+                  {getCurrencyString(vatTotal)}
+                </Text>
+              </View>
+              <View style={styles.endRow}>
+                <Text style={styles.endField}>Total (Inc VAT):</Text>
+                <Text style={styles.endValue}>
+                  {getCurrencyString(Prisma.Decimal.sum(grandTotal, vatTotal))}
+                </Text>
+              </View>
+            </>
+          ) : null}
         </View>
       </Page>
     </Document>
