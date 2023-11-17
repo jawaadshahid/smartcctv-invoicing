@@ -252,7 +252,7 @@ export default function QuoteId() {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end mt-4 gap-4">
+      <div className="flex flex-col md:flex-row md:justify-end mt-4 gap-4">
         <FormAnchorButton
           href={`/quotes/${quote_id}/edit`}
           isSubmitting={isSubmitting}
