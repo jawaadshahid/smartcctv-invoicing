@@ -11,6 +11,7 @@
     "dev:remix": "remix dev",
     "generate:css": "npx tailwindcss -o ./app/tailwind.css",
     "typecheck": "tsc",
+    "schema-dev": "dotenv -e .env.development -- npx prisma db pull",
     "seed-dev": "dotenv -e .env.development -- npx prisma db push"
   },
   "dependencies": {
