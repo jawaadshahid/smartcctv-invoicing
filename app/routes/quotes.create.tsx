@@ -8,16 +8,10 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import QuoteForm from "~/components/QuoteForm";
+import { createCustomer, getCustomers } from "~/controllers/customers";
+import { createProduct, getBrands, getModels, getProductById, getProducts, getTypes } from "~/controllers/products";
+import { createQuote } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
-import {
-  createCustomer,
-  createProduct,
-  createQuote,
-  db,
-  getCustomers,
-  getProductById,
-  getProducts,
-} from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import { validateCustomerData, validateProductData } from "~/utils/validations";
 
@@ -31,9 +25,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   try {
     // TODO: refactor so taxonomy is retrieved as action
     const [brands, types, models, customers, products] = await Promise.all([
-      db.product_brands.findMany(),
-      db.product_types.findMany(),
-      db.product_models.findMany(),
+      getBrands(),
+      getTypes(),
+      getModels(),
       getCustomers(),
       getProducts(),
     ]);

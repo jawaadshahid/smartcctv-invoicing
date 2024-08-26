@@ -11,13 +11,13 @@ import { useEffect, useState } from "react";
 import CustomerForm from "~/components/CustomerForm";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
-import { SITE_TITLE } from "~/root";
 import {
   createCustomer,
   deleteCustomerById,
   getCustomers,
   updateCustomer,
-} from "~/utils/db";
+} from "~/controllers/customers";
+import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,

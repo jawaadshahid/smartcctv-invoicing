@@ -11,7 +11,7 @@ import {
 import { createContext } from "react";
 import stylesheet from "~/tailwind.css";
 import NavBar from "./components/NavBar";
-import { getUserById } from "./utils/db";
+import { getUserById } from "./controllers/users";
 import { getUserId } from "./utils/session";
 
 export const SITE_TITLE = "Smart CCTV admin";

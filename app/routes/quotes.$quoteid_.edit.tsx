@@ -8,18 +8,21 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import QuoteForm from "~/components/QuoteForm";
-import { SITE_TITLE } from "~/root";
+import { createCustomer, getCustomers } from "~/controllers/customers";
 import {
-  createCustomer,
   createProduct,
-  createQuote,
-  db,
-  deleteQuoteById,
-  getCustomers,
+  getBrands,
+  getModels,
   getProductById,
   getProducts,
+  getTypes,
+} from "~/controllers/products";
+import {
+  createQuote,
+  deleteQuoteById,
   getQuoteById,
-} from "~/utils/db";
+} from "~/controllers/quotes";
+import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import { validateCustomerData, validateProductData } from "~/utils/validations";
 
@@ -36,9 +39,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     // TODO: refactor so taxonomy is retrieved as action
     const [brands, types, models, customers, products, quote] =
       await Promise.all([
-        db.product_brands.findMany(),
-        db.product_types.findMany(),
-        db.product_models.findMany(),
+        getBrands(),
+        getTypes(),
+        getModels(),
         getCustomers(),
         getProducts(),
         getQuoteById(parseInt(`${quoteid}`)),
@@ -192,7 +195,7 @@ export default function QuotesEdit() {
   const quoteFormData = useLoaderData();
   const data = useActionData();
   const navigate = useNavigate();
-  
+
   return (
     <div>
       <h2 className="mb-4 text-center">Edit quote</h2>

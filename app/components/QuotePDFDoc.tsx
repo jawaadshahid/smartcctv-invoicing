@@ -8,7 +8,7 @@ import {
   View,
   renderToStream,
 } from "@react-pdf/renderer";
-import { getQuoteById } from "~/utils/db";
+import { getQuoteById } from "~/controllers/quotes";
 import {
   getCurrencyString,
   getGrandTotal,

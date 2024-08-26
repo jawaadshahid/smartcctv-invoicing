@@ -5,13 +5,13 @@ import { useContext, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
-import { SITE_TITLE, UserContext } from "~/root";
 import {
   approveUserById,
   deleteUserById,
   getUserById,
   getUsers,
-} from "~/utils/db";
+} from "~/controllers/users";
+import { SITE_TITLE, UserContext } from "~/root";
 import { getUserId } from "~/utils/session";
 import { respTDClass, respTRClass } from "~/utils/styleClasses";
 

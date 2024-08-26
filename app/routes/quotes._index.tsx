@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -10,8 +11,8 @@ import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import { deleteQuoteById, getQuotes } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
-import { deleteQuoteById, getQuotes } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
@@ -25,7 +26,6 @@ import {
   getSubtotal,
   prettifyDateString,
 } from "../utils/formatters";
-import { Prisma } from "@prisma/client";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];

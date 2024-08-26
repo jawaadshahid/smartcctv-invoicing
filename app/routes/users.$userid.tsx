@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 import { useContext } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import { getUserByEmail, updateUserById } from "~/controllers/users";
 import { SITE_TITLE, UserContext } from "~/root";
-import { getUserByEmail, updateUserById } from "~/utils/db";
 import { getUserId } from "~/utils/session";
 import {
   validateEmail,

@@ -4,8 +4,8 @@ import { Form, useActionData, useNavigation } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import { getUserByEmail } from "~/controllers/users";
 import { SITE_TITLE } from "~/root";
-import { getUserByEmail } from "~/utils/db";
 import { createUserSession } from "~/utils/session";
 import { formClass, inputClass } from "~/utils/styleClasses";
 

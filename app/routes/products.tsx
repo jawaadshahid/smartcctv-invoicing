@@ -18,17 +18,19 @@ import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import ProductCleanupForm from "~/components/ProductCleanupForm";
 import ProductForm from "~/components/ProductForm";
-import { SITE_TITLE } from "~/root";
 import {
   createProduct,
-  db,
-  deleteProductById,
-  updateProduct,
-  getProducts,
   deleteOrphanedBrands,
   deleteOrphanedModels,
   deleteOrphanedTypes,
-} from "~/utils/db";
+  deleteProductById,
+  getBrands,
+  getModels,
+  getProducts,
+  getTypes,
+  updateProduct,
+} from "~/controllers/products";
+import { SITE_TITLE } from "~/root";
 import { getCurrencyString } from "~/utils/formatters";
 import { getUserId } from "~/utils/session";
 import {
@@ -49,9 +51,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   try {
     // TODO: refactor so taxonomy is retrieved as action
     const [brands, types, models, products] = await Promise.all([
-      db.product_brands.findMany(),
-      db.product_types.findMany(),
-      db.product_models.findMany(),
+      getBrands(),
+      getTypes(),
+      getModels(),
       getProducts(),
     ]);
     return json({ brands, types, models, products });
