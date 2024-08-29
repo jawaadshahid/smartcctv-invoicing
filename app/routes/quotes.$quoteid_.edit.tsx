@@ -165,7 +165,7 @@ export async function action({ request, params }: ActionArgs) {
           }
         }
         // custom prod
-        if (productValues.hasOwnProperty(`ep_${i + 1}_name`)) {
+        if (productValues.hasOwnProperty(`ep_${i + 1}_name`) && `${productValues[`ep_${i + 1}_name`]}`.trim()) {
           quotedProducts.push({
             name: `${productValues[`ep_${i + 1}_name`]}`,
             quantity: parseInt(`${productValues[`ep_${i + 1}_qty`]}`),

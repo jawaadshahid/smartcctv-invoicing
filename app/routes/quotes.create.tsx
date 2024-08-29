@@ -1,4 +1,4 @@
-import type { products } from "@prisma/client";
+import { Prisma, type products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -109,17 +109,39 @@ export async function action({ request }: ActionArgs) {
         return { quoteActionErrors };
       }
 
-      const quotedProducts = retrievedSelectedProds.map(
-        (product: products, i) => {
-          const { brand_name, model_name, type_name, price } = product;
+      // combine selected and custom prods
+      const quotedProducts: {
+        name: string;
+        quantity: number;
+        price: Prisma.Decimal;
+      }[] = [];
+      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
+        // selected prod
+        if (productValues.hasOwnProperty(`np_${i + 1}_id`)) {
+          const product_id = parseInt(`${productValues[`np_${i + 1}_id`]}`);
           const quantity = parseInt(`${productValues[`np_${i + 1}_qty`]}`);
-          return {
-            name: `${brand_name} - ${type_name} - ${model_name}`,
-            quantity,
-            price,
-          };
+          const selectedProduct = retrievedSelectedProds.find(
+            (prod) => prod.product_id === product_id
+          );
+          if (selectedProduct) {
+            const { brand_name, model_name, type_name, price } =
+              selectedProduct;
+            quotedProducts.push({
+              name: `${brand_name} - ${type_name} - ${model_name}`,
+              quantity,
+              price,
+            });
+          }
         }
-      );
+        // custom prod
+        if (productValues.hasOwnProperty(`ep_${i + 1}_name`) && `${productValues[`ep_${i + 1}_name`]}`.trim()) {
+          quotedProducts.push({
+            name: `${productValues[`ep_${i + 1}_name`]}`,
+            quantity: parseInt(`${productValues[`ep_${i + 1}_qty`]}`),
+            price: new Prisma.Decimal(`${productValues[`ep_${i + 1}_price`]}`),
+          });
+        }
+      });
 
       try {
         await createQuote({ customer, labour, discount, quotedProducts });

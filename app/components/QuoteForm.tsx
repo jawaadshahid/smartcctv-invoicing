@@ -8,7 +8,7 @@ import type {
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
-import { useEffect, useReducer, useState } from "react";
+import { ReactNode, useEffect, useReducer, useState } from "react";
 import {
   getGrandTotal,
   getSubtotal,
@@ -22,12 +22,12 @@ import {
   selectClass,
 } from "~/utils/styleClasses";
 import type { QuotesType } from "~/utils/types";
-import FormBtn from "./FormBtn";
-import QuoteNewProductRow from "./QuoteNewProductRow";
-import Modal from "./Modal";
 import CustomerForm from "./CustomerForm";
+import FormBtn from "./FormBtn";
+import Modal from "./Modal";
 import ProductForm from "./ProductForm";
 import QuoteEditProductRow from "./QuoteEditProductRow";
+import QuoteNewProductRow from "./QuoteNewProductRow";
 
 const QuoteForm = ({
   quoteFormData,
@@ -94,15 +94,12 @@ const QuoteForm = ({
           }
           return state;
         case "remove":
-          const newState = state.filter((psv) => psv.row_id !== values.row_id);
-          return newState.map((psv, i) => {
-            return { ...psv, row_id: `${i + 1}` };
-          });
+          return state.filter((psv) => psv.row_id !== values.row_id);
         default:
           return state;
       }
     },
-    [{ row_id: "1", product_id: "", quantity: 1, price: new Prisma.Decimal(0) }]
+    []
   );
   const [productInputValues, pivDispatcher] = useReducer(
     (state: any[], action: any) => {
@@ -124,10 +121,7 @@ const QuoteForm = ({
           }
           return state;
         case "remove":
-          const newState = state.filter((piv) => piv.row_id !== values.row_id);
-          return newState.map((piv, i) => {
-            return { ...piv, row_id: `${i + 1}` };
-          });
+          return state.filter((piv) => piv.row_id !== values.row_id);
         default:
           return state;
       }
@@ -205,8 +199,72 @@ const QuoteForm = ({
   }, [formData, newProductRow, customers]);
 
   const isSubmitting = navigation.state === "submitting";
-  const psvCount = productSelectValues.length;
-  const pivCount = productInputValues.length;
+  const allProductValues = productSelectValues
+    .concat(productInputValues)
+    .sort((a, b) => (parseInt(a.row_id) > parseInt(b.row_id) ? 1 : -1));
+  const apvCount = allProductValues.length;
+
+  const ProductRow = (): ReactNode => {
+    return (
+      <>
+        {[...Array(apvCount)].map((e, i) => {
+          const rowItem = allProductValues.find(
+            (valueObj) => valueObj.row_id === `${i + 1}`
+          );
+          if (!rowItem) return;
+          if (rowItem.hasOwnProperty("product_id")) {
+            return (
+              <QuoteNewProductRow
+                key={parseInt(rowItem.row_id) - 1}
+                rowId={rowItem.row_id}
+                products={products}
+                productSelectValue={rowItem}
+                dispatcher={psvDispatcher}
+              />
+            );
+          } else {
+            return (
+              <QuoteEditProductRow
+                key={parseInt(rowItem.row_id) - 1}
+                rowId={rowItem.row_id}
+                productInputValue={rowItem}
+                dispatcher={pivDispatcher}
+              />
+            );
+          }
+        })}
+      </>
+    );
+  };
+
+  const removeProductRow = () => {
+    const rowItem = allProductValues.at(-1);
+    if (!rowItem) return;
+    if (rowItem.hasOwnProperty("product_id")) {
+      psvDispatcher({
+        type: "remove",
+        row_id: `${rowItem.row_id}`,
+      });
+    } else {
+      pivDispatcher({
+        type: "remove",
+        row_id: `${rowItem.row_id}`,
+      });
+    }
+  };
+
+  const addProductRow = (rowType: "custom" | "product") => {
+    const targetDispatcher =
+      rowType === "custom" ? pivDispatcher : psvDispatcher;
+    targetDispatcher({
+      row_id: `${apvCount + 1}`,
+      type: "add",
+      ...(rowType === "custom" && { name: "" }),
+      ...(rowType === "product" && { product_id: "" }),
+      quantity: 1,
+      price: 0,
+    });
+  };
 
   return (
     <>
@@ -216,12 +274,7 @@ const QuoteForm = ({
             <span className="label-text-alt text-error">{formData.info}</span>
           </label>
         )}
-        <input
-          type="hidden"
-          name="prodcount"
-          id="prodcount"
-          value={psvCount + pivCount}
-        />
+        <input type="hidden" name="prodcount" id="prodcount" value={apvCount} />
         <fieldset disabled={isSubmitting}>
           <div className="mb-4">
             <label className="label" htmlFor="customer">
@@ -283,53 +336,37 @@ const QuoteForm = ({
                 </tr>
               </thead>
               <tbody>
-                {productInputValues.map((e, i) => (
-                  <QuoteEditProductRow
-                    key={i}
-                    rowId={`${i + 1}`}
-                    productInputValue={productInputValues[i]}
-                    dispatcher={pivDispatcher}
-                  />
-                ))}
-                {productSelectValues.map((e, i) => (
-                  <QuoteNewProductRow
-                    key={i}
-                    rowId={`${i + 1}`}
-                    products={products}
-                    productSelectValue={productSelectValues[i]}
-                    dispatcher={psvDispatcher}
-                  />
-                ))}
+                <ProductRow />
                 <tr className={respTRClass}>
                   <td colSpan={4} className={TDClass}>
                     <div className="flex md:justify-end btn-group">
                       <FormBtn
-                        disabled={psvCount === 1}
+                        disabled={apvCount === 0}
                         isSubmitting={isSubmitting}
                         onClick={(e) => {
                           e.preventDefault();
-                          psvDispatcher({
-                            type: "remove",
-                            row_id: `${psvCount}`,
-                          });
+                          removeProductRow();
                         }}
                       >
-                        -
+                        remove
                       </FormBtn>
                       <FormBtn
                         isSubmitting={isSubmitting}
                         onClick={(e) => {
                           e.preventDefault();
-                          psvDispatcher({
-                            type: "add",
-                            row_id: `${psvCount + 1}`,
-                            product_id: "",
-                            quantity: 1,
-                            price: 0,
-                          });
+                          addProductRow("product");
                         }}
                       >
-                        +
+                        add product
+                      </FormBtn>
+                      <FormBtn
+                        isSubmitting={isSubmitting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          addProductRow("custom");
+                        }}
+                      >
+                        add custom
                       </FormBtn>
                     </div>
                   </td>
