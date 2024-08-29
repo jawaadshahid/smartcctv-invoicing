@@ -53,5 +53,10 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
+ - add invoicing
+ - add pagination on results pages
+ - add basic search on results pages
+ - handle 404 and db error messaging
+ - cleanup dupilcate customers
  - cleanup styles
  - cleanup types
