@@ -53,6 +53,7 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
+ - refactor actions to controllers
  - add invoicing
  - add pagination on results pages
  - add basic search on results pages

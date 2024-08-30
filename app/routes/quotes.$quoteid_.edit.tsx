@@ -1,4 +1,3 @@
-import { Prisma, type products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -13,7 +12,6 @@ import {
   createProduct,
   getBrands,
   getModels,
-  getProductById,
   getProducts,
   getTypes,
 } from "~/controllers/products";
@@ -36,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { quoteid } = params;
   if (!quoteid) return redirect("/quotes");
   try {
-    // TODO: refactor so taxonomy is retrieved as action
+    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
     const [brands, types, models, customers, products, quote] =
       await Promise.all([
         getBrands(),
@@ -92,96 +90,19 @@ export async function action({ request, params }: ActionArgs) {
       }
     case "edit_quote":
       const { quoteid } = params;
-      const { customer, labour, discount, prodcount, ...productValues } =
-        values;
-      const quoteActionErrors: any = {};
-
-      if (!customer)
-        quoteActionErrors.customer = "you must select or define a customer!";
-
-      if (Object.keys(productValues).length === 0)
-        quoteActionErrors.product =
-          "you must select or define at least one product!";
-
-      if (Object.values(quoteActionErrors).some(Boolean))
-        return { quoteActionErrors };
-
-      // delete existing quote
       try {
-        await deleteQuoteById(parseInt(`${quoteid}`));
-      } catch (error) {
-        console.log({ error });
-        return {
-          quoteActionErrors: {
-            info: "there was a problem saving the quote, please try again later",
-          },
-        };
-      }
-
-      // first loop: compile promises to get prods by Id
-      const prodPromises: any[] = [];
-      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
-        if (productValues.hasOwnProperty(`np_${i + 1}_id`)) {
-          const product_id = parseInt(`${productValues[`np_${i + 1}_id`]}`);
-          prodPromises.push(getProductById(product_id));
-        }
-      });
-
-      // retrieves products from compiled promises
-      let retrievedSelectedProds: products[] = [];
-      try {
-        retrievedSelectedProds = await Promise.all(prodPromises);
-      } catch (error) {
-        console.log({ error });
-        return {
-          quoteActionErrors: {
-            info: "there was a problem saving the quote, please try again later",
-          },
-        };
-      }
-
-      // combine selected and custom prods
-      const quotedProducts: {
-        name: string;
-        quantity: number;
-        price: Prisma.Decimal;
-      }[] = [];
-      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
-        // selected prod
-        if (productValues.hasOwnProperty(`np_${i + 1}_id`)) {
-          const product_id = parseInt(`${productValues[`np_${i + 1}_id`]}`);
-          const quantity = parseInt(`${productValues[`np_${i + 1}_qty`]}`);
-          const selectedProduct = retrievedSelectedProds.find(
-            (prod) => prod.product_id === product_id
-          );
-          if (selectedProduct) {
-            const { brand_name, model_name, type_name, price } =
-              selectedProduct;
-            quotedProducts.push({
-              name: `${brand_name} - ${type_name} - ${model_name}`,
-              quantity,
-              price,
-            });
-          }
-        }
-        // custom prod
-        if (productValues.hasOwnProperty(`ep_${i + 1}_name`) && `${productValues[`ep_${i + 1}_name`]}`.trim()) {
-          quotedProducts.push({
-            name: `${productValues[`ep_${i + 1}_name`]}`,
-            quantity: parseInt(`${productValues[`ep_${i + 1}_qty`]}`),
-            price: new Prisma.Decimal(`${productValues[`ep_${i + 1}_price`]}`),
-          });
-        }
-      });
-
-      try {
-        await createQuote({ customer, labour, discount, quotedProducts });
+        await Promise.all([
+          createQuote(values),
+          deleteQuoteById(parseInt(`${quoteid}`)),
+        ]);
         return redirect("/quotes");
       } catch (error) {
-        console.log({ error });
         return {
           quoteActionErrors: {
-            info: "there was a problem saving the quote, please try again later",
+            info:
+              typeof error === "string"
+                ? error
+                : "there was a problem saving the quote, please try again later",
           },
         };
       }

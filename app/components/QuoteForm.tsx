@@ -269,11 +269,15 @@ const QuoteForm = ({
   return (
     <>
       <Form method="post" className={formClass}>
-        {formData && formData.info && (
-          <label className="label">
-            <span className="label-text-alt text-error">{formData.info}</span>
-          </label>
-        )}
+        {formData &&
+          formData.quoteActionErrors &&
+          formData.quoteActionErrors.info && (
+            <label className="label">
+              <span className="label-text-alt text-error">
+                {formData.quoteActionErrors.info}
+              </span>
+            </label>
+          )}
         <input type="hidden" name="prodcount" id="prodcount" value={apvCount} />
         <fieldset disabled={isSubmitting}>
           <div className="mb-4">
@@ -336,7 +340,7 @@ const QuoteForm = ({
                 </tr>
               </thead>
               <tbody>
-                <ProductRow />
+                {ProductRow()}
                 <tr className={respTRClass}>
                   <td colSpan={4} className={TDClass}>
                     <div className="flex md:justify-end btn-group">

@@ -1,4 +1,3 @@
-import { Prisma, type products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -9,7 +8,13 @@ import {
 } from "@remix-run/react";
 import QuoteForm from "~/components/QuoteForm";
 import { createCustomer, getCustomers } from "~/controllers/customers";
-import { createProduct, getBrands, getModels, getProductById, getProducts, getTypes } from "~/controllers/products";
+import {
+  createProduct,
+  getBrands,
+  getModels,
+  getProducts,
+  getTypes,
+} from "~/controllers/products";
 import { createQuote } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
@@ -23,7 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    // TODO: refactor so taxonomy is retrieved as action
+    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
     const [brands, types, models, customers, products] = await Promise.all([
       getBrands(),
       getTypes(),
@@ -76,81 +81,18 @@ export async function action({ request }: ActionArgs) {
         return { productActionErrors };
       }
     case "create_quote":
-      const { customer, labour, discount, prodcount, ...productValues } =
-        values;
-      const quoteActionErrors: any = {};
-
-      if (!customer)
-        quoteActionErrors.customer = "you must select or define a customer!";
-
-      if (Object.keys(productValues).length === 0)
-        quoteActionErrors.product =
-          "you must select or define at least one product!";
-
-      if (Object.values(quoteActionErrors).some(Boolean))
-        return { quoteActionErrors };
-
-      // first loop: compile promises to get prods by Id
-      const prodPromiseCollection: any[] = [];
-      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
-        const product_id = parseInt(`${productValues[`np_${i + 1}_id`]}`);
-        if (!product_id) return true;
-        prodPromiseCollection.push(getProductById(product_id));
-      });
-
-      // retrieves products from compiled promises
-      let retrievedSelectedProds: products[] = [];
       try {
-        retrievedSelectedProds = await Promise.all(prodPromiseCollection);
-      } catch (error) {
-        console.log({ error });
-        quoteActionErrors.info =
-          "there was a problem saving the quote, please try again later";
-        return { quoteActionErrors };
-      }
-
-      // combine selected and custom prods
-      const quotedProducts: {
-        name: string;
-        quantity: number;
-        price: Prisma.Decimal;
-      }[] = [];
-      [...Array(parseInt(`${prodcount}`))].forEach((e, i) => {
-        // selected prod
-        if (productValues.hasOwnProperty(`np_${i + 1}_id`)) {
-          const product_id = parseInt(`${productValues[`np_${i + 1}_id`]}`);
-          const quantity = parseInt(`${productValues[`np_${i + 1}_qty`]}`);
-          const selectedProduct = retrievedSelectedProds.find(
-            (prod) => prod.product_id === product_id
-          );
-          if (selectedProduct) {
-            const { brand_name, model_name, type_name, price } =
-              selectedProduct;
-            quotedProducts.push({
-              name: `${brand_name} - ${type_name} - ${model_name}`,
-              quantity,
-              price,
-            });
-          }
-        }
-        // custom prod
-        if (productValues.hasOwnProperty(`ep_${i + 1}_name`) && `${productValues[`ep_${i + 1}_name`]}`.trim()) {
-          quotedProducts.push({
-            name: `${productValues[`ep_${i + 1}_name`]}`,
-            quantity: parseInt(`${productValues[`ep_${i + 1}_qty`]}`),
-            price: new Prisma.Decimal(`${productValues[`ep_${i + 1}_price`]}`),
-          });
-        }
-      });
-
-      try {
-        await createQuote({ customer, labour, discount, quotedProducts });
+        await createQuote(values);
         return redirect("/quotes");
       } catch (error) {
-        console.log({ error });
-        quoteActionErrors.info =
-          "there was a problem saving the quote, please try again later";
-        return { quoteActionErrors };
+        return {
+          quoteActionErrors: {
+            info:
+              typeof error === "string"
+                ? error
+                : "there was a problem creating the quote, please try again later",
+          },
+        };
       }
   }
 

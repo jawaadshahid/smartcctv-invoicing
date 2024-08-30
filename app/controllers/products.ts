@@ -9,7 +9,7 @@ import {
   getProducts as selectProducts,
   getBrands as selectBrands,
   getTypes as selectTypes,
-  getModels as selectModels
+  getModels as selectModels,
 } from "../models/products";
 
 export const getProducts = async () => {
@@ -18,6 +18,12 @@ export const getProducts = async () => {
 
 export const getProductById = async (product_id: number) => {
   return await selectProductById(product_id);
+};
+
+export const getProductsByIds = async (product_ids: number[]) => {
+  return await Promise.all(
+    product_ids.map((product_id) => getProductById(product_id))
+  );
 };
 
 export const updateProduct = async (data: any) => {
@@ -34,7 +40,7 @@ export const deleteProductById = async (product_id: number) => {
 
 export const getBrands = async () => {
   return await selectBrands();
-}
+};
 
 export const deleteOrphanedBrands = async () => {
   return await removeOrphanedBrands();
@@ -42,7 +48,7 @@ export const deleteOrphanedBrands = async () => {
 
 export const getTypes = async () => {
   return await selectTypes();
-}
+};
 
 export const deleteOrphanedTypes = async () => {
   return await removeOrphanedTypes();
@@ -50,7 +56,7 @@ export const deleteOrphanedTypes = async () => {
 
 export const getModels = async () => {
   return await selectModels();
-}
+};
 
 export const deleteOrphanedModels = async () => {
   return await removeOrphanedModels();

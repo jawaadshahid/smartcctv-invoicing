@@ -49,7 +49,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    // TODO: refactor so taxonomy is retrieved as action
+    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
     const [brands, types, models, products] = await Promise.all([
       getBrands(),
       getTypes(),
