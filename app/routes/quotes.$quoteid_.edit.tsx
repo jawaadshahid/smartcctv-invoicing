@@ -97,14 +97,7 @@ export async function action({ request, params }: ActionArgs) {
         ]);
         return redirect("/quotes");
       } catch (error) {
-        return {
-          quoteActionErrors: {
-            info:
-              typeof error === "string"
-                ? error
-                : "there was a problem saving the quote, please try again later",
-          },
-        };
+        return { quoteActionErrors: { info: error } };
       }
   }
 

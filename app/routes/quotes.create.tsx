@@ -85,14 +85,7 @@ export async function action({ request }: ActionArgs) {
         await createQuote(values);
         return redirect("/quotes");
       } catch (error) {
-        return {
-          quoteActionErrors: {
-            info:
-              typeof error === "string"
-                ? error
-                : "there was a problem creating the quote, please try again later",
-          },
-        };
+        return { quoteActionErrors: { info: error } };
       }
   }
 
