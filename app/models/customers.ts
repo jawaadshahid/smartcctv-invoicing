@@ -1,7 +1,9 @@
 import { db } from "../utils/db";
 
 export const getCustomers = () => {
-  return db.customers.findMany();
+  return db.customers.findMany({
+    orderBy: [{ name: "asc" }],
+  });
 };
 
 export const updateCustomer = async (data: any) => {
