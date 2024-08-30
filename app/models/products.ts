@@ -63,8 +63,10 @@ export const deleteProductById = (product_id: number) => {
 };
 
 export const getBrands = () => {
-  return db.product_brands.findMany();
-}
+  return db.product_brands.findMany({
+    orderBy: [{ brand_name: "asc" }],
+  });
+};
 
 export const deleteOrphanedBrands = () => {
   return db.product_brands.deleteMany({
@@ -77,8 +79,10 @@ export const deleteOrphanedBrands = () => {
 };
 
 export const getTypes = () => {
-  return db.product_types.findMany();
-}
+  return db.product_types.findMany({
+    orderBy: [{ type_name: "asc" }],
+  });
+};
 
 export const deleteOrphanedTypes = () => {
   return db.product_types.deleteMany({
@@ -91,8 +95,10 @@ export const deleteOrphanedTypes = () => {
 };
 
 export const getModels = () => {
-  return db.product_models.findMany();
-}
+  return db.product_models.findMany({
+    orderBy: [{ model_name: "asc" }],
+  });
+};
 
 export const deleteOrphanedModels = () => {
   return db.product_models.deleteMany({

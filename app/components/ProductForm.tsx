@@ -58,6 +58,7 @@ const TaxonomyField = ({
         <option disabled value="">
           Select a {taxoName}...
         </option>
+        <option value="-1">Add new {taxoName} +</option>
         {hasItems &&
           taxoItems.map((taxoItem: any) => {
             return (
@@ -69,7 +70,6 @@ const TaxonomyField = ({
               </option>
             );
           })}
-        <option value="-1">Add new {taxoName} +</option>
       </select>
       <input
         disabled={!isNewTaxoItem}
