@@ -157,7 +157,7 @@ export default function InvoicesIndex() {
       )}
       <div className={createBtnContainerClass}>
         <FormAnchorButton href="/invoices/create">
-          Add new invoices +
+          Add new invoice +
         </FormAnchorButton>
       </div>
       <Modal open={deleteModelOpen}>
