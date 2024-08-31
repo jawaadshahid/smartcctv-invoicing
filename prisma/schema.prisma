@@ -20,11 +20,12 @@ model users {
 }
 
 model customers {
-  customer_id Int      @id @default(autoincrement())
-  name        String   @db.VarChar(190)
-  tel         String   @db.VarChar(190)
-  email       String   @db.VarChar(190)
-  address     String   @db.VarChar(190)
+  customer_id Int        @id @default(autoincrement())
+  name        String     @db.VarChar(190)
+  tel         String     @db.VarChar(190)
+  email       String     @db.VarChar(190)
+  address     String     @db.VarChar(190)
+  invoice     invoices[]
   quote       quotes[]
 }
 
@@ -50,6 +51,30 @@ model quoted_products {
   quote      quotes? @relation(fields: [quote_id], references: [quote_id])
 
   @@index([quote_id], map: "quoted_products_quote_id_fkey")
+}
+
+model invoices {
+  invoice_id        Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  customer_id       Int
+  labour            Decimal             @db.Decimal(8, 2)
+  discount          Decimal             @db.Decimal(8, 2)
+  invoiced_products invoiced_products[]
+  customer          customers           @relation(fields: [customer_id], references: [customer_id])
+
+  @@index([customer_id], map: "invoices_customer_id_fkey")
+}
+
+model invoiced_products {
+  invprod_id Int       @id @default(autoincrement())
+  invoice_id Int?
+  name       String    @db.VarChar(190)
+  quantity   Int       @default(1) @db.SmallInt
+  price      Decimal   @db.Decimal(8, 2)
+  invoice    invoices? @relation(fields: [invoice_id], references: [invoice_id])
+
+  @@index([invoice_id], map: "invoiced_products_invoice_id_fkey")
 }
 
 model products {

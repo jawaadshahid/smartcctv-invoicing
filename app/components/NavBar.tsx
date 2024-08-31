@@ -42,6 +42,9 @@ const NavBar = () => {
               <a href="/quotes">Quotes</a>
             </li>
             <li>
+              <a href="/invoices">Invoices</a>
+            </li>
+            <li>
               <a href="/customers">Customers</a>
             </li>
             <li>
