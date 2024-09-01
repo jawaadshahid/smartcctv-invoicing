@@ -62,7 +62,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function InvoicesIndex() {
-  const { quotes: invoices }: { quotes: InvoicesType[] | any[] } =
+  const { invoices }: { invoices: InvoicesType[] | any[] } =
     useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
@@ -108,7 +108,7 @@ export default function InvoicesIndex() {
                         <td data-label="Date" className={respTDClass}>
                           {prettifyDateString(createdAt)}
                         </td>
-                        <td data-label="Customer" className={respTDClass}>
+                        <td data-label="Customer" className={`${respTDClass} w-full`}>
                           {customer.name}
                         </td>
                         <td data-label="Amount" className={respTDClass}>
@@ -124,13 +124,13 @@ export default function InvoicesIndex() {
                           <div className="btn-group">
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
-                              href={`quotes/${invoice_id}`}
+                              href={`invoices/${invoice_id}`}
                             >
                               View
                             </FormAnchorButton>
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
-                              href={`quotes/${invoice_id}/edit`}
+                              href={`invoices/${invoice_id}/edit`}
                             >
                               Edit
                             </FormAnchorButton>

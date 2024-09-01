@@ -94,7 +94,7 @@ export default function UsersIndex() {
                     <td data-label="Last Name" className={respTDClass}>
                       {loopedUser.lastName}
                     </td>
-                    <td data-label="Email" className={respTDClass}>
+                    <td data-label="Email" className={`${respTDClass} w-full`}>
                       {loopedUser.email}
                     </td>
                     <td data-label="Approved" className={respTDClass}>

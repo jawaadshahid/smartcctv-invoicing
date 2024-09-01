@@ -9,6 +9,7 @@ import { getInvoiceBuffer } from "~/components/InvoicePDFDoc";
 import Modal from "~/components/Modal";
 import ShareInvoiceFrom from "~/components/ShareInvoiceForm";
 import { getInvoiceById } from "~/controllers/invoices";
+import { getUserByEmail } from "~/controllers/users";
 import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
 import { sendEmail } from "~/utils/mailer";
@@ -99,9 +100,12 @@ export async function action({ request }: ActionArgs) {
         productData
       );
 
+      const user = await getUserByEmail(`${userEmail}`);
+
       const pdfBuffer = await getInvoiceBuffer(
         invoiceid as string,
-        isVatInvoice === "on"
+        isVatInvoice === "on",
+        user && user.address ? `${user.address}` : ""
       );
 
       let mailResponse: any;

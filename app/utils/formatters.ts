@@ -62,6 +62,15 @@ export const getTwoDecimalPlaces = (
     : dec.toString();
 };
 
+export const prettifyRefNum = (baseRefNum: number) => {
+  const DESIRED_COUNT = 6;
+  const charCount = `${baseRefNum}`.length;
+  const countDiff = DESIRED_COUNT - charCount;
+  return `${
+    countDiff > 0 && [...Array(countDiff)].map(() => 0).join("")
+  }${baseRefNum}`;
+};
+
 export const constructEmailBody = (
   subtotal: FormDataEntryValue,
   labour: FormDataEntryValue,
@@ -90,5 +99,11 @@ export const constructEmailBody = (
 
 export const prettifyDateString = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toDateString();
+  const yyyy = date.getFullYear();
+  const mm = date.getMonth() + 1;
+  const dd = date.getDate();
+  const dds = dd < 10 ? "0" + dd : `${dd}`;
+  const mms = mm < 10 ? "0" + mm : `${mm}`;
+
+  return dds + "/" + mms + "/" + yyyy;
 };

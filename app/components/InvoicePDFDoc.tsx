@@ -13,12 +13,15 @@ import {
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
+  prettifyDateString,
+  prettifyRefNum,
 } from "~/utils/formatters";
 import type { InvoicesType } from "~/utils/types";
 
 export const getInvoiceBuffer = async (
   invoiceid: string | undefined,
-  isVat: boolean
+  isVat: boolean,
+  userAddress: string
 ) => {
   if (!invoiceid) return Promise.reject({ error: "invoice id is not defined" });
   const id = invoiceid as string;
@@ -32,7 +35,7 @@ export const getInvoiceBuffer = async (
   if (!invoice) return Promise.reject({ msg: "invoice not found!" });
 
   let stream = await renderToStream(
-    <InvoicePDFDoc invoice={invoice} isVat={isVat} />
+    <InvoicePDFDoc invoice={invoice} isVat={isVat} userAddress={userAddress} />
   );
   // and transform it to a Buffer to send in the Response
   return new Promise((resolve, reject) => {
@@ -57,6 +60,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "#000000",
     borderBottomWidth: 1,
+  },
+  address: {
+    marginRight: 20,
+    textAlign: "right",
   },
   logo: {
     width: 200,
@@ -104,9 +111,11 @@ const styles = StyleSheet.create({
 const InvoicePDFDoc = ({
   invoice,
   isVat,
+  userAddress,
 }: {
   invoice: InvoicesType;
   isVat: boolean;
+  userAddress: string;
 }) => {
   const {
     invoice_id,
@@ -115,12 +124,30 @@ const InvoicePDFDoc = ({
     labour,
     discount,
     invoiced_products,
-  } = invoice;
+  } = isVat
+    ? {
+        ...invoice,
+        labour: Prisma.Decimal.mul(invoice.labour, 0.8),
+        invoiced_products: invoice.invoiced_products.map(
+          (inv_prod: invoiced_products) => {
+            return {
+              ...inv_prod,
+              price: Prisma.Decimal.mul(inv_prod.price, 0.8),
+            };
+          }
+        ),
+      }
+    : invoice;
   const { name, tel, email, address } = customer;
   const date = new Date(createdAt);
   const subtotal = getSubtotal(invoiced_products);
-  const grandTotal = getGrandTotal(subtotal, labour, discount);
+  const grandTotal = getGrandTotal(
+    getSubtotal(invoice.invoiced_products),
+    invoice.labour,
+    discount
+  );
   const vatTotal = Prisma.Decimal.mul(grandTotal, 0.2);
+  const vatGrandTotal = Prisma.Decimal.mul(vatTotal, 5);
   return (
     <Document title={`Smart CCTV invoice #${invoice_id}, for ${name}`}>
       <Page size="A4" style={styles.page}>
@@ -129,7 +156,12 @@ const InvoicePDFDoc = ({
             src="https://smartcctvuk.co.uk/img/logo-small.png"
             style={styles.logo}
           />
-          <Text style={{ marginRight: 20 }}>{date.toDateString()}</Text>
+          <Text style={styles.address}>
+            {`${userAddress.split(", ").join(`${"\n"}`)}${"\n"}`}
+            invoice ref: {prettifyRefNum(invoice_id)}
+            {"\n"}
+            {prettifyDateString(date.toISOString())}
+          </Text>
         </View>
         <View style={{ margin: "15 20" }}>
           <View style={styles.customerRow}>
@@ -181,7 +213,11 @@ const InvoicePDFDoc = ({
                     <View
                       style={[
                         styles.tableCell,
-                        { textAlign: "left", width: "55%", borderLeftWidth: 0 },
+                        {
+                          textAlign: "left",
+                          width: "55%",
+                          borderLeftWidth: 0,
+                        },
                       ]}
                     >
                       <Text>{name}</Text>
@@ -217,10 +253,6 @@ const InvoicePDFDoc = ({
               </Text>
             </View>
           ) : null}
-          <View style={styles.endRow}>
-            <Text style={styles.endField}>Total:</Text>
-            <Text style={styles.endValue}>{getCurrencyString(grandTotal)}</Text>
-          </View>
           {isVat ? (
             <>
               <View style={styles.endRow}>
@@ -230,13 +262,20 @@ const InvoicePDFDoc = ({
                 </Text>
               </View>
               <View style={styles.endRow}>
-                <Text style={styles.endField}>Total (Inc VAT):</Text>
+                <Text style={styles.endField}>Total:</Text>
                 <Text style={styles.endValue}>
-                  {getCurrencyString(Prisma.Decimal.sum(grandTotal, vatTotal))}
+                  {getCurrencyString(vatGrandTotal)}
                 </Text>
               </View>
             </>
-          ) : null}
+          ) : (
+            <View style={styles.endRow}>
+              <Text style={styles.endField}>Total:</Text>
+              <Text style={styles.endValue}>
+                {getCurrencyString(grandTotal)}
+              </Text>
+            </View>
+          )}
         </View>
       </Page>
     </Document>

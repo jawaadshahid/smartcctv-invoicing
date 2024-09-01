@@ -107,7 +107,7 @@ export default function QuotesIndex() {
                         <td data-label="Date" className={respTDClass}>
                           {prettifyDateString(createdAt)}
                         </td>
-                        <td data-label="Customer" className={respTDClass}>
+                        <td data-label="Customer" className={`${respTDClass} w-full`}>
                           {customer.name}
                         </td>
                         <td data-label="Amount" className={respTDClass}>

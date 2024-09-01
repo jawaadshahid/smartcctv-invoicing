@@ -155,7 +155,7 @@ export default function Customers() {
                         <td data-label="ID" className={respTDClass}>
                           {customer_id}
                         </td>
-                        <td data-label="Name" className={respTDClass}>
+                        <td data-label="Name" className={`${respTDClass} w-half`}>
                           {name}
                         </td>
                         <td data-label="Tel" className={respTDClass}>
@@ -164,7 +164,7 @@ export default function Customers() {
                         <td data-label="Email" className={respTDClass}>
                           {email}
                         </td>
-                        <td data-label="Address" className={respTDClass}>
+                        <td data-label="Address" className={`${respTDClass} w-half`}>
                           {address}
                         </td>
                         <td
