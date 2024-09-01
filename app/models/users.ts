@@ -17,11 +17,12 @@ export const getUserById = (id: number) => {
 };
 
 export const createUser = (isAdmin: boolean, data: any) => {
-  const { firstname, lastname, email, password } = data;
+  const { firstname, lastname, address, email, password } = data;
   return db.users.create({
     data: {
       firstName: `${firstname}`,
       lastName: `${lastname}`,
+      address: `${address}`,
       email: `${email}`,
       password,
       createdAt: new Date(),
@@ -33,7 +34,7 @@ export const createUser = (isAdmin: boolean, data: any) => {
 };
 
 export const updateUserById = (id: number, data: any) => {
-  const { firstname, lastname, email, newpassword } = data;
+  const { firstname, lastname, address, email, newpassword } = data;
   return db.users.update({
     where: {
       id,
@@ -41,6 +42,7 @@ export const updateUserById = (id: number, data: any) => {
     data: {
       firstName: `${firstname}`,
       lastName: `${lastname}`,
+      address: `${address}`,
       email: `${email}`,
       ...(newpassword && { password: newpassword }),
       updatedAt: new Date(),

@@ -95,6 +95,18 @@ export default function Register() {
               )}
             </div>
             <div className="mb-4">
+              <label className="label" htmlFor="address">
+                <span className="label-text">Address</span>
+              </label>
+              <input
+                className={inputClass}
+                id="address"
+                name="address"
+                type="text"
+                placeholder="Address"
+              />
+            </div>
+            <div className="mb-4">
               <label className="label" htmlFor="email">
                 <span className="label-text">Email</span>
               </label>
@@ -120,7 +132,7 @@ export default function Register() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="******************"
+                placeholder="***"
               />
               {data && data.formErrors && data.formErrors.password && (
                 <p className="text-error mt-1 text-xs">

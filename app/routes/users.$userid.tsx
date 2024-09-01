@@ -93,7 +93,7 @@ export default function UserId() {
                 id="firstname"
                 name="firstname"
                 type="text"
-                placeholder={user.firstName}
+                value={user.firstName}
               />
               {data && data.formErrors && data.formErrors.fname && (
                 <p className="text-error mt-1 text-xs">
@@ -110,7 +110,7 @@ export default function UserId() {
                 id="lastname"
                 name="lastname"
                 type="text"
-                placeholder={user.lastName}
+                value={user.lastName}
               />
               {data && data.formErrors && data.formErrors.lname && (
                 <p className="text-error mt-1 text-xs">
@@ -119,14 +119,26 @@ export default function UserId() {
               )}
             </div>
             <div className="mb-4">
+              <label className="label" htmlFor="lastname">
+                <span className="label-text">Address</span>
+              </label>
+              <input
+                className="input input-bordered w-full max-w-xs"
+                id="address"
+                name="address"
+                type="text"
+                value={user.address}
+              />
+            </div>
+            <div className="mb-4">
               <label className="label" htmlFor="email">
                 <span className="label-text">Email</span>
               </label>
               <input type="hidden" name="email" value={user.email} />
               <input
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs opacity-50"
                 type="text"
-                placeholder={user.email}
+                value={user.email}
                 disabled
               />
             </div>
@@ -139,7 +151,7 @@ export default function UserId() {
                 id="opassword"
                 name="opassword"
                 type="password"
-                placeholder="******************"
+                placeholder="***"
               />
               {data && data.formErrors && data.formErrors.opassword && (
                 <p className="text-error mt-1 text-xs">
@@ -156,7 +168,7 @@ export default function UserId() {
                 id="npassword"
                 name="npassword"
                 type="password"
-                placeholder="******************"
+                placeholder="***"
               />
               {data && data.formErrors && data.formErrors.npassword && (
                 <p className="text-error mt-1 text-xs">

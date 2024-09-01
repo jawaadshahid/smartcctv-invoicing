@@ -17,6 +17,7 @@ model users {
   updatedAt  DateTime @db.DateTime(0)
   isAdmin    Int      @default(0) @db.TinyInt
   isApproved Int      @default(0) @db.TinyInt
+  address    String?  @db.VarChar(190)
 }
 
 model customers {
