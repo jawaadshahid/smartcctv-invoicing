@@ -6,6 +6,7 @@ import {
   getInvoices as selectInvoices,
 } from "../models/invoices";
 import { getProductsByIds } from "./products";
+import { getQuoteById } from "./quotes";
 
 export const getInvoices = async () => {
   return await selectInvoices();
@@ -85,4 +86,41 @@ export const createInvoice = async (data: any) => {
 
 export const deleteInvoiceById = async (invoice_id: number) => {
   return await removeInvoiceId(invoice_id);
+};
+
+export const createInvoiceFromQuoteById = async (quote_id: number) => {
+  // retrieve quote via quote controller
+  try {
+    const quote = await getQuoteById(quote_id);
+    if (!quote)
+      return Promise.reject(
+        "there was a problem saving the invoice, please try again later"
+      );
+
+    // deconstruct all values
+    const { customer_id, labour, discount, quoted_products } = quote;
+
+    // map to invoice object schema
+    const invoiceData = {
+      customer: customer_id,
+      labour,
+      discount,
+      invoicedProducts: quoted_products.map(({ name, quantity, price }) => {
+        return { name, quantity, price };
+      }),
+    };
+
+    const newInvoice = await insertInvoice(invoiceData);
+    if (!newInvoice)
+      return Promise.reject(
+        "there was a problem saving the invoice, please try again later"
+      );
+    return newInvoice;
+  } catch (error) {
+    console.log({ error });
+    return Promise.reject(
+      "there was a problem saving the invoice, please try again later"
+    );
+  }
+  // pass to createInvoice model
 };

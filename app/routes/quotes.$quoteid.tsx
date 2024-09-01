@@ -1,13 +1,19 @@
 import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import { useContext, useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import { getQuoteBuffer } from "~/components/QuotePDFDoc";
 import ShareQuoteForm from "~/components/ShareQuoteForm";
+import { createInvoiceFromQuoteById } from "~/controllers/invoices";
 import { getQuoteById } from "~/controllers/quotes";
 import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
@@ -53,10 +59,16 @@ const getEmailsFromEntry = (emailsEntry: FormDataEntryValue) => {
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
+  const { quoteid } = values;
   switch (_action) {
+    case "generate_invoice":
+      const { invoice_id } = await createInvoiceFromQuoteById(
+        parseInt(`${quoteid}`)
+      );
+      return redirect(`/invoices/${invoice_id}`);
+      break;
     case "share_quote":
       const {
-        quoteid,
         customerEmail,
         userEmail,
         otherEmails,
@@ -275,6 +287,17 @@ export default function QuoteId() {
         >
           Generate VAT PDF
         </FormAnchorButton>
+        <Form replace method="post">
+          <input type="hidden" value={quote_id} name="quoteid" />
+          <FormBtn
+            type="submit"
+            name="_action"
+            value="generate_invoice"
+            isSubmitting={isSubmitting}
+          >
+            Generate Invoice
+          </FormBtn>
+        </Form>
         <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {
