@@ -63,7 +63,7 @@ const QuoteNewProductRow = ({
     <tr className={respTRClass}>
       <td
         colSpan={product_id ? 1 : 4}
-        data-label="Product"
+        data-label="Product: "
         className={respTDClass}
       >
         <select
@@ -93,7 +93,7 @@ const QuoteNewProductRow = ({
       </td>
       {product_id && (
         <>
-          <td data-label="Quantity" className={respTDClass}>
+          <td data-label="Quantity: " className={respTDClass}>
             <div className="relative">
               <input
                 className={inputClass}
@@ -122,13 +122,13 @@ const QuoteNewProductRow = ({
             </div>
           </td>
           <td
-            data-label="Unit price"
+            data-label="Unit price: "
             className={`${respTDClass} md:text-right`}
           >
             {price ? getCurrencyString(price) : " - "}
           </td>
           <td
-            data-label="Item total"
+            data-label="Item total: "
             className={`${respTDClass} md:text-right`}
           >
             {itemTotal ? getCurrencyString(itemTotal) : " - "}

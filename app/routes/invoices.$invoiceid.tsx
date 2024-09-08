@@ -1,7 +1,18 @@
+import {
+  ArrowUturnLeftIcon,
+  DocumentCurrencyPoundIcon,
+  PencilSquareIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import { useContext, useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
@@ -14,7 +25,7 @@ import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
 import { sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
-import { TDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
+import { respTDClass, respTRClass } from "~/utils/styleClasses";
 import type { InvoicedProductsType, InvoicesType } from "~/utils/types";
 import { validateEmail } from "~/utils/validations";
 import {
@@ -150,6 +161,7 @@ export default function InvoiceId() {
   }: InvoicesType = invoice;
   const navigation = useNavigation();
   const data = useActionData();
+  const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
   const [subtotal, setSubtotal] = useState(new Prisma.Decimal(0));
   const [grandTotal, setGrandTotal] = useState(new Prisma.Decimal(0));
@@ -174,12 +186,17 @@ export default function InvoiceId() {
       <h2>Invoice</h2>
       <p>Created on: {prettifyDateString(createdAt)}</p>
       <h3>Customer</h3>
-      <p>Name: {customer.name}</p>
-      <p>Address: {customer.address}</p>
-      <p>Tel: {customer.tel}</p>
-      <p>Email: {customer.email}</p>
+      <p>
+        Name: {customer.name}
+        <br />
+        Address: {customer.address}
+        <br />
+        Tel: {customer.tel}
+        <br />
+        Email: {customer.email}
+      </p>
       <h3>Products</h3>
-      <div className="-mx-4 md:mx-0">
+      <div className="-m-4 md:m-0">
         <table className="table">
           <thead>
             <tr className="hidden md:table-row">
@@ -200,20 +217,20 @@ export default function InvoiceId() {
                 }: InvoicedProductsType) => {
                   return (
                     <tr key={invprod_id} className={respTRClass}>
-                      <td data-label="Name" className={respTDClass}>
+                      <td data-label="Name: " className={respTDClass}>
                         {name}
                       </td>
-                      <td data-label="Quantity" className={respTDClass}>
+                      <td data-label="Quantity: " className={respTDClass}>
                         {quantity}
                       </td>
                       <td
-                        data-label="Unit price"
+                        data-label="Unit price: "
                         className={`${respTDClass} md:text-right`}
                       >
                         {getCurrencyString(price)}
                       </td>
                       <td
-                        data-label="Item total"
+                        data-label="Item total: "
                         className={`${respTDClass} md:text-right`}
                       >
                         {getCurrencyString(Prisma.Decimal.mul(price, quantity))}
@@ -225,48 +242,48 @@ export default function InvoiceId() {
             <tr className={respTRClass}>
               <td
                 colSpan={3}
-                className={`${TDClass} hidden md:table-cell`}
+                className={`${respTDClass} hidden md:table-cell`}
               ></td>
-              <td className={`${TDClass} md:text-right`}>
+              <td className={`${respTDClass} md:text-right`}>
                 Subtotal: {getCurrencyString(subtotal)}
               </td>
             </tr>
             <tr className={respTRClass}>
               <td
                 colSpan={3}
-                className={`${TDClass} hidden md:table-cell`}
+                className={`${respTDClass} hidden md:table-cell`}
               ></td>
-              <td className={`${TDClass} md:text-right`}>
+              <td className={`${respTDClass} md:text-right`}>
                 Labour: {getCurrencyString(labour)}
               </td>
             </tr>
             <tr className={respTRClass}>
               <td
                 colSpan={3}
-                className={`${TDClass} hidden md:table-cell`}
+                className={`${respTDClass} hidden md:table-cell`}
               ></td>
-              <td className={`${TDClass} md:text-right`}>
+              <td className={`${respTDClass} md:text-right`}>
                 Discount: -{getCurrencyString(discount)}
               </td>
             </tr>
             <tr className={respTRClass}>
               <td
                 colSpan={3}
-                className={`${TDClass} hidden md:table-cell`}
+                className={`${respTDClass} hidden md:table-cell`}
               ></td>
-              <td className={`${TDClass} md:text-right`}>
+              <td className={`${respTDClass} md:text-right`}>
                 Total: {getCurrencyString(grandTotal)}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col md:flex-row md:justify-end mt-4 gap-4">
+      <div className="flex flex-row justify-end gap-2">
         <FormAnchorButton
           href={`/invoices/${invoice_id}/edit`}
           isSubmitting={isSubmitting}
         >
-          Edit
+          <PencilSquareIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
         <FormAnchorButton
           href={`/invoices/${invoice_id}/0/generatedinvoice`}
@@ -274,7 +291,7 @@ export default function InvoiceId() {
           rel="noreferrer"
           isSubmitting={isSubmitting}
         >
-          Generate PDF
+          <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
         <FormAnchorButton
           href={`/invoices/${invoice_id}/1/generatedinvoice`}
@@ -282,7 +299,8 @@ export default function InvoiceId() {
           rel="noreferrer"
           isSubmitting={isSubmitting}
         >
-          Generate VAT PDF
+          <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
+          <sup>V</sup>
         </FormAnchorButton>
         <FormBtn
           isSubmitting={isSubmitting}
@@ -290,10 +308,15 @@ export default function InvoiceId() {
             setShowShareModal(true);
           }}
         >
-          Share
+          <ShareIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
-        <FormAnchorButton href="/invoices" isSubmitting={isSubmitting}>
-          Back
+        <FormAnchorButton
+          onClick={() => {
+            navigate(-1);
+          }}
+          isSubmitting={isSubmitting}
+        >
+          <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
       </div>
       <Modal open={showShareModal}>

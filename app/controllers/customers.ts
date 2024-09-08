@@ -2,11 +2,16 @@ import {
   createCustomer as insertCustomer,
   updateCustomer as putCustomers,
   deleteCustomerById as removeCustomerById,
+  getCustomerById as selectCustomerById,
   getCustomers as selectCustomers,
 } from "../models/customers";
 
 export const getCustomers = async () => {
   return await selectCustomers();
+};
+
+export const getCustomerById = async (customer_id: number) => {
+  return await selectCustomerById(customer_id);
 };
 
 export const updateCustomer = async (data: any) => {

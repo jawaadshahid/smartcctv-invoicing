@@ -1,3 +1,7 @@
+import {
+  ArrowRightStartOnRectangleIcon,
+  Bars3Icon,
+} from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import { UserContext } from "~/root";
 
@@ -7,22 +11,9 @@ const NavBar = () => {
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h7"
-              />
-            </svg>
+        <div className="dropdown fixed z-20">
+          <label tabIndex={0} className="btn">
+            <Bars3Icon className="h-5 w-5 stroke-2" />
           </label>
           <ul
             tabIndex={0}
@@ -61,50 +52,14 @@ const NavBar = () => {
         />
       </div>
       <div className="navbar-end">
-        {!user ? (
-          <button
-            className="btn btn-ghost btn-circle tooltip tooltip-left"
-            data-tip="login"
-          >
-            <a href="/login">
-              <svg
-                className="w-6 h-6 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                ></path>
-              </svg>
-            </a>
-          </button>
-        ) : (
+        {user && (
           <>
-            <p className="hidden md:block">Hi, {user.firstName}</p>
-            <button
-              className="btn btn-ghost btn-circle tooltip tooltip-left"
-              data-tip="logout"
-            >
+            <p className="hidden md:block mr-2 text-neutral-content">
+              Hi, {user.firstName}
+            </p>
+            <button className="btn tooltip tooltip-left" data-tip="logout">
               <a href="/logout">
-                <svg
-                  className="w-6 h-6 mx-auto"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  ></path>
-                </svg>
+                <ArrowRightStartOnRectangleIcon className="h-5 w-5 stroke-2 mx-auto" />
               </a>
             </button>
           </>

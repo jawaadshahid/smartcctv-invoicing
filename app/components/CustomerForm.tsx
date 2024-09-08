@@ -1,9 +1,13 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type { customers } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
+import { useState } from "react";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
-import { useState } from "react";
 
 const CustomerForm = ({
   navigation,
@@ -14,7 +18,7 @@ const CustomerForm = ({
 }: {
   navigation: Navigation;
   formErrors?: any;
-  onCancel: Function;
+  onCancel?: Function;
   actionName: string;
   existingData?: customers;
 }) => {
@@ -130,18 +134,20 @@ const CustomerForm = ({
             value={actionName}
             isSubmitting={isSubmitting}
           >
-            Submit
+            <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
-          <FormBtn
-            className="ml-4"
-            isSubmitting={isSubmitting}
-            onClick={(e) => {
-              e.preventDefault();
-              onCancel();
-            }}
-          >
-            Cancel
-          </FormBtn>
+          {onCancel && (
+            <FormBtn
+              className="ml-4"
+              isSubmitting={isSubmitting}
+              onClick={(e) => {
+                e.preventDefault();
+                onCancel();
+              }}
+            >
+              <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
+            </FormBtn>
+          )}
         </div>
       </fieldset>
     </Form>

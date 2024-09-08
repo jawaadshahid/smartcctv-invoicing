@@ -1,3 +1,7 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type {
   Prisma,
   product_brands,
@@ -171,8 +175,7 @@ const ProductForm = ({
             onChange={(e) => {
               const val = e.target.value;
               const pennies = val.split(".")[1];
-              if (!pennies || (pennies && pennies.length <= 2))
-                setPrice(val);
+              if (!pennies || (pennies && pennies.length <= 2)) setPrice(val);
             }}
             onBlur={(e) => {
               const val = Number(e.target.value);
@@ -196,7 +199,7 @@ const ProductForm = ({
             value={actionName}
             isSubmitting={isSubmitting}
           >
-            Submit
+            <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
           <FormBtn
             className="ml-4"
@@ -206,7 +209,7 @@ const ProductForm = ({
               onCancel();
             }}
           >
-            Cancel
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </fieldset>

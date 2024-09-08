@@ -35,3 +35,13 @@ export type InvoicesType = {
   discount: Prisma.Decimal;
   invoiced_products: InvoicedProductsType[];
 };
+
+export type CustomerType = {
+  customer_id: number;
+  name: string;
+  tel: string;
+  email: string;
+  address: string;
+  invoice: InvoicesType[];
+  quote: QuotesType[];
+};

@@ -1,15 +1,19 @@
-import { Form } from "@remix-run/react";
-import { Prisma } from "@prisma/client";
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type { customers, users } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
-import FormBtn from "./FormBtn";
 import type { QuotedProductsType } from "~/utils/types";
 import {
   getCurrencyString,
   getSubtotal,
   getTwoDecimalPlaces,
 } from "../utils/formatters";
+import FormBtn from "./FormBtn";
 
 type ProductDataType = {
   quoted_products: QuotedProductsType[];
@@ -158,7 +162,7 @@ const ShareQuoteForm = ({
             value="share_quote"
             isSubmitting={isSubmitting}
           >
-            Submit
+            <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
           <FormBtn
             className="ml-4"
@@ -168,7 +172,7 @@ const ShareQuoteForm = ({
               onCancel();
             }}
           >
-            Cancel
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </fieldset>

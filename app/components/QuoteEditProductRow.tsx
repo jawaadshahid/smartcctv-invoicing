@@ -61,7 +61,7 @@ const QuoteEditProductRow = ({
 
   return (
     <tr className={respTRClass}>
-      <td data-label="Product" className={respTDClass}>
+      <td data-label="Product: " className={respTDClass}>
         <input
           type="text"
           className={inputClass}
@@ -73,7 +73,7 @@ const QuoteEditProductRow = ({
           }}
         />
       </td>
-      <td data-label="Quantity" className={respTDClass}>
+      <td data-label="Quantity: " className={respTDClass}>
         <div className="relative">
           <input
             className={inputClass}
@@ -101,7 +101,7 @@ const QuoteEditProductRow = ({
           </FormBtn>
         </div>
       </td>
-      <td data-label="Unit price" className={`${respTDClass} md:text-right`}>
+      <td data-label="Unit price: " className={`${respTDClass} md:text-right`}>
         <input
           className={inputClass}
           name={`ep_${rowId}_price`}
@@ -124,7 +124,7 @@ const QuoteEditProductRow = ({
           }}
         />
       </td>
-      <td data-label="Item total" className={`${respTDClass} md:text-right`}>
+      <td data-label="Item total: " className={`${respTDClass} md:text-right`}>
         {itemTotal ? getCurrencyString(itemTotal) : " - "}
       </td>
     </tr>

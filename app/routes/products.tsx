@@ -1,4 +1,12 @@
 import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+  DocumentPlusIcon,
+  PencilSquareIcon,
+  SparklesIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import {
   Prisma,
   type product_brands,
   type product_models,
@@ -208,7 +216,7 @@ export default function Products() {
   return (
     <div className={contentBodyClass}>
       {products && products.length ? (
-        <div className="-mx-4 md:mx-0">
+        <div className="-m-4 md:m-0">
           <table className="table">
             <thead>
               <tr className="hidden md:table-row">
@@ -235,26 +243,23 @@ export default function Products() {
                   }: products) => {
                     return (
                       <tr className={respTRClass} key={product_id}>
-                        <td data-label="ID" className={respTDClass}>
+                        <td data-label="ID: " className={respTDClass}>
                           {product_id}
                         </td>
-                        <td data-label="Brand" className={respTDClass}>
+                        <td data-label="Brand: " className={respTDClass}>
                           {brand_name}
                         </td>
-                        <td data-label="Type" className={respTDClass}>
+                        <td data-label="Type: " className={respTDClass}>
                           {type_name}
                         </td>
-                        <td data-label="Model" className={respTDClass}>
+                        <td data-label="Model: " className={respTDClass}>
                           {model_name}
                         </td>
-                        <td data-label="Price" className={respTDClass}>
+                        <td data-label="Price: " className={respTDClass}>
                           {getCurrencyString(price)}
                         </td>
-                        <td
-                          data-label="Actions"
-                          className={`${respTDClass} md:text-right`}
-                        >
-                          <div className="btn-group">
+                        <td className={`${respTDClass} md:text-right`}>
+                          <div className="absolute md:static top-0 right-0 btn-group">
                             <FormBtn
                               isSubmitting={isSubmitting}
                               onClick={() => {
@@ -268,7 +273,7 @@ export default function Products() {
                                 setEditModalOpen(true);
                               }}
                             >
-                              EDIT
+                              <PencilSquareIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
                             <FormBtn
                               isSubmitting={isSubmitting}
@@ -277,7 +282,7 @@ export default function Products() {
                                 setDeleteModalOpen(true);
                               }}
                             >
-                              DELETE
+                              <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
                           </div>
                         </td>
@@ -299,7 +304,7 @@ export default function Products() {
             setCleanupModalOpen(true);
           }}
         >
-          Cleanup
+          <SparklesIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
         <FormBtn
           isSubmitting={isSubmitting}
@@ -307,7 +312,7 @@ export default function Products() {
             setCreateModalOpen(true);
           }}
         >
-          Add new product +
+          <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
       </div>
       <Modal open={cleanupModalOpen}>
@@ -377,14 +382,14 @@ export default function Products() {
               value="delete"
               isSubmitting={isSubmitting}
             >
-              Confirm
+              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
           </Form>
           <FormBtn
             isSubmitting={isSubmitting}
             onClick={() => setDeleteModalOpen(false)}
           >
-            Cancel
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </Modal>

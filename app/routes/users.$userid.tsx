@@ -1,3 +1,7 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
@@ -93,7 +97,7 @@ export default function UserId() {
                 id="firstname"
                 name="firstname"
                 type="text"
-                value={user.firstName}
+                defaultValue={user.firstName}
               />
               {data && data.formErrors && data.formErrors.fname && (
                 <p className="text-error mt-1 text-xs">
@@ -110,7 +114,7 @@ export default function UserId() {
                 id="lastname"
                 name="lastname"
                 type="text"
-                value={user.lastName}
+                defaultValue={user.lastName}
               />
               {data && data.formErrors && data.formErrors.lname && (
                 <p className="text-error mt-1 text-xs">
@@ -127,19 +131,19 @@ export default function UserId() {
                 id="address"
                 name="address"
                 type="text"
-                value={user.address}
+                defaultValue={user.address}
               />
             </div>
             <div className="mb-4">
               <label className="label" htmlFor="email">
                 <span className="label-text">Email</span>
               </label>
-              <input type="hidden" name="email" value={user.email} />
+              <input type="hidden" name="email" defaultValue={user.email} />
               <input
                 className="input input-bordered w-full max-w-xs opacity-50"
                 type="text"
-                value={user.email}
-                disabled
+                defaultValue={user.email}
+                readOnly
               />
             </div>
             <div className="mb-4">
@@ -178,14 +182,14 @@ export default function UserId() {
             </div>
             <div className="mt-6 mb-2">
               <FormBtn type="submit" isSubmitting={isSubmitting}>
-                Submit
+                <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
               </FormBtn>
               <FormAnchorButton
                 href="/users"
                 className="ml-3"
                 isSubmitting={isSubmitting}
               >
-                Cancel
+                <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
               </FormAnchorButton>
             </div>
           </fieldset>

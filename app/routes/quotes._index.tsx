@@ -1,3 +1,11 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+  DocumentPlusIcon,
+  EyeIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -77,7 +85,7 @@ export default function QuotesIndex() {
   return (
     <>
       {quotes && quotes.length ? (
-        <div className="-mx-4 md:mx-0">
+        <div className="-m-4 md:m-0">
           <table className="table">
             <thead>
               <tr className="hidden md:table-row">
@@ -101,16 +109,19 @@ export default function QuotesIndex() {
                   }: QuotesType) => {
                     return (
                       <tr className={respTRClass} key={quote_id}>
-                        <td data-label="ID" className={respTDClass}>
+                        <td data-label="ID: " className={respTDClass}>
                           {quote_id}
                         </td>
-                        <td data-label="Date" className={respTDClass}>
+                        <td data-label="Date: " className={respTDClass}>
                           {prettifyDateString(createdAt)}
                         </td>
-                        <td data-label="Customer" className={`${respTDClass} w-full`}>
+                        <td
+                          data-label="Customer: "
+                          className={`${respTDClass} w-full`}
+                        >
                           {customer.name}
                         </td>
-                        <td data-label="Amount" className={respTDClass}>
+                        <td data-label="Amount: " className={respTDClass}>
                           {getCurrencyString(
                             getGrandTotal(
                               getSubtotal(quoted_products),
@@ -119,19 +130,19 @@ export default function QuotesIndex() {
                             )
                           )}
                         </td>
-                        <td data-label="Actions" className={respTDClass}>
-                          <div className="btn-group">
+                        <td className={respTDClass}>
+                          <div className="absolute md:static top-0 right-0 btn-group">
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`quotes/${quote_id}`}
                             >
-                              View
+                              <EyeIcon className="h-5 w-5 stroke-2" />
                             </FormAnchorButton>
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`quotes/${quote_id}/edit`}
                             >
-                              Edit
+                              <PencilSquareIcon className="h-5 w-5 stroke-2" />
                             </FormAnchorButton>
                             <FormBtn
                               isSubmitting={isSubmitting}
@@ -140,7 +151,7 @@ export default function QuotesIndex() {
                                 setDeleteModalOpen(true);
                               }}
                             >
-                              DELETE
+                              <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
                           </div>
                         </td>
@@ -156,7 +167,7 @@ export default function QuotesIndex() {
       )}
       <div className={createBtnContainerClass}>
         <FormAnchorButton href="/quotes/create">
-          Add new quote +
+          <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
       </div>
       <Modal open={deleteModelOpen}>
@@ -175,7 +186,7 @@ export default function QuotesIndex() {
               value="delete"
               isSubmitting={isSubmitting}
             >
-              Confirm
+              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
           </Form>
           <FormBtn
@@ -183,7 +194,7 @@ export default function QuotesIndex() {
             isSubmitting={isSubmitting}
             onClick={() => setDeleteModalOpen(false)}
           >
-            Cancel
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </Modal>

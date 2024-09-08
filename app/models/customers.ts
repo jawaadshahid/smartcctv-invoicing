@@ -6,6 +6,26 @@ export const getCustomers = () => {
   });
 };
 
+export const getCustomerById = (customer_id: number) => {
+  return db.customers.findUnique({
+    where: {
+      customer_id,
+    },
+    include: {
+      quote: {
+        include: {
+          quoted_products: true,
+        },
+      },
+      invoice: {
+        include: {
+          invoiced_products: true,
+        },
+      },
+    },
+  });
+};
+
 export const updateCustomer = async (data: any) => {
   const { customer_id, name, tel, email, address } = data;
   return db.customers.update({

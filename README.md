@@ -53,14 +53,11 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
- - add invoicing
- - add customer based quote/invoice management
- - remove vatpdf func from quotes
  - only show spinner on clicked button
  - add pagination on results pages
  - add basic search on results pages
- - handle 404 and db error messaging
  - refactor actions to controllers
+ - refactor error objs with type pass to controller
  - cleanup dupilcate customers
  - cleanup styles
  - cleanup types

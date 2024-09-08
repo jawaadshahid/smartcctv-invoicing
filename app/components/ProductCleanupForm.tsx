@@ -1,3 +1,7 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import FormBtn from "./FormBtn";
@@ -64,7 +68,7 @@ const ProductCleanupForm = ({
           value={actionName}
           isSubmitting={isSubmitting}
         >
-          Confirm
+          <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
         <FormBtn
           className="ml-4"
@@ -74,7 +78,7 @@ const ProductCleanupForm = ({
             onCancel();
           }}
         >
-          Cancel
+          <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
       </div>
     </Form>

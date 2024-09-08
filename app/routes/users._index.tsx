@@ -1,3 +1,9 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
@@ -68,7 +74,7 @@ export default function UsersIndex() {
 
   return (
     <>
-      <div className="-mx-4 md:mx-0">
+      <div className="-m-4 md:m-0">
         <table className="table">
           <thead>
             <tr className="hidden md:table-row">
@@ -85,19 +91,22 @@ export default function UsersIndex() {
               users.map((loopedUser: any) => {
                 return (
                   <tr className={respTRClass} key={loopedUser.id}>
-                    <td data-label="ID" className={respTDClass}>
+                    <td data-label="ID: " className={respTDClass}>
                       {loopedUser.id}
                     </td>
-                    <td data-label="First Name" className={respTDClass}>
+                    <td data-label="First Name: " className={respTDClass}>
                       {loopedUser.firstName}
                     </td>
-                    <td data-label="Last Name" className={respTDClass}>
+                    <td data-label="Last Name: " className={respTDClass}>
                       {loopedUser.lastName}
                     </td>
-                    <td data-label="Email" className={`${respTDClass} w-full`}>
+                    <td
+                      data-label="Email: "
+                      className={`${respTDClass} w-full`}
+                    >
                       {loopedUser.email}
                     </td>
-                    <td data-label="Approved" className={respTDClass}>
+                    <td data-label="Approved: " className={respTDClass}>
                       {loopedUser.isApproved ? (
                         "Approved"
                       ) : (
@@ -113,13 +122,13 @@ export default function UsersIndex() {
                         </Form>
                       )}
                     </td>
-                    <td data-label="Actions" className={respTDClass}>
-                      <div className="btn-group">
+                    <td className={respTDClass}>
+                      <div className="absolute md:static top-0 right-0 btn-group">
                         <FormAnchorButton
                           href={`users/${loopedUser.id}`}
                           isSubmitting={isSubmitting}
                         >
-                          EDIT
+                          <PencilSquareIcon className="h-5 w-5 stroke-2" />
                         </FormAnchorButton>
                         <FormBtn
                           disabled={user.id === loopedUser.id}
@@ -129,7 +138,7 @@ export default function UsersIndex() {
                             setModalOpen(true);
                           }}
                         >
-                          DELETE
+                          <TrashIcon className="h-5 w-5 stroke-2" />
                         </FormBtn>
                       </div>
                     </td>
@@ -150,11 +159,11 @@ export default function UsersIndex() {
           >
             <input type="hidden" name="uid" value={deletedUserID} />
             <FormBtn type="submit" isSubmitting>
-              Confirm
+              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
           </Form>
           <FormBtn isSubmitting onClick={() => setModalOpen(false)}>
-            Close
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </Modal>

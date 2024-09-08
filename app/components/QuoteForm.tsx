@@ -1,3 +1,10 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+  MinusIcon,
+  PlusIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import type {
   customers,
   product_brands,
@@ -329,7 +336,7 @@ const QuoteForm = ({
               </span>
             </label>
           )}
-          <div className="-mx-4 md:mx-0">
+          <div className="-m-4 md:m-0">
             <table className="table">
               <thead>
                 <tr className="hidden md:table-row">
@@ -343,7 +350,7 @@ const QuoteForm = ({
                 {ProductRow()}
                 <tr className={respTRClass}>
                   <td colSpan={4} className={TDClass}>
-                    <div className="flex md:justify-end btn-group">
+                    <div className="flex justify-end btn-group">
                       <FormBtn
                         disabled={apvCount === 0}
                         isSubmitting={isSubmitting}
@@ -352,7 +359,7 @@ const QuoteForm = ({
                           removeProductRow();
                         }}
                       >
-                        remove
+                        <MinusIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                       <FormBtn
                         isSubmitting={isSubmitting}
@@ -361,7 +368,7 @@ const QuoteForm = ({
                           addProductRow("product");
                         }}
                       >
-                        add product
+                        <PlusIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                       <FormBtn
                         isSubmitting={isSubmitting}
@@ -370,7 +377,7 @@ const QuoteForm = ({
                           addProductRow("custom");
                         }}
                       >
-                        add custom
+                        <SparklesIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                     </div>
                   </td>
@@ -480,7 +487,7 @@ const QuoteForm = ({
               value={actionName}
               isSubmitting={isSubmitting}
             >
-              Submit
+              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
             <FormBtn
               className="ml-4"
@@ -490,7 +497,7 @@ const QuoteForm = ({
                 onCancel();
               }}
             >
-              Cancel
+              <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
           </div>
         </fieldset>

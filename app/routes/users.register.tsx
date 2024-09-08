@@ -1,3 +1,7 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
@@ -142,14 +146,14 @@ export default function Register() {
             </div>
             <div className="mt-6 mb-2">
               <FormBtn type="submit" isSubmitting={isSubmitting}>
-                Submit
+                <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
               </FormBtn>
               <FormAnchorButton
                 href="/login"
                 className="ml-3"
                 isSubmitting={isSubmitting}
               >
-                Cancel
+                <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
               </FormAnchorButton>
             </div>
           </fieldset>

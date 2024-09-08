@@ -1,3 +1,7 @@
+import {
+  ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 import type { customers, users } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
@@ -158,7 +162,7 @@ const ShareInvoiceFrom = ({
             value="share_invoice"
             isSubmitting={isSubmitting}
           >
-            Submit
+            <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
           <FormBtn
             className="ml-4"
@@ -168,7 +172,7 @@ const ShareInvoiceFrom = ({
               onCancel();
             }}
           >
-            Cancel
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </fieldset>
