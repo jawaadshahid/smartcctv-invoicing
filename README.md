@@ -53,11 +53,11 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
- - only show spinner on clicked button
- - add pagination on results pages
- - add basic search on results pages
- - refactor actions to controllers
- - refactor error objs with type pass to controller
- - cleanup dupilcate customers
- - cleanup styles
- - cleanup types
+ - BUG: only show spinner on clicked button OR replace button spinners with global one
+ - FEATURE: add basic search on results pages, implement full-text search prisma, ensure user defined query is sanitised, search input with onChange search call, db call sets flag (in controller) and only performs search when flag is unset, splits string on ' ' (words) and searches string based colums for each
+ - FEATURE: add pagination on results pages, db level, implement and stle component (daisyui), look into adding infinite scroll for select fields (that load in customer and products) (SPIKE)
+ - MAINTENANCE: refactor actions to controllers
+ - MAINTENANCE: refactor type error objs, move to controller
+ - MAINTENANCE: cleanup dupilcate customers, (can be handled by editor)
+ - MAINTENANCE: cleanup styles, move repeated styles to definition file, need a better method than styleClasses.ts (SPIKE)
+ - MAINTENANCE: cleanup types, move inline types to single file
