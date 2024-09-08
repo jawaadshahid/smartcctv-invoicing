@@ -136,17 +136,6 @@ const ShareQuoteForm = ({
             placeholder="john@example.com,jill@example.com,etc"
             className={inputClass}
           />
-        </div>
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">VAT Quote</span>
-            <input
-              type="checkbox"
-              className="checkbox"
-              name="isVatQuote"
-              id="isVatQuote"
-            />
-          </label>
           {formErrors?.msg && (
             <label className="label">
               <span className="label-text-alt text-error">
