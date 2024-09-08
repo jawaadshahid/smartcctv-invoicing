@@ -25,6 +25,7 @@ import {
   TDClass,
   formClass,
   inputClass,
+  respTDClass,
   respTRClass,
   selectClass,
 } from "~/utils/styleClasses";
@@ -349,7 +350,7 @@ const QuoteForm = ({
               <tbody>
                 {ProductRow()}
                 <tr className={respTRClass}>
-                  <td colSpan={4} className={TDClass}>
+                  <td colSpan={4} className={respTDClass}>
                     <div className="flex justify-end btn-group">
                       <FormBtn
                         disabled={apvCount === 0}
@@ -385,14 +386,14 @@ const QuoteForm = ({
                 <tr className={respTRClass}>
                   <td
                     colSpan={2}
-                    className={`${TDClass} hidden md:table-cell`}
+                    className={`${respTDClass} hidden md:table-cell`}
                   ></td>
-                  <td className={`${TDClass} flex md:table-cell`}>
+                  <td className={`${respTDClass} flex md:table-cell`}>
                     <label className="label md:justify-end">
                       <span className="label-text">Subtotal:</span>
                     </label>
                   </td>
-                  <td className={TDClass}>
+                  <td className={respTDClass}>
                     <input
                       disabled
                       value={subtotal}
@@ -403,14 +404,14 @@ const QuoteForm = ({
                 <tr className={respTRClass}>
                   <td
                     colSpan={2}
-                    className={`${TDClass} hidden md:table-cell`}
+                    className={`${respTDClass} hidden md:table-cell`}
                   ></td>
-                  <td className={`${TDClass} flex md:table-cell`}>
+                  <td className={`${respTDClass} flex md:table-cell`}>
                     <label className="label md:justify-end" htmlFor="labour">
                       <span className="label-text">Labour:</span>
                     </label>
                   </td>
-                  <td className={TDClass}>
+                  <td className={respTDClass}>
                     <input type="hidden" name="labour" value={labourValue} />
                     <input
                       id="labour"
@@ -431,14 +432,14 @@ const QuoteForm = ({
                 <tr className={respTRClass}>
                   <td
                     colSpan={2}
-                    className={`${TDClass} hidden md:table-cell`}
+                    className={`${respTDClass} hidden md:table-cell`}
                   ></td>
-                  <td className={`${TDClass} flex md:table-cell`}>
+                  <td className={`${respTDClass} flex md:table-cell`}>
                     <label className="label md:justify-end" htmlFor="discount">
                       <span className="label-text">Discount: -</span>
                     </label>
                   </td>
-                  <td className={TDClass}>
+                  <td className={respTDClass}>
                     <input
                       type="hidden"
                       name="discount"
@@ -462,14 +463,14 @@ const QuoteForm = ({
                 <tr className={respTRClass}>
                   <td
                     colSpan={2}
-                    className={`${TDClass} hidden md:table-cell`}
+                    className={`${respTDClass} hidden md:table-cell`}
                   ></td>
-                  <td className={`${TDClass} flex md:table-cell`}>
+                  <td className={`${respTDClass} flex md:table-cell`}>
                     <label className="label md:justify-end">
                       <span className="label-text">Total:</span>
                     </label>
                   </td>
-                  <td className={TDClass}>
+                  <td className={respTDClass}>
                     <input
                       disabled
                       value={grandtotal}
@@ -480,7 +481,7 @@ const QuoteForm = ({
               </tbody>
             </table>
           </div>
-          <div className="flex md:justify-end mt-4 mb-2">
+          <div className="flex justify-end mt-4 mb-2">
             <FormBtn
               type="submit"
               name="_action"

@@ -67,7 +67,7 @@ const QuoteNewProductRow = ({
         className={respTDClass}
       >
         <select
-          className={selectClass}
+          className={`${selectClass} mb-2 md:mb-0`}
           name={`np_${rowId}_id`}
           id={`np_${rowId}_id`}
           value={product_id}
@@ -96,7 +96,7 @@ const QuoteNewProductRow = ({
           <td data-label="Quantity: " className={respTDClass}>
             <div className="relative">
               <input
-                className={inputClass}
+                className={`${inputClass} mb-2 md:mb-0`}
                 name={`np_${rowId}_qty`}
                 id={`np_${rowId}_qty`}
                 type="number"

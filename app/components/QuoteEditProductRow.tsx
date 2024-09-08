@@ -64,7 +64,7 @@ const QuoteEditProductRow = ({
       <td data-label="Product: " className={respTDClass}>
         <input
           type="text"
-          className={inputClass}
+          className={`${inputClass} mb-2 md:mb-0`}
           name={`ep_${rowId}_name`}
           id={`ep_${rowId}_name`}
           value={productName}
@@ -76,7 +76,7 @@ const QuoteEditProductRow = ({
       <td data-label="Quantity: " className={respTDClass}>
         <div className="relative">
           <input
-            className={inputClass}
+            className={`${inputClass} mb-2 md:mb-0`}
             name={`ep_${rowId}_qty`}
             id={`ep_${rowId}_qty`}
             type="number"
@@ -103,7 +103,7 @@ const QuoteEditProductRow = ({
       </td>
       <td data-label="Unit price: " className={`${respTDClass} md:text-right`}>
         <input
-          className={inputClass}
+          className={`${inputClass} mb-2 md:mb-0`}
           name={`ep_${rowId}_price`}
           id={`ep_${rowId}_price`}
           type="number"
