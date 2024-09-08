@@ -55,7 +55,7 @@ cp -R ../my-old-remix-app/app app
 ## TO-DO
  - BUG: only show spinner on clicked button OR replace button spinners with global one
  - FEATURE: add basic search on results pages, implement full-text search prisma, ensure user defined query is sanitised, search input with onChange search call, db call sets flag (in controller) and only performs search when flag is unset, splits string on ' ' (words) and searches string based colums for each
- - FEATURE: add pagination on results pages, db level, implement and stle component (daisyui), look into adding infinite scroll for select fields (that load in customer and products) (SPIKE)
+ - FEATURE: add pagination on results pages, db level, implement and style component (daisyui), replace select fields with autocomplete input (dependent on search feature)
  - MAINTENANCE: refactor actions to controllers
  - MAINTENANCE: refactor type error objs, move to controller
  - MAINTENANCE: cleanup dupilcate customers, (can be handled by editor)
