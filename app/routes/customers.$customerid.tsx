@@ -20,7 +20,11 @@ import CustomerForm from "~/components/CustomerForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
-import { getCustomerById, updateCustomer } from "~/controllers/customers";
+import {
+  deleteCustomerById,
+  getCustomerById,
+  updateCustomer,
+} from "~/controllers/customers";
 import { deleteInvoiceById } from "~/controllers/invoices";
 import { deleteQuoteById } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
@@ -75,6 +79,17 @@ export async function action({ request }: ActionArgs) {
           editActionErrors.info = "There was a problem editing the customer...";
         return { editActionErrors };
       }
+    case "delete_customer":
+      const { customer_id } = values;
+      const deleteActionsErrors: any = {};
+      try {
+        await deleteCustomerById(parseInt(`${customer_id}`));
+        return { customerDeleted: true };
+      } catch (err: any) {
+        console.error(err);
+        deleteActionsErrors.info = `There was a problem deleting customer with id: ${customer_id}`;
+        return { deleteActionsErrors };
+      }
     case "delete_quote":
       const { quote_id } = values;
       try {
@@ -113,16 +128,21 @@ export default function InvoiceId() {
   const navigation = useNavigation();
   const data = useActionData();
   const navigate = useNavigate();
+  const { formData } = navigation;
+  console.log(formData?.get("_action"));
   const isSubmitting = navigation.state === "submitting";
   const [deleteQuoteId, setDeleteQuoteId] = useState(0);
   const [deleteQuoteModelOpen, setDeleteQuoteModalOpen] = useState(false);
   const [deleteInvoiceId, setDeleteInvoiceId] = useState(0);
   const [deleteInvoiceModelOpen, setDeleteInvoiceModalOpen] = useState(false);
+  const [deleteCustomerId, setDeleteCustomerId] = useState(0);
+  const [deleteCustomerModelOpen, setDeleteCustomerModalOpen] = useState(false);
 
   useEffect(() => {
     if (!data) return;
     if (data.quoteDeleted) setDeleteQuoteModalOpen(false);
     if (data.invoiceDeleted) setDeleteInvoiceModalOpen(false);
+    if (data.customerDeleted) setDeleteCustomerModalOpen(false);
   }, [data]);
 
   return (
@@ -305,6 +325,17 @@ export default function InvoiceId() {
         >
           <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
+        {invoices?.length === 0 && quotes?.length === 0 && (
+          <FormBtn
+            isSubmitting={isSubmitting}
+            onClick={() => {
+              setDeleteCustomerId(customer_id);
+              setDeleteCustomerModalOpen(true);
+            }}
+          >
+            <TrashIcon className="h-5 w-5 stroke-2" />
+          </FormBtn>
+        )}
       </div>
       <Modal open={deleteQuoteModelOpen}>
         <p>Are you sure you want to delete this quote?</p>
@@ -357,6 +388,34 @@ export default function InvoiceId() {
             className="ml-4"
             isSubmitting={isSubmitting}
             onClick={() => setDeleteInvoiceModalOpen(false)}
+          >
+            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
+          </FormBtn>
+        </div>
+      </Modal>
+      <Modal open={deleteCustomerModelOpen}>
+        <p>Are you sure you want to delete this customer?</p>
+        {data && data.deleteActionsErrors && (
+          <p className="text-error mt-1 text-xs">
+            {data.deleteActionsErrors.info}
+          </p>
+        )}
+        <div className="modal-action">
+          <Form replace method="post">
+            <input type="hidden" name="customer_id" value={deleteCustomerId} />
+            <FormBtn
+              type="submit"
+              name="_action"
+              value="delete_customer"
+              isSubmitting={isSubmitting}
+            >
+              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
+            </FormBtn>
+          </Form>
+          <FormBtn
+            className="ml-4"
+            isSubmitting={isSubmitting}
+            onClick={() => setDeleteCustomerModalOpen(false)}
           >
             <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>

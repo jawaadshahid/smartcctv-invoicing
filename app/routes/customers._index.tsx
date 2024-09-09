@@ -1,23 +1,10 @@
-import {
-  ArrowDownTrayIcon,
-  ArrowUturnLeftIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import type { customers } from "@prisma/client";
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
-import FormBtn from "~/components/FormBtn";
-import Modal from "~/components/Modal";
-import { deleteCustomerById, getCustomers } from "~/controllers/customers";
+import { getCustomers } from "~/controllers/customers";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import { respTDClass, respTRClass } from "~/utils/styleClasses";
@@ -38,43 +25,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 };
 
-const deleteCustomerAction = async (values: any) => {
-  const { customer_id } = values;
-  const deleteActionsErrors: any = {};
-  try {
-    await deleteCustomerById(parseInt(`${customer_id}`));
-    return { customerDeleted: true };
-  } catch (err: any) {
-    console.log(err);
-    if (err.code === "P2003")
-      deleteActionsErrors.info = `Cannot delete. This customer is associated with a quote!`;
-    else deleteActionsErrors.info = `There was a problem deleting customer`;
-    return { deleteActionsErrors };
-  }
-};
-
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const { _action, ...values } = Object.fromEntries(formData);
-  switch (_action) {
-    case "delete":
-      return await deleteCustomerAction(values);
-  }
-  return {};
-}
-
 export default function CustomersIndex() {
   const { customers }: { customers: customers[] } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  const [deletedCustomerID, setDeletedCustomerID] = useState(0);
-  const [deleteModelOpen, setDeleteModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!data) return;
-    if (data.customerDeleted) setDeleteModalOpen(false);
-  }, [data]);
 
   return (
     <>
@@ -126,15 +81,6 @@ export default function CustomersIndex() {
                             >
                               <PencilSquareIcon className="h-5 w-5 stroke-2" />
                             </FormAnchorButton>
-                            <FormBtn
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                setDeletedCustomerID(customer_id);
-                                setDeleteModalOpen(true);
-                              }}
-                            >
-                              <TrashIcon className="h-5 w-5 stroke-2" />
-                            </FormBtn>
                           </div>
                         </td>
                       </tr>
@@ -147,34 +93,6 @@ export default function CustomersIndex() {
       ) : (
         <p className="text-center">No customers found...</p>
       )}
-      <Modal open={deleteModelOpen}>
-        <p>Are you sure you want to delete this customer?</p>
-        {data && data.deleteActionsErrors && (
-          <p className="text-error mt-1 text-xs">
-            {data.deleteActionsErrors.info}
-          </p>
-        )}
-        <div className="modal-action">
-          <Form replace method="post">
-            <input type="hidden" name="customer_id" value={deletedCustomerID} />
-            <FormBtn
-              type="submit"
-              name="_action"
-              value="delete"
-              isSubmitting={isSubmitting}
-            >
-              <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
-            </FormBtn>
-          </Form>
-          <FormBtn
-            className="ml-4"
-            isSubmitting={isSubmitting}
-            onClick={() => setDeleteModalOpen(false)}
-          >
-            <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
-          </FormBtn>
-        </div>
-      </Modal>
     </>
   );
 }
