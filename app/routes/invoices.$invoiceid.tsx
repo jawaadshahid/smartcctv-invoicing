@@ -299,8 +299,10 @@ export default function InvoiceId() {
           rel="noreferrer"
           isSubmitting={isSubmitting}
         >
-          <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
-          <sup>V</sup>
+          <div className="indicator">
+            <span className="indicator-item indicator-bottom indicator-center badge badge-xs">VAT</span>
+            <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
+          </div>
         </FormAnchorButton>
         <FormBtn
           isSubmitting={isSubmitting}
