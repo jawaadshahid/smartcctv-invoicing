@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet } from "@remix-run/react";
 import { contentBodyClass } from "~/utils/styleClasses";
 
 export default function Customers() {
