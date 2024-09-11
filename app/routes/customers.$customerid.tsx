@@ -201,7 +201,7 @@ export default function InvoiceId() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-0 btn-group">
+                          <div className="absolute md:static top-0 right-3 btn-group">
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`/quotes/${quote_id}`}
@@ -282,7 +282,7 @@ export default function InvoiceId() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-0 btn-group">
+                          <div className="absolute md:static top-0 right-3 btn-group">
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`/invoices/${invoice_id}`}

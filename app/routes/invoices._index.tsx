@@ -131,7 +131,7 @@ export default function InvoicesIndex() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-0 btn-group">
+                          <div className="absolute md:static top-0 right-3 btn-group">
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`invoices/${invoice_id}`}

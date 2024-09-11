@@ -259,7 +259,7 @@ export default function Products() {
                           {getCurrencyString(price)}
                         </td>
                         <td className={`${respTDClass} md:text-right`}>
-                          <div className="absolute md:static top-0 right-0 btn-group">
+                          <div className="absolute md:static top-0 right-3 btn-group">
                             <FormBtn
                               isSubmitting={isSubmitting}
                               onClick={() => {

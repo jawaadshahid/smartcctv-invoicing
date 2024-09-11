@@ -123,7 +123,7 @@ export default function UsersIndex() {
                       )}
                     </td>
                     <td className={respTDClass}>
-                      <div className="absolute md:static top-0 right-0 btn-group">
+                      <div className="absolute md:static top-0 right-3 btn-group">
                         <FormAnchorButton
                           href={`users/${loopedUser.id}`}
                           isSubmitting={isSubmitting}
