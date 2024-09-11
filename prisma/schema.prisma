@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -28,6 +29,8 @@ model customers {
   address     String     @db.VarChar(190)
   invoice     invoices[]
   quote       quotes[]
+
+  @@fulltext([name, tel, email, address])
 }
 
 model quotes {

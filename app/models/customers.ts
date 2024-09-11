@@ -26,6 +26,31 @@ export const getCustomerById = (customer_id: number) => {
   });
 };
 
+export const getCustomerBySearch = (search_term: string) => {
+  const search_terms = search_term.split(" ").join(" & ");
+  return db.customers.findMany({
+    where: {
+      OR: [
+        { name: { contains: search_terms } },
+        { tel: { contains: search_terms } },
+        { email: { contains: search_terms } },
+        { address: { contains: search_terms } },
+        { name: { search: search_terms } },
+        { tel: { search: search_terms } },
+        { email: { search: search_terms } },
+        { address: { search: search_terms } },
+      ],
+    },
+    orderBy: {
+      _relevance: {
+        fields: ["name", "tel", "email", "address"],
+        search: search_terms,
+        sort: "asc",
+      },
+    },
+  });
+};
+
 export const updateCustomer = async (data: any) => {
   const { customer_id, name, tel, email, address } = data;
   return db.customers.update({
