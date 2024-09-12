@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useFetcher } from "@remix-run/react";
 import { InputHTMLAttributes, useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ type OnDataLoaded = (fetchedData: any) => void;
 
 interface SearchInput<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;
-  _action: string
+  _action: string;
 }
 
 const SearchInput = ({
@@ -24,7 +24,10 @@ const SearchInput = ({
     if (isFirstRendered) {
       setDoingTermSearch(true);
       const termSearchTimeout = setTimeout(() => {
-        fetcher.submit({ _action, search_term: searchTerm }, { method: "post" });
+        fetcher.submit(
+          { _action, search_term: searchTerm },
+          { method: "post" }
+        );
       }, 600);
       return () => clearTimeout(termSearchTimeout);
     }
@@ -49,6 +52,11 @@ const SearchInput = ({
       />
       {doingTermSearch ? (
         <a className="btn btn-ghost btn-square loading w-5" />
+      ) : searchTerm.length > 0 ? (
+        <XMarkIcon
+          className="h-5 w-5 opacity-70"
+          onClick={() => setSearchTerm("")}
+        />
       ) : (
         <MagnifyingGlassIcon className="h-5 w-5 opacity-70" />
       )}
