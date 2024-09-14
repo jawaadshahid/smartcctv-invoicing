@@ -8,7 +8,7 @@ export const getQuotes = () => {
       quoted_products: true,
     },
     orderBy: {
-      updatedAt: "desc",
+      createdAt: "desc",
     },
   });
 };

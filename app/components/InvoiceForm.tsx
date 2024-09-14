@@ -4,6 +4,8 @@ import {
   MinusIcon,
   PlusIcon,
   SparklesIcon,
+  UserPlusIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import type {
   customers,
@@ -15,19 +17,17 @@ import type {
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
-import { ReactNode, useEffect, useReducer, useState } from "react";
+import { ReactNode, useEffect, useReducer, useRef, useState } from "react";
 import {
   getGrandTotal,
   getSubtotal,
   getTwoDecimalPlaces,
 } from "~/utils/formatters";
 import {
-  TDClass,
   formClass,
   inputClass,
   respTDClass,
   respTRClass,
-  selectClass,
 } from "~/utils/styleClasses";
 import type { InvoicesType } from "~/utils/types";
 import CustomerForm from "./CustomerForm";
@@ -36,6 +36,13 @@ import Modal from "./Modal";
 import ProductForm from "./ProductForm";
 import QuoteEditProductRow from "./QuoteEditProductRow";
 import QuoteNewProductRow from "./QuoteNewProductRow";
+import SearchInput from "./SearchInput";
+
+interface ICustomer {
+  id: number;
+  name: string;
+  address: string;
+}
 
 const InvoiceForm = ({
   invoiceFormData,
@@ -45,7 +52,6 @@ const InvoiceForm = ({
   actionName,
 }: {
   invoiceFormData: {
-    customers: customers[];
     products: products[] | any[];
     brands: product_brands[];
     types: product_types[];
@@ -58,14 +64,19 @@ const InvoiceForm = ({
   actionName: string;
 }) => {
   const {
-    customers,
     products,
     brands,
     types,
     models,
     invoice: existingData,
   } = invoiceFormData;
-  const [customerSelectValue, setCustomerSelectValue] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<
+    ICustomer | null | "new"
+  >(null);
+  const [existingCustomer, setExistingCustomer] = useState<
+    ICustomer | null | "unset"
+  >(null);
   const [labour, setLabour] = useState("0");
   const [labourValue, setLabourValue] = useState(0);
   const [discount, setDiscount] = useState("0");
@@ -73,8 +84,9 @@ const InvoiceForm = ({
   const [subtotal, setSubtotal] = useState("0");
   const [grandtotal, setGrandtotal] = useState("0");
   const [newProductRow, setNewProductRow] = useState(0);
-  const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [isNewProduct, setIsNewProduct] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [productSelectValues, psvDispatcher] = useReducer(
     (state: any[], action: any) => {
       const { type, ...values } = action;
@@ -138,20 +150,24 @@ const InvoiceForm = ({
   );
 
   useEffect(() => {
-    if (!existingData) return;
-    const { customer, labour, discount, invoiced_products } = existingData;
-    setCustomerSelectValue(customer ? customer.customer_id.toString() : "");
-    setLabour(labour.toString());
-    setDiscount(discount.toString());
-    invoiced_products.forEach(({ name, quantity, price }, i) => {
-      pivDispatcher({
-        type: "add",
-        row_id: `${i + 1}`,
-        name,
-        quantity,
-        price: new Prisma.Decimal(price),
+    if (isFirstRender) {
+      if (!existingData) return;
+      const { customer, labour, discount, invoiced_products } = existingData;
+      const { customer_id: id, name, address } = customer;
+      setExistingCustomer({ id, name, address });
+      setLabour(labour.toString());
+      setDiscount(discount.toString());
+      invoiced_products.forEach(({ name, quantity, price }, i) => {
+        pivDispatcher({
+          type: "add",
+          row_id: `${i + 1}`,
+          name,
+          quantity,
+          price: new Prisma.Decimal(price),
+        });
       });
-    });
+    }
+    return () => setIsFirstRender(false);
   }, [existingData]);
 
   useEffect(() => {
@@ -186,13 +202,10 @@ const InvoiceForm = ({
   }, [productInputValues, productSelectValues, labourValue, discountValue]);
 
   useEffect(() => {
-    setIsNewCustomer(customerSelectValue === "-1");
-  }, [customerSelectValue, setIsNewCustomer]);
-
-  useEffect(() => {
     if (!formData) return;
     if (formData.createdCustomer) {
-      setCustomerSelectValue(`${formData.createdCustomer.customer_id}`);
+      const { customer_id: id, name, address } = formData.createdCustomer;
+      setSelectedCustomer({ id, name, address });
     }
     if (formData.createdProduct) {
       const { product_id, price }: products = formData.createdProduct;
@@ -204,7 +217,7 @@ const InvoiceForm = ({
       });
     }
     return () => {};
-  }, [formData, newProductRow, customers]);
+  }, [formData, newProductRow]);
 
   const isSubmitting = navigation.state === "submitting";
   const allProductValues = productSelectValues
@@ -288,35 +301,97 @@ const InvoiceForm = ({
           )}
         <input type="hidden" name="prodcount" id="prodcount" value={apvCount} />
         <fieldset disabled={isSubmitting}>
-          <div className="mb-4">
-            <label className="label" htmlFor="customer">
-              <span className="label-text">Customer</span>
-            </label>
-            <select
-              className={selectClass}
-              name="customer"
-              id="customer"
-              value={customerSelectValue}
-              onChange={(e) => {
-                setCustomerSelectValue(e.target.value);
-              }}
-            >
-              <option disabled value="">
-                Select a customer...
-              </option>
-              <option value="-1">Add new customer +</option>
-              {customers.map(
-                ({ customer_id, name, tel, email, address }: customers) => {
-                  return (
-                    <option key={customer_id} value={customer_id}>
-                      {`${name}${tel && ` - ${tel}`}${email && ` - ${email}`}${
-                        address && ` - ${address}`
-                      }`}
-                    </option>
-                  );
-                }
-              )}
-            </select>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {selectedCustomer && selectedCustomer !== "new" && (
+              <label
+                className={`${inputClass} flex flex-auto items-center gap-2`}
+              >
+                <input
+                  type="hidden"
+                  name="customer"
+                  id="customer"
+                  value={selectedCustomer.id}
+                />
+                <span className="grow">
+                  {selectedCustomer.name} - {selectedCustomer.address}
+                </span>
+                <XMarkIcon
+                  className="h-5 w-5 opacity-70"
+                  onClick={() => {
+                    setSelectedCustomer(null);
+                    searchInputRef?.current?.focus();
+                  }}
+                />
+              </label>
+            )}
+            {existingCustomer && existingCustomer !== "unset" ? (
+              <label
+                className={`${inputClass} flex flex-auto items-center gap-2`}
+              >
+                <input
+                  type="hidden"
+                  name="customer"
+                  id="customer"
+                  value={existingCustomer.id}
+                />
+                <span className="grow">
+                  {existingCustomer.name} - {existingCustomer.address}
+                </span>
+                <XMarkIcon
+                  className="h-5 w-5 opacity-70"
+                  onClick={() => {
+                    setExistingCustomer("unset");
+                    searchInputRef?.current?.focus();
+                  }}
+                />
+              </label>
+            ) : (
+              !selectedCustomer && (
+                <>
+                  <SearchInput
+                    size={1}
+                    _action="customer_search"
+                    placeholder="start typing to filter customers..."
+                    inputRef={searchInputRef}
+                    onDataLoaded={(fetchedData) => {
+                      if (fetchedData.customers)
+                        setCustomers(fetchedData.customers);
+                    }}
+                  />
+                  <FormBtn
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setSelectedCustomer("new");
+                      setExistingCustomer("unset");
+                    }}
+                  >
+                    <UserPlusIcon className="h-5 w-5 stroke-2" />
+                  </FormBtn>
+                </>
+              )
+            )}
+            {customers && customers.length > 0 && (
+              <ul
+                tabIndex={0}
+                className="flex-[1_1_100%] p-2 shadow menu dropdown-content bg-base-100 rounded-box"
+              >
+                {customers.map(
+                  ({ customer_id: id, name, address }: customers) => {
+                    return (
+                      <li key={id} className="m-0 p-0">
+                        <a
+                          className="no-underline"
+                          onClick={() => {
+                            setSelectedCustomer({ id, name, address });
+                            setCustomers([]);
+                          }}
+                        >{`${name} - ${address}`}</a>
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
+            )}
             {formData && formData.customer && (
               <label className="label">
                 <span className="label-text-alt text-error">
@@ -350,7 +425,7 @@ const InvoiceForm = ({
               <tbody>
                 {ProductRow()}
                 <tr className={respTRClass}>
-                  <td colSpan={4} className={respTDClass} >
+                  <td colSpan={4} className={respTDClass}>
                     <div className="flex justify-end btn-group">
                       <FormBtn
                         disabled={apvCount === 0}
@@ -393,7 +468,7 @@ const InvoiceForm = ({
                       <span className="label-text">Subtotal:</span>
                     </label>
                   </td>
-                  <td className={respTDClass} >
+                  <td className={respTDClass}>
                     <input
                       disabled
                       value={subtotal}
@@ -411,7 +486,7 @@ const InvoiceForm = ({
                       <span className="label-text">Labour:</span>
                     </label>
                   </td>
-                  <td className={respTDClass} >
+                  <td className={respTDClass}>
                     <input type="hidden" name="labour" value={labourValue} />
                     <input
                       id="labour"
@@ -439,7 +514,7 @@ const InvoiceForm = ({
                       <span className="label-text">Discount: -</span>
                     </label>
                   </td>
-                  <td className={respTDClass} >
+                  <td className={respTDClass}>
                     <input
                       type="hidden"
                       name="discount"
@@ -470,7 +545,7 @@ const InvoiceForm = ({
                       <span className="label-text">Total:</span>
                     </label>
                   </td>
-                  <td className={respTDClass} >
+                  <td className={respTDClass}>
                     <input
                       disabled
                       value={grandtotal}
@@ -503,15 +578,15 @@ const InvoiceForm = ({
           </div>
         </fieldset>
       </Form>
-      <Modal open={isNewCustomer}>
+      <Modal open={selectedCustomer === "new"}>
         <h3 className="mb-4">Create new customer</h3>
-        {isNewCustomer && (
+        {selectedCustomer === "new" && (
           <CustomerForm
             actionName="create_customer"
             navigation={navigation}
             formErrors={formData?.customerActionErrors}
             onCancel={() => {
-              setCustomerSelectValue("");
+              setSelectedCustomer(null);
               if (formData) formData.customerActionErrors = {};
             }}
           />

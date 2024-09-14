@@ -7,7 +7,11 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import InvoiceForm from "~/components/InvoiceForm";
-import { createCustomer, getCustomers } from "~/controllers/customers";
+import {
+  createCustomer,
+  getCustomerById,
+  getCustomerBySearch,
+} from "~/controllers/customers";
 import { createInvoice } from "~/controllers/invoices";
 import {
   createProduct,
@@ -29,14 +33,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!uid) return redirect("/login");
   try {
     // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, customers, products] = await Promise.all([
+    const [brands, types, models, products] = await Promise.all([
       getBrands(),
       getTypes(),
       getModels(),
-      getCustomers(),
       getProducts(),
     ]);
-    return json({ brands, types, models, customers, products });
+    return json({ brands, types, models, products });
   } catch (err) {
     console.error(err);
     return {};
@@ -47,6 +50,23 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "customer_search":
+      const { search_term } = values;
+      const customers =
+        search_term.toString().length > 0
+          ? await getCustomerBySearch(search_term.toString())
+          : [];
+      return { customers };
+    case "get_customer":
+      const { customer_id } = values;
+      try {
+        const customer = await getCustomerById(
+          parseInt(customer_id.toString())
+        );
+        return { customer };
+      } catch (error) {
+        return { quoteActionErrors: { info: "customer not found" } };
+      }
     case "create_customer":
       const customerActionErrors: any = validateCustomerData(values);
 

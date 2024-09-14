@@ -7,7 +7,11 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import QuoteForm from "~/components/QuoteForm";
-import { createCustomer, getCustomers } from "~/controllers/customers";
+import {
+  createCustomer,
+  getCustomerById,
+  getCustomerBySearch,
+} from "~/controllers/customers";
 import {
   createProduct,
   getBrands,
@@ -35,16 +39,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!quoteid) return redirect("/quotes");
   try {
     // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, customers, products, quote] =
-      await Promise.all([
-        getBrands(),
-        getTypes(),
-        getModels(),
-        getCustomers(),
-        getProducts(),
-        getQuoteById(parseInt(`${quoteid}`)),
-      ]);
-    return json({ brands, types, models, customers, products, quote });
+    const [brands, types, models, products, quote] = await Promise.all([
+      getBrands(),
+      getTypes(),
+      getModels(),
+      getProducts(),
+      getQuoteById(parseInt(`${quoteid}`)),
+    ]);
+    return json({ brands, types, models, products, quote });
   } catch (err) {
     console.error(err);
     return {};
@@ -55,6 +57,23 @@ export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "customer_search":
+      const { search_term } = values;
+      const customers =
+        search_term.toString().length > 0
+          ? await getCustomerBySearch(search_term.toString())
+          : [];
+      return { customers };
+    case "get_customer":
+      const { customer_id } = values;
+      try {
+        const customer = await getCustomerById(
+          parseInt(customer_id.toString())
+        );
+        return { customer };
+      } catch (error) {
+        return { quoteActionErrors: { info: "customer not found" } };
+      }
     case "create_customer":
       const customerActionErrors: any = validateCustomerData(values);
 

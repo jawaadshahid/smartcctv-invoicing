@@ -8,7 +8,7 @@ export const getInvoices = () => {
       invoiced_products: true,
     },
     orderBy: {
-      updatedAt: "desc",
+      createdAt: "desc",
     },
   });
 };

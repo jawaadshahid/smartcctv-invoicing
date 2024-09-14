@@ -128,8 +128,6 @@ export default function InvoiceId() {
   const navigation = useNavigation();
   const data = useActionData();
   const navigate = useNavigate();
-  const { formData } = navigation;
-  console.log(formData?.get("_action"));
   const isSubmitting = navigation.state === "submitting";
   const [deleteQuoteId, setDeleteQuoteId] = useState(0);
   const [deleteQuoteModelOpen, setDeleteQuoteModalOpen] = useState(false);
