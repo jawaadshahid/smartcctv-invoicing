@@ -168,7 +168,7 @@ const InvoiceForm = ({
       });
     }
     return () => setIsFirstRender(false);
-  }, [existingData]);
+  }, []);
 
   useEffect(() => {
     const labourNum = Number(labour);
