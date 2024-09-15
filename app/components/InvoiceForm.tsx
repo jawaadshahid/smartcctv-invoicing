@@ -1,9 +1,9 @@
 import {
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
-  MinusIcon,
-  PlusIcon,
-  SparklesIcon,
+  DocumentMinusIcon,
+  DocumentPlusIcon,
+  DocumentTextIcon,
   UserPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -435,7 +435,7 @@ const InvoiceForm = ({
                           removeProductRow();
                         }}
                       >
-                        <MinusIcon className="h-5 w-5 stroke-2" />
+                        <DocumentMinusIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                       <FormBtn
                         isSubmitting={isSubmitting}
@@ -444,7 +444,7 @@ const InvoiceForm = ({
                           addProductRow("product");
                         }}
                       >
-                        <PlusIcon className="h-5 w-5 stroke-2" />
+                        <DocumentPlusIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                       <FormBtn
                         isSubmitting={isSubmitting}
@@ -453,7 +453,7 @@ const InvoiceForm = ({
                           addProductRow("custom");
                         }}
                       >
-                        <SparklesIcon className="h-5 w-5 stroke-2" />
+                        <DocumentTextIcon className="h-5 w-5 stroke-2" />
                       </FormBtn>
                     </div>
                   </td>
