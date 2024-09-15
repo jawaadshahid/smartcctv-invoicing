@@ -100,6 +100,7 @@ model products {
   @@index([brand_id, brand_name], map: "products_brand_id_brand_name_fkey")
   @@index([model_id, model_name], map: "products_model_id_model_name_fkey")
   @@index([type_id, type_name], map: "products_type_id_type_name_fkey")
+  @@fulltext([brand_name, model_name, type_name])
 }
 
 model product_brands {

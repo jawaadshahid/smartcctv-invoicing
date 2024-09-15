@@ -2,9 +2,7 @@ import {
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
   DocumentPlusIcon,
-  PencilSquareIcon,
-  SparklesIcon,
-  TrashIcon,
+  PencilSquareIcon, TrashIcon
 } from "@heroicons/react/24/outline";
 import {
   Prisma,
@@ -26,6 +24,7 @@ import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
 import ProductCleanupForm from "~/components/ProductCleanupForm";
 import ProductForm from "~/components/ProductForm";
+import SearchInput from "~/components/SearchInput";
 import {
   createProduct,
   deleteOrphanedBrands,
@@ -35,6 +34,7 @@ import {
   getBrands,
   getModels,
   getProducts,
+  getProductsBySearch,
   getTypes,
   updateProduct,
 } from "~/controllers/products";
@@ -58,13 +58,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!uid) return redirect("/login");
   try {
     // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, products] = await Promise.all([
+    const [brands, types, models, loadedProducts] = await Promise.all([
       getBrands(),
       getTypes(),
       getModels(),
       getProducts(),
     ]);
-    return json({ brands, types, models, products });
+    return json({ brands, types, models, loadedProducts });
   } catch (err) {
     console.error(err);
     return {};
@@ -166,6 +166,13 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "product_search":
+      const { search_term } = values;
+      const products =
+        search_term.toString().length > 0
+          ? await getProductsBySearch(search_term.toString())
+          : await getProducts();
+      return { products };
     case "delete":
       return await deleteProdAction(values);
     case "create":
@@ -180,12 +187,12 @@ export async function action({ request }: ActionArgs) {
 
 export default function Products() {
   const {
-    products,
+    loadedProducts,
     brands,
     types,
     models,
   }: {
-    products: products[] | any[];
+    loadedProducts: products[] | any[];
     brands: product_brands[];
     types: product_types[];
     models: product_models[];
@@ -193,6 +200,7 @@ export default function Products() {
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [products, setProducts] = useState(loadedProducts);
   const [deletedProductID, setDeletedProductID] = useState(0);
   const [productToEdit, setProductToEdit] = useState({
     product_id: 0,
@@ -215,6 +223,13 @@ export default function Products() {
 
   return (
     <div className={contentBodyClass}>
+      <SearchInput
+        _action="product_search"
+        placeholder="start typing to filter products..."
+        onDataLoaded={(fetchedData) => {
+          if (fetchedData.products) setProducts(fetchedData.products);
+        }}
+      />
       {products && products.length ? (
         <div className="-m-4 md:m-0">
           <table className="table">
@@ -304,7 +319,7 @@ export default function Products() {
             setCleanupModalOpen(true);
           }}
         >
-          <SparklesIcon className="h-5 w-5 stroke-2" />
+          <TrashIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
         <FormBtn
           isSubmitting={isSubmitting}

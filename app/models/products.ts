@@ -23,6 +23,29 @@ export const getProductById = (product_id: number) => {
   });
 };
 
+export const getProductsBySearch = (search_term: string) => {
+  const search_terms = search_term.split(" ").join(" & ");
+  return db.products.findMany({
+    where: {
+      OR: [
+        { brand_name: { contains: search_terms } },
+        { type_name: { contains: search_terms } },
+        { model_name: { contains: search_terms } },
+        { brand_name: { search: search_terms } },
+        { type_name: { search: search_terms } },
+        { model_name: { search: search_terms } },
+      ],
+    },
+    orderBy: {
+      _relevance: {
+        fields: ["brand_name", "type_name", "model_name"],
+        search: search_terms,
+        sort: "asc",
+      },
+    },
+  });
+};
+
 const getProductInput = (data: any): Prisma.productsCreateInput => {
   const { brand, newbrand, type, newtype, model, newmodel, price } = data;
   const isBrandSelected = `${brand}` && parseInt(`${brand}`) > 0;
