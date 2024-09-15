@@ -168,7 +168,7 @@ const QuoteForm = ({
       });
     }
     return () => setIsFirstRender(false);
-  }, [existingData]);
+  }, []);
 
   useEffect(() => {
     const labourNum = Number(labour);
