@@ -11,8 +11,9 @@
     "dev:remix": "remix dev",
     "generate:css": "npx tailwindcss -o ./app/tailwind.css",
     "typecheck": "tsc",
-    "schema-dev": "dotenv -e .env.development -- npx prisma db pull",
-    "seed-dev": "dotenv -e .env.development -- npx prisma db push"
+    "devdb-pull": "dotenv -e .env.development -- npx prisma db pull",
+    "devdb-push": "dotenv -e .env.development -- npx prisma db push",
+    "devdb-gen": "dotenv -e .env.development -- npx prisma generate"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
