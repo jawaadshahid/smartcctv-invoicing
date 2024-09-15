@@ -11,7 +11,7 @@ import Modal from "~/components/Modal";
 import SearchInput from "~/components/SearchInput";
 import {
   createCustomer,
-  getCustomerBySearch,
+  getCustomersBySearch,
   getCustomers,
 } from "~/controllers/customers";
 import { SITE_TITLE } from "~/root";
@@ -42,7 +42,7 @@ export async function action({ request }: ActionArgs) {
       const { search_term } = values;
       const customers =
         search_term.toString().length > 0
-          ? await getCustomerBySearch(search_term.toString())
+          ? await getCustomersBySearch(search_term.toString())
           : await getCustomers();
       return { customers };
     case "create":

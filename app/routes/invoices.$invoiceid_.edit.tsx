@@ -10,7 +10,7 @@ import InvoiceForm from "~/components/InvoiceForm";
 import {
   createCustomer,
   getCustomerById,
-  getCustomerBySearch,
+  getCustomersBySearch,
 } from "~/controllers/customers";
 import {
   createInvoice,
@@ -61,7 +61,7 @@ export async function action({ request, params }: ActionArgs) {
       const { search_term } = values;
       const customers =
         search_term.toString().length > 0
-          ? await getCustomerBySearch(search_term.toString())
+          ? await getCustomersBySearch(search_term.toString())
           : [];
       return { customers };
     case "get_customer":

@@ -26,7 +26,7 @@ export const getCustomerById = (customer_id: number) => {
   });
 };
 
-export const getCustomerBySearch = (search_term: string) => {
+export const getCustomersBySearch = (search_term: string) => {
   const search_terms = search_term.split(" ").join(" & ");
   return db.customers.findMany({
     where: {
