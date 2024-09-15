@@ -7,7 +7,7 @@ type OnDataLoaded = (fetchedData: any) => void;
 interface SearchInput<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;
   _action: string;
-  inputRef: React.MutableRefObject<HTMLInputElement | null>
+  inputRef?: React.MutableRefObject<HTMLInputElement | null>
 }
 
 const SearchInput = ({
