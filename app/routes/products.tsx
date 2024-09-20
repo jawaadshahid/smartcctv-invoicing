@@ -166,7 +166,7 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
-    case "product_search":
+    case "products_search":
       const { search_term } = values;
       const products =
         search_term.toString().length > 0
@@ -224,7 +224,7 @@ export default function Products() {
   return (
     <div className={contentBodyClass}>
       <SearchInput
-        _action="product_search"
+        _action="products_search"
         placeholder="start typing to filter products..."
         onDataLoaded={(fetchedData) => {
           if (fetchedData.products) setProducts(fetchedData.products);

@@ -4,19 +4,22 @@ import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 
 type OnDataLoaded = (fetchedData: any) => void;
 
-interface SearchInput<T> extends InputHTMLAttributes<T> {
+export interface SearchInputProps<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;
+  onClear?: Function;
   _action: string;
-  inputRef?: React.MutableRefObject<HTMLInputElement | null>
+  inputRef?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
 const SearchInput = ({
   placeholder = "search",
   inputRef,
   onDataLoaded,
+  onClear,
   _action,
+  className,
   ...props
-}: SearchInput<HTMLInputElement>) => {
+}: SearchInputProps<HTMLInputElement>) => {
   const fetcher = useFetcher();
   const [searchTerm, setSearchTerm] = useState("");
   const [doingTermSearch, setDoingTermSearch] = useState(false);
@@ -44,7 +47,11 @@ const SearchInput = ({
   }, [fetcher.data]);
 
   return (
-    <label className="input input-bordered flex flex-auto items-center gap-2">
+    <label
+      className={`input input-bordered flex flex-auto items-center gap-2${
+        className ? ` ${className}` : ""
+      }`}
+    >
       <input
         type="text"
         className="grow bg-transparent focus:outline-0"
@@ -56,12 +63,14 @@ const SearchInput = ({
       />
       {doingTermSearch ? (
         <a className="btn btn-ghost btn-square loading w-5" />
-      ) : searchTerm.length > 0 ? (
+      ) : searchInputRef.current && searchInputRef.current.value.length > 0 ? (
         <XMarkIcon
           className="h-5 w-5 opacity-70"
-          onClick={() => {
+          onClick={(e) => {
             setSearchTerm("");
-            searchInputRef?.current?.focus();
+            searchInputRef.current?.focus();
+            if (onClear) onClear();
+            e.stopPropagation();
           }}
         />
       ) : (

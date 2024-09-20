@@ -38,7 +38,7 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
-    case "customer_search":
+    case "customers_search":
       const { search_term } = values;
       const customers =
         search_term.toString().length > 0
@@ -79,7 +79,7 @@ export default function CustomersIndex() {
   return (
     <>
       <SearchInput
-        _action="customer_search"
+        _action="customers_search"
         placeholder="start typing to filter customers..."
         onDataLoaded={(fetchedData) => {
           if (fetchedData.customers) setCustomers(fetchedData.customers);

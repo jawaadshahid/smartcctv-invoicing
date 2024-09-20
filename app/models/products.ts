@@ -38,9 +38,9 @@ export const getProductsBySearch = (search_term: string) => {
     },
     orderBy: {
       _relevance: {
-        fields: ["brand_name", "type_name", "model_name"],
+        fields: ["brand_name", "model_name", "type_name"],
         search: search_terms,
-        sort: "asc",
+        sort: "desc",
       },
     },
   });

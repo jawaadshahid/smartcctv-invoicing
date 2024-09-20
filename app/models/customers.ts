@@ -45,7 +45,7 @@ export const getCustomersBySearch = (search_term: string) => {
       _relevance: {
         fields: ["name", "tel", "email", "address"],
         search: search_terms,
-        sort: "asc",
+        sort: "desc",
       },
     },
   });

@@ -5,10 +5,8 @@ import {
   DocumentPlusIcon,
   DocumentTextIcon,
   UserPlusIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import type {
-  customers,
   product_brands,
   product_models,
   product_types,
@@ -36,7 +34,8 @@ import Modal from "./Modal";
 import ProductForm from "./ProductForm";
 import QuoteEditProductRow from "./QuoteEditProductRow";
 import QuoteNewProductRow from "./QuoteNewProductRow";
-import SearchInput from "./SearchInput";
+import ReadOnlyWithClearInput from "./ReadOnlyWithClearInput";
+import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
 
 interface ICustomer {
   id: number;
@@ -70,7 +69,6 @@ const InvoiceForm = ({
     models,
     invoice: existingData,
   } = invoiceFormData;
-  const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState<
     ICustomer | null | "new"
   >(null);
@@ -301,63 +299,45 @@ const InvoiceForm = ({
           )}
         <input type="hidden" name="prodcount" id="prodcount" value={apvCount} />
         <fieldset disabled={isSubmitting}>
-          <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div className="mb-4 flex flex-wrap items-start gap-2">
             {selectedCustomer && selectedCustomer !== "new" && (
-              <label
-                className={`${inputClass} flex flex-auto items-center gap-2`}
-              >
-                <input
-                  type="hidden"
-                  name="customer"
-                  id="customer"
-                  value={selectedCustomer.id}
-                />
-                <span className="grow">
-                  {selectedCustomer.name} - {selectedCustomer.address}
-                </span>
-                <XMarkIcon
-                  className="h-5 w-5 opacity-70"
-                  onClick={() => {
-                    setSelectedCustomer(null);
-                    searchInputRef?.current?.focus();
-                  }}
-                />
-              </label>
+              <ReadOnlyWithClearInput
+                name="customer"
+                id="customer"
+                value={selectedCustomer.id}
+                label={`${selectedCustomer.name} - ${selectedCustomer.address}`}
+                onClear={() => {
+                  setSelectedCustomer(null);
+                  searchInputRef?.current?.focus();
+                }}
+              />
             )}
             {existingCustomer && existingCustomer !== "unset" ? (
-              <label
-                className={`${inputClass} flex flex-auto items-center gap-2`}
-              >
-                <input
-                  type="hidden"
-                  name="customer"
-                  id="customer"
-                  value={existingCustomer.id}
-                />
-                <span className="grow">
-                  {existingCustomer.name} - {existingCustomer.address}
-                </span>
-                <XMarkIcon
-                  className="h-5 w-5 opacity-70"
-                  onClick={() => {
-                    setExistingCustomer("unset");
-                    searchInputRef?.current?.focus();
-                  }}
-                />
-              </label>
+              <ReadOnlyWithClearInput
+                name="customer"
+                id="customer"
+                value={existingCustomer.id}
+                label={`${existingCustomer.name} - ${existingCustomer.address}`}
+                onClear={() => {
+                  setExistingCustomer("unset");
+                  searchInputRef?.current?.focus();
+                }}
+              />
             ) : (
-              !selectedCustomer && (
+              (!selectedCustomer || selectedCustomer === "new") && (
                 <>
-                  <SearchInput
-                    size={1}
-                    _action="customer_search"
-                    placeholder="start typing to filter customers..."
-                    inputRef={searchInputRef}
-                    onDataLoaded={(fetchedData) => {
-                      if (fetchedData.customers)
-                        setCustomers(fetchedData.customers);
-                    }}
-                  />
+                  <div className="flex-1">
+                    <SearchInputWithDropdown
+                      dataType="customers"
+                      onItemClick={({ id, label }: ItemType) =>
+                        setSelectedCustomer({
+                          id,
+                          name: label.split(" - ")[0],
+                          address: label.split(" - ")[1],
+                        })
+                      }
+                    />
+                  </div>
                   <FormBtn
                     onClick={(e) => {
                       e.preventDefault();
@@ -369,28 +349,6 @@ const InvoiceForm = ({
                   </FormBtn>
                 </>
               )
-            )}
-            {customers && customers.length > 0 && (
-              <ul
-                tabIndex={0}
-                className="flex-[1_1_100%] p-2 shadow menu dropdown-content bg-base-100 rounded-box"
-              >
-                {customers.map(
-                  ({ customer_id: id, name, address }: customers) => {
-                    return (
-                      <li key={id} className="m-0 p-0">
-                        <a
-                          className="no-underline"
-                          onClick={() => {
-                            setSelectedCustomer({ id, name, address });
-                            setCustomers([]);
-                          }}
-                        >{`${name} - ${address}`}</a>
-                      </li>
-                    );
-                  }
-                )}
-              </ul>
             )}
             {formData && formData.customer && (
               <label className="label">
