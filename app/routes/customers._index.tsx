@@ -34,6 +34,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return {};
   }
 };
+
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);

@@ -25,6 +25,20 @@ export const getInvoiceById = (invoice_id: number) => {
   });
 };
 
+export const getInvoicesByCustomerIds = (customer_ids: number[]) => {
+  return db.invoices.findMany({
+    where: {
+      customer_id: {
+        in: customer_ids,
+      },
+    },
+    include: {
+      customer: true,
+      invoiced_products: true,
+    },
+  });
+};
+
 export const createInvoice = (data: any) => {
   const { customer, labour, discount, invoicedProducts } = data;
   const newInvoice: Prisma.invoicesCreateInput = {

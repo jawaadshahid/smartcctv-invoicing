@@ -1,11 +1,13 @@
 import { Prisma, type products } from "@prisma/client";
 import {
+  getQuotesByCustomerIds,
   createQuote as insertQuote,
   deleteQuoteById as removeQuoteId,
   getQuoteById as selectQuoteById,
   getQuotes as selectQuotes,
 } from "../models/quotes";
 import { getProductsByIds } from "./products";
+import { getCustomersBySearch } from "./customers";
 
 export const getQuotes = async () => {
   return await selectQuotes();
@@ -13,6 +15,13 @@ export const getQuotes = async () => {
 
 export const getQuoteById = async (quote_id: number) => {
   return await selectQuoteById(quote_id);
+};
+
+export const getQuotesByCustomerSearch = async (search_term: string) => {
+  const customers = await getCustomersBySearch(search_term);
+  return await getQuotesByCustomerIds(
+    customers.map(({ customer_id }) => customer_id)
+  );
 };
 
 export const createQuote = async (data: any) => {

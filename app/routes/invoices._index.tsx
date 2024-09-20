@@ -19,7 +19,12 @@ import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
-import { deleteInvoiceById, getInvoices } from "~/controllers/invoices";
+import SearchInput from "~/components/SearchInput";
+import {
+  deleteInvoiceById,
+  getInvoiceByCustomerSearch,
+  getInvoices,
+} from "~/controllers/invoices";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import {
@@ -39,10 +44,29 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Invoices` }];
 };
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const uid = await getUserId(request);
+  if (!uid) return redirect("/login");
+  try {
+    const loadedInvoices = await getInvoices();
+    return json({ loadedInvoices });
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
+};
+
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "invoices_search":
+      const { search_term } = values;
+      const invoices =
+        search_term.toString().length > 0
+          ? await getInvoiceByCustomerSearch(search_term.toString())
+          : await getInvoices();
+      return { invoices };
     case "delete":
       const { invoice_id } = values;
       const deleteActionsErrors: any = {};
@@ -57,23 +81,12 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
-export const loader = async ({ request }: LoaderArgs) => {
-  const uid = await getUserId(request);
-  if (!uid) return redirect("/login");
-  try {
-    const invoices = await getInvoices();
-    return json({ invoices });
-  } catch (err) {
-    console.error(err);
-    return {};
-  }
-};
-
 export default function InvoicesIndex() {
-  const { invoices }: { invoices: InvoicesType[] | any[] } = useLoaderData();
+  const { loadedInvoices }: any = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [invoices, setInvoices] = useState(loadedInvoices);
   const [deletedInvoiceId, setDeletedInvoiceId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
 
@@ -84,6 +97,13 @@ export default function InvoicesIndex() {
 
   return (
     <>
+      <SearchInput
+        _action="invoices_search"
+        placeholder="start typing to filter invoices..."
+        onDataLoaded={(fetchedData) => {
+          if (fetchedData.invoices) setInvoices(fetchedData.invoices);
+        }}
+      />
       {invoices && invoices.length ? (
         <div className="-m-4 md:m-0">
           <table className="table">

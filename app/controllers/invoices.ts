@@ -1,5 +1,6 @@
 import { Prisma, products } from "@prisma/client";
 import {
+  getInvoicesByCustomerIds,
   createInvoice as insertInvoice,
   deleteInvoiceById as removeInvoiceId,
   getInvoiceById as selectInvoiceById,
@@ -7,6 +8,7 @@ import {
 } from "../models/invoices";
 import { getProductsByIds } from "./products";
 import { getQuoteById } from "./quotes";
+import { getCustomersBySearch } from "./customers";
 
 export const getInvoices = async () => {
   return await selectInvoices();
@@ -14,6 +16,13 @@ export const getInvoices = async () => {
 
 export const getInvoiceById = async (invoice_id: number) => {
   return await selectInvoiceById(invoice_id);
+};
+
+export const getInvoiceByCustomerSearch = async (search_term: string) => {
+  const customers = await getCustomersBySearch(search_term);
+  return await getInvoicesByCustomerIds(
+    customers.map(({ customer_id }) => customer_id)
+  );
 };
 
 export const createInvoice = async (data: any) => {

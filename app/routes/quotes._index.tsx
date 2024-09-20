@@ -19,7 +19,12 @@ import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
-import { deleteQuoteById, getQuotes } from "~/controllers/quotes";
+import SearchInput from "~/components/SearchInput";
+import {
+  deleteQuoteById,
+  getQuotes,
+  getQuotesByCustomerSearch,
+} from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import {
@@ -39,10 +44,29 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];
 };
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const uid = await getUserId(request);
+  if (!uid) return redirect("/login");
+  try {
+    const loadedQuotes = await getQuotes();
+    return json({ loadedQuotes });
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
+};
+
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "quotes_search":
+      const { search_term } = values;
+      const quotes =
+        search_term.toString().length > 0
+          ? await getQuotesByCustomerSearch(search_term.toString())
+          : await getQuotes();
+      return { quotes };
     case "delete":
       const { quote_id } = values;
       const deleteActionsErrors: any = {};
@@ -57,23 +81,12 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
-export const loader = async ({ request }: LoaderArgs) => {
-  const uid = await getUserId(request);
-  if (!uid) return redirect("/login");
-  try {
-    const quotes = await getQuotes();
-    return json({ quotes });
-  } catch (err) {
-    console.error(err);
-    return {};
-  }
-};
-
 export default function QuotesIndex() {
-  const { quotes }: { quotes: QuotesType[] | any[] } = useLoaderData();
+  const { loadedQuotes }: any = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [quotes, setQuotes] = useState(loadedQuotes);
   const [deletedQuoteId, setDeletedQuoteId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
 
@@ -84,6 +97,13 @@ export default function QuotesIndex() {
 
   return (
     <>
+      <SearchInput
+        _action="quotes_search"
+        placeholder="start typing to filter quotes..."
+        onDataLoaded={(fetchedData) => {
+          if (fetchedData.quotes) setQuotes(fetchedData.quotes);
+        }}
+      />
       {quotes && quotes.length ? (
         <div className="-m-4 md:m-0">
           <table className="table">

@@ -25,6 +25,20 @@ export const getQuoteById = (quote_id: number) => {
   });
 };
 
+export const getQuotesByCustomerIds = (customer_ids: number[]) => {
+  return db.quotes.findMany({
+    where: {
+      customer_id: {
+        in: customer_ids,
+      },
+    },
+    include: {
+      customer: true,
+      quoted_products: true,
+    },
+  });
+};
+
 export const createQuote = (data: any) => {
   const { customer, labour, discount, quotedProducts } = data;
   const newQuote: Prisma.quotesCreateInput = {
