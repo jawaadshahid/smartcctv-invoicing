@@ -1,6 +1,8 @@
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useFetcher } from "@remix-run/react";
+import classNames from "classnames";
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import FormBtn from "./FormBtn";
 
 type OnDataLoaded = (fetchedData: any) => void;
 
@@ -8,6 +10,7 @@ export interface SearchInputProps<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;
   onClear?: Function;
   _action: string;
+  isRounded: boolean;
   inputRef?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
@@ -17,7 +20,7 @@ const SearchInput = ({
   onDataLoaded,
   onClear,
   _action,
-  className,
+  isRounded = true,
   ...props
 }: SearchInputProps<HTMLInputElement>) => {
   const fetcher = useFetcher();
@@ -46,11 +49,13 @@ const SearchInput = ({
     onDataLoaded(fetcher.data);
   }, [fetcher.data]);
 
+  const isRoundedClass = classNames({
+    "rounded-none": !isRounded,
+  });
+
   return (
     <label
-      className={`input input-bordered flex flex-auto items-center gap-2${
-        className ? ` ${className}` : ""
-      }`}
+      className={`relative input input-bordered flex flex-auto items-center gap-2 ${isRoundedClass}`}
     >
       <input
         type="text"
@@ -64,15 +69,18 @@ const SearchInput = ({
       {doingTermSearch ? (
         <a className="btn btn-ghost btn-square loading w-5" />
       ) : searchInputRef.current && searchInputRef.current.value.length > 0 ? (
-        <XMarkIcon
-          className="h-5 w-5 opacity-70"
+        <FormBtn
+          className={`absolute -right-px bg-transparent border-0 rounded-l-none ${isRoundedClass}`}
           onClick={(e) => {
+            e.preventDefault();
             setSearchTerm("");
             searchInputRef.current?.focus();
             if (onClear) onClear();
             e.stopPropagation();
           }}
-        />
+        >
+          &#10005;
+        </FormBtn>
       ) : (
         <MagnifyingGlassIcon className="h-5 w-5 opacity-70" />
       )}

@@ -21,7 +21,7 @@ import {
   createProduct,
   getBrands,
   getModels,
-  getProducts,
+  getProductsBySearch,
   getTypes,
 } from "~/controllers/products";
 import { SITE_TITLE } from "~/root";
@@ -39,14 +39,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!invoiceid) return redirect("/invoices");
   try {
     // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, products, invoice] = await Promise.all([
+    const [brands, types, models, invoice] = await Promise.all([
       getBrands(),
       getTypes(),
       getModels(),
-      getProducts(),
       getInvoiceById(parseInt(`${invoiceid}`)),
     ]);
-    return json({ brands, types, models, products, invoice });
+    return json({ brands, types, models, invoice });
   } catch (err) {
     console.error(err);
     return {};
@@ -55,10 +54,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
-  const { _action, ...values } = Object.fromEntries(formData);
+  const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "products_search":
+      const products =
+        search_term.toString().length > 0
+          ? await getProductsBySearch(search_term.toString())
+          : [];
+      return { products };
     case "customers_search":
-      const { search_term } = values;
       const customers =
         search_term.toString().length > 0
           ? await getCustomersBySearch(search_term.toString())

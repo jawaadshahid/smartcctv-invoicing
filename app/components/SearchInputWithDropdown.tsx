@@ -1,13 +1,56 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
-import SearchInput from "./SearchInput";
+import {
+  customers,
+  invoices,
+  product_brands,
+  product_models,
+  product_types,
+  products,
+  quotes,
+} from "@prisma/client";
 import classNames from "classnames";
+import { ReactNode, useState } from "react";
+import { getCurrencyString } from "~/utils/formatters";
+import SearchInput from "./SearchInput";
 
-export type ItemType = {
-  id: number;
-  label: string;
-};
+export type ItemType =
+  | customers
+  | products
+  | quotes
+  | invoices
+  | product_brands
+  | product_models
+  | product_types;
 
 type OnItemClick = (item: ItemType) => void;
+
+const Item = ({
+  dataType,
+  item,
+  onItemClick,
+}: {
+  dataType: string;
+  item: any;
+  onItemClick: OnItemClick;
+}) => {
+  let label = "";
+  switch (dataType) {
+    case "customers":
+      label = `${item.name} - ${item.address}`;
+      break;
+    case "products":
+      label = `${item.brand_name} - ${item.type_name} - ${
+        item.model_name
+      } - ${getCurrencyString(item.price)}`;
+      break;
+  }
+  return (
+    <li className="m-0 p-0">
+      <a className="no-underline" onClick={() => onItemClick(item)}>
+        {label}
+      </a>
+    </li>
+  );
+};
 
 const ItemDropdown = ({
   onItemClick,
@@ -16,32 +59,19 @@ const ItemDropdown = ({
 }: {
   onItemClick: OnItemClick;
   dataType: string;
-  items: any[];
+  items: ItemType[];
 }): ReactNode => {
   if (items.length === 0) return <></>;
   return (
     <ul tabIndex={0} className="my-0 p-2 menu dropdown-content bg-base-100">
-      {items.map((item: any) => {
-        let id = 0,
-          label = "";
-        switch (dataType) {
-          case "customers":
-            id = item.customer_id;
-            label = `${item.name} - ${item.address}`;
-        }
-        return (
-          <li key={id} className="m-0 p-0">
-            <a
-              className="no-underline"
-              onClick={() => {
-                onItemClick({ id, label });
-              }}
-            >
-              {label}
-            </a>
-          </li>
-        );
-      })}
+      {items.map((item: ItemType, ind: number) => (
+        <Item
+          key={ind}
+          dataType={dataType}
+          item={item}
+          onItemClick={onItemClick}
+        />
+      ))}
     </ul>
   );
 };
@@ -73,7 +103,7 @@ const SearchInputWithDropdown = ({
     >
       <SearchInput
         size={1}
-        className={classNames({ "rounded-none": isActive })}
+        isRounded={!isActive}
         _action={`${dataType}_search`}
         placeholder={`start typing to filter ${dataType}...`}
         onClick={(e) => {

@@ -7,6 +7,7 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import type {
+  customers,
   product_brands,
   product_models,
   product_types,
@@ -15,7 +16,7 @@ import type {
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
-import { ReactNode, useEffect, useReducer, useRef, useState } from "react";
+import { ReactNode, useEffect, useReducer, useState } from "react";
 import {
   getGrandTotal,
   getSubtotal,
@@ -51,7 +52,6 @@ const QuoteForm = ({
   actionName,
 }: {
   quoteFormData: {
-    products: products[] | any[];
     brands: product_brands[];
     types: product_types[];
     models: product_models[];
@@ -63,7 +63,6 @@ const QuoteForm = ({
   actionName: string;
 }) => {
   const {
-    products,
     brands,
     types,
     models,
@@ -75,6 +74,7 @@ const QuoteForm = ({
   const [existingCustomer, setExistingCustomer] = useState<
     ICustomer | null | "unset"
   >(null);
+  const [createdProduct, setCreatedProduct] = useState<products | null>(null);
   const [labour, setLabour] = useState("0");
   const [labourValue, setLabourValue] = useState(0);
   const [discount, setDiscount] = useState("0");
@@ -84,7 +84,6 @@ const QuoteForm = ({
   const [newProductRow, setNewProductRow] = useState(0);
   const [isNewProduct, setIsNewProduct] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [productSelectValues, psvDispatcher] = useReducer(
     (state: any[], action: any) => {
       const { type, ...values } = action;
@@ -207,6 +206,7 @@ const QuoteForm = ({
     }
     if (formData.createdProduct) {
       const { product_id, price }: products = formData.createdProduct;
+      setCreatedProduct(formData.createdProduct);
       psvDispatcher({
         type: "update",
         row_id: newProductRow,
@@ -236,9 +236,12 @@ const QuoteForm = ({
               <QuoteNewProductRow
                 key={parseInt(rowItem.row_id) - 1}
                 rowId={rowItem.row_id}
-                products={products}
-                productSelectValue={rowItem}
                 dispatcher={psvDispatcher}
+                {...(createdProduct &&
+                  createdProduct.product_id.toString() ===
+                    rowItem.product_id && {
+                    createdProduct,
+                  })}
               />
             );
           } else {
@@ -306,10 +309,7 @@ const QuoteForm = ({
                 id="customer"
                 value={selectedCustomer.id}
                 label={`${selectedCustomer.name} - ${selectedCustomer.address}`}
-                onClear={() => {
-                  setSelectedCustomer(null);
-                  searchInputRef?.current?.focus();
-                }}
+                onClear={() => setSelectedCustomer(null)}
               />
             )}
             {existingCustomer && existingCustomer !== "unset" ? (
@@ -318,10 +318,7 @@ const QuoteForm = ({
                 id="customer"
                 value={existingCustomer.id}
                 label={`${existingCustomer.name} - ${existingCustomer.address}`}
-                onClear={() => {
-                  setExistingCustomer("unset");
-                  searchInputRef?.current?.focus();
-                }}
+                onClear={() => setExistingCustomer("unset")}
               />
             ) : (
               (!selectedCustomer || selectedCustomer === "new") && (
@@ -329,13 +326,18 @@ const QuoteForm = ({
                   <div className="flex-1">
                     <SearchInputWithDropdown
                       dataType="customers"
-                      onItemClick={({ id, label }: ItemType) =>
+                      onItemClick={(item: ItemType) => {
+                        const {
+                          customer_id: id,
+                          name,
+                          address,
+                        } = item as customers;
                         setSelectedCustomer({
                           id,
-                          name: label.split(" - ")[0],
-                          address: label.split(" - ")[1],
-                        })
-                      }
+                          name,
+                          address,
+                        });
+                      }}
                     />
                   </div>
                   <FormBtn

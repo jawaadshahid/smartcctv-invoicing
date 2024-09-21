@@ -1,13 +1,11 @@
-import type { products } from "@prisma/client";
+import { DocumentPlusIcon } from "@heroicons/react/24/outline";
+import { Prisma, type products } from "@prisma/client";
 import { useEffect, useState } from "react";
-import {
-  inputClass,
-  respTDClass,
-  respTRClass,
-  selectClass,
-} from "~/utils/styleClasses";
+import { inputClass, respTDClass, respTRClass } from "~/utils/styleClasses";
 import { getCurrencyString } from "../utils/formatters";
 import FormBtn from "./FormBtn";
+import ReadOnlyWithClearInput from "./ReadOnlyWithClearInput";
+import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
 
 type PsvType = {
   row_id: string;
@@ -18,80 +16,95 @@ type PsvType = {
 
 const QuoteNewProductRow = ({
   rowId,
-  products,
-  productSelectValue,
+  createdProduct,
   dispatcher,
 }: {
   rowId: string;
-  products: products[];
-  productSelectValue: PsvType;
+  createdProduct?: products;
   dispatcher: React.Dispatch<any>;
 }) => {
-  const { price, quantity, product_id } = productSelectValue || {
-    price: 0,
-    quantity: 1,
-    product_id: "",
-  };
-  const [itemTotal, setItemTotal] = useState(price * (quantity || 1));
+  const [selectedProduct, setSelectedProduct] = useState<products | null>(null);
+  const [qty, setQty] = useState(1);
+  const [itemTotal, setItemTotal] = useState(0);
 
   useEffect(() => {
-    setItemTotal(price * (quantity || 1));
-  }, [price, quantity]);
+    if (!createdProduct) return;
+    setSelectedProduct(createdProduct);
+  }, [createdProduct]);
 
-  const handleSelect = (new_product_id: string) => {
-    const selectedProd: products | undefined = products.find(
-      (product) => parseInt(new_product_id) === product.product_id
-    );
+  useEffect(() => {
+    if (!selectedProduct) return;
+    setItemTotal(Prisma.Decimal.mul(selectedProduct.price, qty).toNumber());
+  }, [selectedProduct, qty]);
+
+  const handleSelect = (product: products) => {
+    setSelectedProduct(product);
+    const { product_id, price } = product;
     dispatcher({
       type: "update",
       row_id: rowId,
-      product_id: new_product_id,
+      product_id,
       qty: 1,
-      price: selectedProd ? selectedProd.price : 0,
+      price,
     });
   };
 
   const handleQtyInput = (new_qty: number) => {
+    setQty(new_qty);
     dispatcher({ type: "update", row_id: rowId, quantity: new_qty });
   };
 
   const handleDeleteBtn = (deletedRow_id: string) => {
+    setSelectedProduct(null);
     dispatcher({ type: "remove", row_id: deletedRow_id });
   };
 
   return (
     <tr className={respTRClass}>
       <td
-        colSpan={product_id ? 1 : 4}
+        colSpan={selectedProduct ? 1 : 4}
         data-label="Product: "
         className={respTDClass}
       >
-        <select
-          className={`${selectClass} mb-2 md:mb-0`}
-          name={`np_${rowId}_id`}
-          id={`np_${rowId}_id`}
-          value={product_id}
-          onChange={(e) => {
-            handleSelect(e.target.value);
-          }}
-        >
-          <option disabled value="">
-            Select a product...
-          </option>
-          <option value="-1">Add new product +</option>
-          {products.map(
-            ({ product_id, brand_name, type_name, model_name, price }) => {
-              return (
-                <option key={product_id} value={product_id}>
-                  {brand_name} - {type_name} - {model_name} -{" "}
-                  {getCurrencyString(price)}
-                </option>
-              );
-            }
-          )}
-        </select>
+        {selectedProduct ? (
+          <ReadOnlyWithClearInput
+            name={`np_${rowId}_id`}
+            id={`np_${rowId}_id`}
+            value={selectedProduct.product_id}
+            label={`${selectedProduct.brand_name} - ${
+              selectedProduct.type_name
+            } - ${selectedProduct.model_name} - ${getCurrencyString(
+              selectedProduct.price
+            )}`}
+            onClear={() => handleDeleteBtn(rowId)}
+          />
+        ) : (
+          <div className="flex items-start gap-2">
+            <div className="flex-1">
+              <SearchInputWithDropdown
+                dataType="products"
+                onItemClick={(item: ItemType) => handleSelect(item as products)}
+              />
+            </div>
+            <FormBtn
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedProduct(null);
+                dispatcher({
+                  type: "update",
+                  row_id: rowId,
+                  product_id: "-1",
+                  qty: 1,
+                  price: 0,
+                });
+              }}
+            >
+              <DocumentPlusIcon className="h-5 w-5 stroke-2" />
+            </FormBtn>
+          </div>
+        )}
       </td>
-      {product_id && (
+      {selectedProduct && (
         <>
           <td data-label="Quantity: " className={respTDClass}>
             <div className="relative">
@@ -101,7 +114,7 @@ const QuoteNewProductRow = ({
                 id={`np_${rowId}_qty`}
                 type="number"
                 min="1"
-                value={quantity.toString()}
+                value={qty.toString()}
                 onChange={(e) => handleQtyInput(parseInt(e.target.value))}
                 onBlur={(e) => {
                   const val = parseInt(e.target.value);
@@ -125,13 +138,13 @@ const QuoteNewProductRow = ({
             data-label="Unit price: "
             className={`${respTDClass} md:text-right`}
           >
-            {price ? getCurrencyString(price) : " - "}
+            {getCurrencyString(selectedProduct.price)}
           </td>
           <td
             data-label="Item total: "
             className={`${respTDClass} md:text-right`}
           >
-            {itemTotal ? getCurrencyString(itemTotal) : " - "}
+            {getCurrencyString(itemTotal)}
           </td>
         </>
       )}
