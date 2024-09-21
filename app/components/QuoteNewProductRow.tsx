@@ -1,4 +1,4 @@
-import { DocumentPlusIcon } from "@heroicons/react/24/outline";
+import { SquaresPlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Prisma, type products } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { inputClass, respTDClass, respTRClass } from "~/utils/styleClasses";
@@ -99,7 +99,7 @@ const QuoteNewProductRow = ({
                 });
               }}
             >
-              <DocumentPlusIcon className="h-5 w-5 stroke-2" />
+              <SquaresPlusIcon className="h-5 w-5 stroke-2" />
             </FormBtn>
           </div>
         )}
@@ -130,7 +130,7 @@ const QuoteNewProductRow = ({
                   handleDeleteBtn(rowId);
                 }}
               >
-                &#10005;
+                <XMarkIcon className="h-5 w-5 stroke-2" />
               </FormBtn>
             </div>
           </td>

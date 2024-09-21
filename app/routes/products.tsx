@@ -1,8 +1,9 @@
 import {
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
-  DocumentPlusIcon,
-  PencilSquareIcon, TrashIcon
+  PencilSquareIcon,
+  SquaresPlusIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import {
   Prisma,
@@ -315,19 +316,15 @@ export default function Products() {
         <FormBtn
           className="mr-4"
           isSubmitting={isSubmitting}
-          onClick={() => {
-            setCleanupModalOpen(true);
-          }}
+          onClick={() => setCleanupModalOpen(true)}
         >
           <TrashIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
         <FormBtn
           isSubmitting={isSubmitting}
-          onClick={() => {
-            setCreateModalOpen(true);
-          }}
+          onClick={() => setCreateModalOpen(true)}
         >
-          <DocumentPlusIcon className="h-5 w-5 stroke-2" />
+          <SquaresPlusIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
       </div>
       <Modal open={cleanupModalOpen}>

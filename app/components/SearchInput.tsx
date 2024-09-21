@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useFetcher } from "@remix-run/react";
 import classNames from "classnames";
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
@@ -10,7 +10,7 @@ export interface SearchInputProps<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;
   onClear?: Function;
   _action: string;
-  isRounded: boolean;
+  isRounded?: boolean;
   inputRef?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
@@ -79,7 +79,7 @@ const SearchInput = ({
             e.stopPropagation();
           }}
         >
-          &#10005;
+          <XMarkIcon className="h-5 w-5 stroke-2" />
         </FormBtn>
       ) : (
         <MagnifyingGlassIcon className="h-5 w-5 opacity-70" />
