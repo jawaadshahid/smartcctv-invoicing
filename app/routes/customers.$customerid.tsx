@@ -145,7 +145,7 @@ export default function InvoiceId() {
 
   return (
     <div>
-      <h2>Customer</h2>
+      <h2>Edit customer</h2>
       <CustomerForm
         actionName="edit"
         existingData={{ customer_id, name, tel, email, address }}
@@ -316,9 +316,7 @@ export default function InvoiceId() {
       )}
       <div className="flex flex-row justify-end gap-2">
         <FormAnchorButton
-          onClick={() => {
-            navigate(-1);
-          }}
+          onClick={() => navigate(-1)}
           isSubmitting={isSubmitting}
         >
           <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
