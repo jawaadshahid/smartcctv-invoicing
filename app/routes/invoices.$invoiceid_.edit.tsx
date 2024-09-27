@@ -20,9 +20,12 @@ import {
 import {
   createProduct,
   getBrands,
+  getBrandsBySearch,
   getModels,
+  getModelsBySearch,
   getProductsBySearch,
   getTypes,
+  getTypesBySearch,
 } from "~/controllers/products";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
@@ -38,14 +41,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { invoiceid } = params;
   if (!invoiceid) return redirect("/invoices");
   try {
-    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, invoice] = await Promise.all([
-      getBrands(),
-      getTypes(),
-      getModels(),
-      getInvoiceById(parseInt(`${invoiceid}`)),
-    ]);
-    return json({ brands, types, models, invoice });
+    const existingData = await getInvoiceById(parseInt(`${invoiceid}`));
+    return json({ existingData });
   } catch (err) {
     console.error(err);
     return {};
@@ -56,6 +53,24 @@ export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
   const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "brands_search":
+      const brands =
+        search_term.toString().length > 0
+          ? await getBrandsBySearch(search_term.toString())
+          : await getBrands();
+      return { brands };
+    case "types_search":
+      const types =
+        search_term.toString().length > 0
+          ? await getTypesBySearch(search_term.toString())
+          : await getTypes();
+      return { types };
+    case "models_search":
+      const models =
+        search_term.toString().length > 0
+          ? await getModelsBySearch(search_term.toString())
+          : await getModels();
+      return { models };
     case "products_search":
       const products =
         search_term.toString().length > 0
@@ -129,7 +144,7 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function InvoicesEdit() {
   const navigation = useNavigation();
-  const invoiceFormData = useLoaderData();
+  const { existingData } = useLoaderData();
   const data = useActionData();
   const navigate = useNavigate();
 
@@ -137,7 +152,7 @@ export default function InvoicesEdit() {
     <div>
       <h2 className="mb-4 text-center">Edit invoice</h2>
       <InvoiceForm
-        invoiceFormData={invoiceFormData}
+        existingData={existingData}
         navigation={navigation}
         formData={data || {}}
         actionName="edit_invoice"

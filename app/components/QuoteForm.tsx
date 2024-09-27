@@ -6,13 +6,7 @@ import {
   DocumentTextIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
-import type {
-  customers,
-  product_brands,
-  product_models,
-  product_types,
-  products,
-} from "@prisma/client";
+import type { customers, products } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
@@ -45,29 +39,18 @@ interface ICustomer {
 }
 
 const QuoteForm = ({
-  quoteFormData,
+  existingData,
   navigation,
   formData,
   onCancel,
   actionName,
 }: {
-  quoteFormData: {
-    brands: product_brands[];
-    types: product_types[];
-    models: product_models[];
-    quote?: QuotesType;
-  };
+  existingData?: QuotesType;
   navigation: Navigation;
   formData: any;
   onCancel: Function;
   actionName: string;
 }) => {
-  const {
-    brands,
-    types,
-    models,
-    quote: existingData,
-  } = quoteFormData;
   const [selectedCustomer, setSelectedCustomer] = useState<
     ICustomer | null | "new"
   >(null);
@@ -148,21 +131,24 @@ const QuoteForm = ({
 
   useEffect(() => {
     if (isFirstRender) {
-      if (!existingData) return;
+      if (!existingData) return () => setIsFirstRender(false);
       const { customer, labour, discount, quoted_products } = existingData;
-      const { customer_id: id, name, address } = customer;
-      setExistingCustomer({ id, name, address });
-      setLabour(labour.toString());
-      setDiscount(discount.toString());
-      quoted_products.forEach(({ name, quantity, price }, i) => {
-        pivDispatcher({
-          type: "add",
-          row_id: `${i + 1}`,
-          name,
-          quantity,
-          price: new Prisma.Decimal(price),
+      if (customer) {
+        const { customer_id: id, name, address } = customer;
+        setExistingCustomer({ id, name, address });
+      }
+      if (labour) setLabour(labour.toString());
+      if (discount) setDiscount(discount.toString());
+      if (quoted_products)
+        quoted_products.forEach(({ name, quantity, price }, i) => {
+          pivDispatcher({
+            type: "add",
+            row_id: `${i + 1}`,
+            name,
+            quantity,
+            price: new Prisma.Decimal(price),
+          });
         });
-      });
     }
     return () => setIsFirstRender(false);
   }, []);
@@ -557,7 +543,6 @@ const QuoteForm = ({
         {isNewProduct && (
           <ProductForm
             actionName="create_product"
-            selectData={{ brands, types, models }}
             navigation={navigation}
             formErrors={formData?.productActionErrors}
             onCancel={() => {

@@ -21,7 +21,7 @@ export type ItemType =
   | product_models
   | product_types;
 
-type OnItemClick = (item: ItemType) => void;
+export type OnItemClick = (item: ItemType) => void;
 
 const Item = ({
   dataType,
@@ -41,6 +41,15 @@ const Item = ({
       label = `${item.brand_name} - ${item.type_name} - ${
         item.model_name
       } - ${getCurrencyString(item.price)}`;
+      break;
+    case "brands":
+      label = item.brand_name;
+      break;
+    case "models":
+      label = item.model_name;
+      break;
+    case "types":
+      label = item.type_name;
       break;
   }
   return (
@@ -86,11 +95,13 @@ type SearchInputWithDropdownProps = {
     | "models"
     | "types";
   onItemClick: OnItemClick;
+  isFixed?: boolean
 };
 
 const SearchInputWithDropdown = ({
   dataType,
   onItemClick,
+  isFixed = true,
 }: SearchInputWithDropdownProps) => {
   const [items, setItems] = useState([]);
   const [isActive, setIsActive] = useState(false);
@@ -98,7 +109,9 @@ const SearchInputWithDropdown = ({
     <div
       onClick={() => setIsActive(false)}
       className={classNames({
-        "fixed inset-0 z-20 bg-black/[.5]": isActive,
+        "fixed": isFixed && isActive,
+        "absolute": !isFixed && isActive,
+        "inset-0 z-20 bg-black/[.5]": isActive,
       })}
     >
       <SearchInput

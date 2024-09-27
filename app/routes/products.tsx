@@ -5,18 +5,13 @@ import {
   SquaresPlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import {
-  Prisma,
-  type product_brands,
-  type product_models,
-  type product_types,
-  type products,
-} from "@prisma/client";
+import { Prisma, type products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
+  useFetcher,
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
@@ -33,10 +28,13 @@ import {
   deleteOrphanedTypes,
   deleteProductById,
   getBrands,
+  getBrandsBySearch,
   getModels,
+  getModelsBySearch,
   getProducts,
   getProductsBySearch,
   getTypes,
+  getTypesBySearch,
   updateProduct,
 } from "~/controllers/products";
 import { SITE_TITLE } from "~/root";
@@ -58,14 +56,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, loadedProducts] = await Promise.all([
-      getBrands(),
-      getTypes(),
-      getModels(),
-      getProducts(),
-    ]);
-    return json({ brands, types, models, loadedProducts });
+    const loadedProducts = await getProducts();
+    return json({ loadedProducts });
   } catch (err) {
     console.error(err);
     return {};
@@ -81,7 +73,6 @@ const cleanupProdAction = async (values: any) => {
   if (brands) {
     try {
       const { count: brandsCleanedCount } = await deleteOrphanedBrands();
-      console.log({ brandsCleanedCount });
       successInfo += `${brandsCleanedCount} brands, `;
     } catch (error) {
       console.log({ error });
@@ -91,7 +82,6 @@ const cleanupProdAction = async (values: any) => {
   if (models) {
     try {
       const { count: modelsCleanedCount } = await deleteOrphanedModels();
-      console.log({ modelsCleanedCount });
       successInfo += `${modelsCleanedCount} models, `;
     } catch (error) {
       console.log({ error });
@@ -101,7 +91,6 @@ const cleanupProdAction = async (values: any) => {
   if (types) {
     try {
       const { count: typesCleanedCount } = await deleteOrphanedTypes();
-      console.log({ typesCleanedCount });
       successInfo += `${typesCleanedCount} types, `;
     } catch (error) {
       console.log({ error });
@@ -165,10 +154,27 @@ const editProdAction = async (values: any) => {
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  const { _action, ...values } = Object.fromEntries(formData);
+  const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "brands_search":
+      const brands =
+        search_term.toString().length > 0
+          ? await getBrandsBySearch(search_term.toString())
+          : await getBrands();
+      return { brands };
+    case "types_search":
+      const types =
+        search_term.toString().length > 0
+          ? await getTypesBySearch(search_term.toString())
+          : await getTypes();
+      return { types };
+    case "models_search":
+      const models =
+        search_term.toString().length > 0
+          ? await getModelsBySearch(search_term.toString())
+          : await getModels();
+      return { models };
     case "products_search":
-      const { search_term } = values;
       const products =
         search_term.toString().length > 0
           ? await getProductsBySearch(search_term.toString())
@@ -182,24 +188,18 @@ export async function action({ request }: ActionArgs) {
       return await editProdAction(values);
     case "cleanup":
       return await cleanupProdAction(values);
+    case "reload_products":
+      const reloadedProducts = await getProducts();
+      return { reloadedProducts };
   }
   return {};
 }
 
 export default function Products() {
-  const {
-    loadedProducts,
-    brands,
-    types,
-    models,
-  }: {
-    loadedProducts: products[] | any[];
-    brands: product_brands[];
-    types: product_types[];
-    models: product_models[];
-  } = useLoaderData();
+  const { loadedProducts }: { loadedProducts: any[] } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
+  const fetcher = useFetcher();
   const isSubmitting = navigation.state === "submitting";
   const [products, setProducts] = useState(loadedProducts);
   const [deletedProductID, setDeletedProductID] = useState(0);
@@ -209,6 +209,9 @@ export default function Products() {
     brand_id: 0,
     model_id: 0,
     type_id: 0,
+    brand_name: "",
+    type_name: "",
+    model_name: "",
   });
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -220,7 +223,13 @@ export default function Products() {
     if (data.productCreated) setCreateModalOpen(false);
     if (data.productDeleted) setDeleteModalOpen(false);
     if (data.productEdited) setEditModalOpen(false);
+    fetcher.submit({ _action: "reload_products" }, { method: "post" });
   }, [data]);
+
+  useEffect(() => {
+    if (!fetcher.data) return;
+    setProducts(fetcher.data.reloadedProducts);
+  }, [fetcher.data]);
 
   return (
     <div className={contentBodyClass}>
@@ -281,10 +290,13 @@ export default function Products() {
                               onClick={() => {
                                 setProductToEdit({
                                   product_id,
-                                  price,
+                                  brand_name,
+                                  type_name,
+                                  model_name,
                                   brand_id,
                                   model_id,
                                   type_id,
+                                  price,
                                 });
                                 setEditModalOpen(true);
                               }}
@@ -345,11 +357,6 @@ export default function Products() {
         {editModalOpen && (
           <ProductForm
             actionName="edit"
-            selectData={{
-              brands,
-              types,
-              models,
-            }}
             existingData={productToEdit}
             navigation={navigation}
             formErrors={data?.editActionErrors}
@@ -365,11 +372,6 @@ export default function Products() {
         {createModalOpen && (
           <ProductForm
             actionName="create"
-            selectData={{
-              brands,
-              types,
-              models,
-            }}
             navigation={navigation}
             formErrors={data?.createActionErrors}
             onCancel={() => {

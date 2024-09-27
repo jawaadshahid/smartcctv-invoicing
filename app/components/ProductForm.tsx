@@ -10,103 +10,12 @@ import type {
 } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
-import cn from "classnames";
-import { useEffect, useState } from "react";
-import { formClass, inputClass, selectClass } from "~/utils/styleClasses";
+import { useState } from "react";
+import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
+import TaxonomyField from "./TaxonomyField";
 
-const TaxonomyField = ({
-  taxoName,
-  taxoItems,
-  inputError,
-  selectedValue,
-}: {
-  taxoName: string;
-  taxoItems: any;
-  inputError: any;
-  selectedValue?: number;
-}) => {
-  const hasItems = taxoItems?.length > 0;
-  const [isNewTaxoItem, setIsNewTaxoItem] = useState(!hasItems);
-  const [taxoSelectValue, setTaxoSelectValue] = useState(
-    selectedValue ? selectedValue : ""
-  );
-
-  const taxoInputClass = cn({
-    [inputClass]: true,
-    "mt-2": isNewTaxoItem,
-    hidden: !isNewTaxoItem,
-  });
-
-  useEffect(() => {
-    setIsNewTaxoItem(taxoSelectValue === "-1");
-  }, [taxoSelectValue]);
-
-  return (
-    <div className="mb-2">
-      <label
-        className="label"
-        htmlFor={isNewTaxoItem ? `new${taxoName}` : taxoName}
-      >
-        <span className="label-text">Product {taxoName}</span>
-      </label>
-      <select
-        className={selectClass}
-        name={taxoName}
-        id={taxoName}
-        value={taxoSelectValue}
-        onChange={(e) => {
-          setTaxoSelectValue(e.target.value);
-        }}
-      >
-        <option disabled value="">
-          Select a {taxoName}...
-        </option>
-        <option value="-1">Add new {taxoName} +</option>
-        {hasItems &&
-          taxoItems.map((taxoItem: any) => {
-            return (
-              <option
-                key={taxoItem[`${taxoName}_id`]}
-                value={taxoItem[`${taxoName}_id`]}
-              >
-                {taxoItem[`${taxoName}_name`]}
-              </option>
-            );
-          })}
-      </select>
-      <input
-        disabled={!isNewTaxoItem}
-        className={taxoInputClass}
-        id={`new${taxoName}`}
-        name={`new${taxoName}`}
-        type="text"
-        placeholder={`Defined new ${taxoName} here...`}
-      />
-      {inputError && inputError[taxoName] && (
-        <label className="label">
-          <span className="label-text-alt text-error">
-            {inputError[taxoName]}
-          </span>
-        </label>
-      )}
-    </div>
-  );
-};
-
-const ProductForm = ({
-  selectData,
-  navigation,
-  formErrors,
-  onCancel,
-  actionName,
-  existingData,
-}: {
-  selectData: {
-    brands: product_brands[];
-    models: product_models[];
-    types: product_types[];
-  };
+type ProductFormProps = {
   navigation: Navigation;
   formErrors?: any;
   onCancel: Function;
@@ -117,17 +26,27 @@ const ProductForm = ({
     brand_id: number;
     model_id: number;
     type_id: number;
+    brand_name: string;
+    model_name: string;
+    type_name: string;
   };
-}) => {
+};
+
+const ProductForm = ({
+  navigation,
+  formErrors,
+  onCancel,
+  actionName,
+  existingData,
+}: ProductFormProps) => {
   // if existingData, then edit, else new
   const isNew = !existingData;
-  const { brands, models, types } = selectData;
   const isSubmitting = navigation.state === "submitting";
   const [price, setPrice] = useState(
     !isNew ? existingData.price.toString() : "0"
   );
   return (
-    <Form replace method="post" className={formClass}>
+    <Form replace method="post" className={`${formClass} relative`}>
       {formErrors && formErrors.info && (
         <label className="label">
           <span className="label-text-alt text-error">{formErrors.info}</span>
@@ -144,26 +63,36 @@ const ProductForm = ({
       <fieldset disabled={isSubmitting}>
         <TaxonomyField
           taxoName="brand"
-          taxoItems={brands}
           inputError={formErrors}
-          selectedValue={!isNew ? existingData.brand_id : undefined}
+          {...(existingData && {
+            existingItem: {
+              brand_id: existingData.brand_id,
+              brand_name: existingData.brand_name,
+            } as product_brands,
+          })}
         />
         <TaxonomyField
           taxoName="type"
-          taxoItems={types}
           inputError={formErrors}
-          selectedValue={!isNew ? existingData.type_id : undefined}
+          {...(existingData && {
+            existingItem: {
+              type_id: existingData.type_id,
+              type_name: existingData.type_name,
+            } as product_types,
+          })}
         />
         <TaxonomyField
           taxoName="model"
-          taxoItems={models}
           inputError={formErrors}
-          selectedValue={!isNew ? existingData.model_id : undefined}
+          {...(existingData && {
+            existingItem: {
+              model_id: existingData.model_id,
+              model_name: existingData.model_name,
+            } as product_models,
+          })}
         />
         <div className="mb-2">
-          <label className="label" htmlFor="price">
-            <span className="label-text">Product price</span>
-          </label>
+          <h4 className="label-text">Product price</h4>
           <input
             className={inputClass}
             id="price"

@@ -101,6 +101,25 @@ export const deleteOrphanedBrands = () => {
   });
 };
 
+export const getBrandsBySearch = (search_term: string) => {
+  const search_terms = search_term.split(" ").join(" & ");
+  return db.product_brands.findMany({
+    where: {
+      OR: [
+        { brand_name: { contains: search_terms } },
+        { brand_name: { search: search_terms } },
+      ],
+    },
+    orderBy: {
+      _relevance: {
+        fields: ["brand_name"],
+        search: search_terms,
+        sort: "desc",
+      },
+    },
+  });
+};
+
 export const getTypes = () => {
   return db.product_types.findMany({
     orderBy: [{ type_name: "asc" }],
@@ -117,6 +136,25 @@ export const deleteOrphanedTypes = () => {
   });
 };
 
+export const getTypesBySearch = (search_term: string) => {
+  const search_terms = search_term.split(" ").join(" & ");
+  return db.product_types.findMany({
+    where: {
+      OR: [
+        { type_name: { contains: search_terms } },
+        { type_name: { search: search_terms } },
+      ],
+    },
+    orderBy: {
+      _relevance: {
+        fields: ["type_name"],
+        search: search_terms,
+        sort: "desc",
+      },
+    },
+  });
+};
+
 export const getModels = () => {
   return db.product_models.findMany({
     orderBy: [{ model_name: "asc" }],
@@ -128,6 +166,25 @@ export const deleteOrphanedModels = () => {
     where: {
       products: {
         none: {},
+      },
+    },
+  });
+};
+
+export const getModelsBySearch = (search_term: string) => {
+  const search_terms = search_term.split(" ").join(" & ");
+  return db.product_models.findMany({
+    where: {
+      OR: [
+        { model_name: { contains: search_terms } },
+        { model_name: { search: search_terms } },
+      ],
+    },
+    orderBy: {
+      _relevance: {
+        fields: ["model_name"],
+        search: search_terms,
+        sort: "desc",
       },
     },
   });

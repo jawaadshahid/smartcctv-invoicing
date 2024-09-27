@@ -6,11 +6,14 @@ import {
   deleteOrphanedTypes as removeOrphanedTypes,
   deleteProductById as removeProductById,
   getBrands as selectBrands,
+  getBrandsBySearch as selectBrandsBySearch,
   getModels as selectModels,
+  getModelsBySearch as selectModelsBySearch,
   getProductById as selectProductById,
   getProducts as selectProducts,
   getProductsBySearch as selectProductsBySearch,
   getTypes as selectTypes,
+  getTypesBySearch as selectTypesBySearch,
 } from "../models/products";
 
 export const getProducts = async () => {
@@ -51,6 +54,10 @@ export const deleteOrphanedBrands = async () => {
   return await removeOrphanedBrands();
 };
 
+export const getBrandsBySearch = async (search_term: string) => {
+  return await selectBrandsBySearch(search_term);
+};
+
 export const getTypes = async () => {
   return await selectTypes();
 };
@@ -59,10 +66,18 @@ export const deleteOrphanedTypes = async () => {
   return await removeOrphanedTypes();
 };
 
+export const getTypesBySearch = async (search_term: string) => {
+  return await selectTypesBySearch(search_term);
+};
+
 export const getModels = async () => {
   return await selectModels();
 };
 
 export const deleteOrphanedModels = async () => {
   return await removeOrphanedModels();
+};
+
+export const getModelsBySearch = async (search_term: string) => {
+  return await selectModelsBySearch(search_term);
 };

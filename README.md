@@ -53,7 +53,6 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
- - FEATURE: replace select fields with autocomplete fields. implement for product taxonomy
  - FEATURE: add pagination on results pages, db level, implement and style component (daisyui), replace select fields with autocomplete input (dependent on search feature) (implement on products and new product row)
  - MAINTENANCE: refactor actions to controllers
  - MAINTENANCE: refactor type error objs, move to controller

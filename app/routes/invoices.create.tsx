@@ -1,11 +1,6 @@
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
+import { useActionData, useNavigate, useNavigation } from "@remix-run/react";
 import InvoiceForm from "~/components/InvoiceForm";
 import {
   createCustomer,
@@ -16,10 +11,12 @@ import { createInvoice } from "~/controllers/invoices";
 import {
   createProduct,
   getBrands,
+  getBrandsBySearch,
   getModels,
-  getProducts,
+  getModelsBySearch,
   getProductsBySearch,
   getTypes,
+  getTypesBySearch,
 } from "~/controllers/products";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
@@ -32,24 +29,31 @@ export const meta: V2_MetaFunction = () => {
 export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
-  try {
-    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models] = await Promise.all([
-      getBrands(),
-      getTypes(),
-      getModels(),
-    ]);
-    return json({ brands, types, models });
-  } catch (err) {
-    console.error(err);
-    return {};
-  }
+  return {};
 };
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "brands_search":
+      const brands =
+        search_term.toString().length > 0
+          ? await getBrandsBySearch(search_term.toString())
+          : await getBrands();
+      return { brands };
+    case "types_search":
+      const types =
+        search_term.toString().length > 0
+          ? await getTypesBySearch(search_term.toString())
+          : await getTypes();
+      return { types };
+    case "models_search":
+      const models =
+        search_term.toString().length > 0
+          ? await getModelsBySearch(search_term.toString())
+          : await getModels();
+      return { models };
     case "products_search":
       const products =
         search_term.toString().length > 0
@@ -119,14 +123,12 @@ export async function action({ request }: ActionArgs) {
 
 export default function InvoicesCreate() {
   const navigation = useNavigation();
-  const invoiceFormData = useLoaderData();
   const data = useActionData();
   const navigate = useNavigate();
   return (
     <div>
       <h2 className="mb-4 text-center">Create a new invoice</h2>
       <InvoiceForm
-        invoiceFormData={invoiceFormData}
         navigation={navigation}
         formData={data || {}}
         actionName="create_invoice"

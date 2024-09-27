@@ -15,9 +15,12 @@ import {
 import {
   createProduct,
   getBrands,
+  getBrandsBySearch,
   getModels,
+  getModelsBySearch,
   getProductsBySearch,
   getTypes,
+  getTypesBySearch,
 } from "~/controllers/products";
 import {
   createQuote,
@@ -38,14 +41,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { quoteid } = params;
   if (!quoteid) return redirect("/quotes");
   try {
-    // TODO: expensive query, refactor so taxonomy is retrieved as action on user interaction
-    const [brands, types, models, quote] = await Promise.all([
-      getBrands(),
-      getTypes(),
-      getModels(),
-      getQuoteById(parseInt(`${quoteid}`)),
-    ]);
-    return json({ brands, types, models, quote });
+    const existingData = await getQuoteById(parseInt(`${quoteid}`));
+    return json({ existingData });
   } catch (err) {
     console.error(err);
     return {};
@@ -56,6 +53,24 @@ export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
   const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "brands_search":
+      const brands =
+        search_term.toString().length > 0
+          ? await getBrandsBySearch(search_term.toString())
+          : await getBrands();
+      return { brands };
+    case "types_search":
+      const types =
+        search_term.toString().length > 0
+          ? await getTypesBySearch(search_term.toString())
+          : await getTypes();
+      return { types };
+    case "models_search":
+      const models =
+        search_term.toString().length > 0
+          ? await getModelsBySearch(search_term.toString())
+          : await getModels();
+      return { models };
     case "products_search":
       const products =
         search_term.toString().length > 0
@@ -129,7 +144,7 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function QuotesEdit() {
   const navigation = useNavigation();
-  const quoteFormData = useLoaderData();
+  const { existingData } = useLoaderData();
   const data = useActionData();
   const navigate = useNavigate();
 
@@ -137,7 +152,7 @@ export default function QuotesEdit() {
     <div>
       <h2 className="mb-4 text-center">Edit quote</h2>
       <QuoteForm
-        quoteFormData={quoteFormData}
+        existingData={existingData}
         navigation={navigation}
         formData={data || {}}
         actionName="edit_quote"

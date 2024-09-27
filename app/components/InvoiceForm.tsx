@@ -6,13 +6,7 @@ import {
   DocumentTextIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
-import type {
-  customers,
-  product_brands,
-  product_models,
-  product_types,
-  products,
-} from "@prisma/client";
+import type { customers, products } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
@@ -45,31 +39,18 @@ interface ICustomer {
 }
 
 const InvoiceForm = ({
-  invoiceFormData,
+  existingData,
   navigation,
   formData,
   onCancel,
   actionName,
 }: {
-  invoiceFormData: {
-    products: products[] | any[];
-    brands: product_brands[];
-    types: product_types[];
-    models: product_models[];
-    invoice?: InvoicesType;
-  };
+  existingData?: InvoicesType;
   navigation: Navigation;
   formData: any;
   onCancel: Function;
   actionName: string;
 }) => {
-  const {
-    products,
-    brands,
-    types,
-    models,
-    invoice: existingData,
-  } = invoiceFormData;
   const [selectedCustomer, setSelectedCustomer] = useState<
     ICustomer | null | "new"
   >(null);
@@ -150,21 +131,24 @@ const InvoiceForm = ({
 
   useEffect(() => {
     if (isFirstRender) {
-      if (!existingData) return;
+      if (!existingData) return () => setIsFirstRender(false);
       const { customer, labour, discount, invoiced_products } = existingData;
-      const { customer_id: id, name, address } = customer;
-      setExistingCustomer({ id, name, address });
-      setLabour(labour.toString());
-      setDiscount(discount.toString());
-      invoiced_products.forEach(({ name, quantity, price }, i) => {
-        pivDispatcher({
-          type: "add",
-          row_id: `${i + 1}`,
-          name,
-          quantity,
-          price: new Prisma.Decimal(price),
+      if (customer) {
+        const { customer_id: id, name, address } = customer;
+        setExistingCustomer({ id, name, address });
+      }
+      if (labour) setLabour(labour.toString());
+      if (discount) setDiscount(discount.toString());
+      if (invoiced_products)
+        invoiced_products.forEach(({ name, quantity, price }, i) => {
+          pivDispatcher({
+            type: "add",
+            row_id: `${i + 1}`,
+            name,
+            quantity,
+            price: new Prisma.Decimal(price),
+          });
         });
-      });
     }
     return () => setIsFirstRender(false);
   }, []);
@@ -559,7 +543,6 @@ const InvoiceForm = ({
         {isNewProduct && (
           <ProductForm
             actionName="create_product"
-            selectData={{ brands, types, models }}
             navigation={navigation}
             formErrors={formData?.productActionErrors}
             onCancel={() => {

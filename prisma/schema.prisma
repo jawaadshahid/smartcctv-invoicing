@@ -109,6 +109,7 @@ model product_brands {
   products   products[]
 
   @@unique([brand_id, brand_name])
+  @@fulltext([brand_name])
 }
 
 model product_models {
@@ -117,6 +118,7 @@ model product_models {
   products   products[]
 
   @@unique([model_id, model_name])
+  @@fulltext([model_name])
 }
 
 model product_types {
@@ -125,6 +127,7 @@ model product_types {
   products  products[]
 
   @@unique([type_id, type_name])
+  @@fulltext([type_name])
 }
 
 model jobs {
