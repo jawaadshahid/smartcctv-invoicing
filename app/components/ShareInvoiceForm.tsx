@@ -1,6 +1,6 @@
 import {
-  ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
+  PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
 import type { customers, users } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -162,7 +162,7 @@ const ShareInvoiceFrom = ({
             value="share_invoice"
             isSubmitting={isSubmitting}
           >
-            <ArrowDownTrayIcon className="h-5 w-5 stroke-2" />
+            <PaperAirplaneIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
           <FormBtn
             className="ml-4"
