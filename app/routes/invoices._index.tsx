@@ -19,11 +19,13 @@ import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
 import {
   deleteInvoiceById,
   getInvoiceByCustomerSearch,
   getInvoices,
+  getInvoicesCount,
 } from "~/controllers/invoices";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
@@ -48,8 +50,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const loadedInvoices = await getInvoices();
-    return json({ loadedInvoices });
+    const invoiceCount = await getInvoicesCount();
+    return json({ invoiceCount });
   } catch (err) {
     console.error(err);
     return {};
@@ -60,6 +62,13 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "get_paged_invoices":
+      const { skip, take } = values;
+      const pagedInvoices = await getInvoices(
+        parseInt(skip.toString()),
+        parseInt(take.toString())
+      );
+      return { pagedInvoices };
     case "invoices_search":
       const { search_term } = values;
       const invoices =
@@ -82,11 +91,11 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function InvoicesIndex() {
-  const { loadedInvoices }: any = useLoaderData();
+  const { invoiceCount }: any = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  const [invoices, setInvoices] = useState(loadedInvoices);
+  const [invoices, setInvoices] = useState([]);
   const [deletedInvoiceId, setDeletedInvoiceId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
 
@@ -186,6 +195,14 @@ export default function InvoicesIndex() {
         <p>No invoices found...</p>
       )}
       <div className={createBtnContainerClass}>
+        <Pagination
+          className="mr-4"
+          totalCount={invoiceCount}
+          _action="get_paged_invoices"
+          onDataLoaded={({ pagedInvoices }) => {
+            if (pagedInvoices) setInvoices(pagedInvoices);
+          }}
+        />
         <FormAnchorButton href="/invoices/create">
           <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>

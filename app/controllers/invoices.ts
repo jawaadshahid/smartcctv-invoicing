@@ -5,13 +5,21 @@ import {
   deleteInvoiceById as removeInvoiceId,
   getInvoiceById as selectInvoiceById,
   getInvoices as selectInvoices,
+  getInvoicesCount as selectInvoicesCount,
 } from "../models/invoices";
+import { getCustomersBySearch } from "./customers";
 import { getProductsByIds } from "./products";
 import { getQuoteById } from "./quotes";
-import { getCustomersBySearch } from "./customers";
 
-export const getInvoices = async () => {
-  return await selectInvoices();
+export const getInvoices = async (
+  skip: number | undefined = undefined,
+  take: number | undefined = undefined
+) => {
+  return await selectInvoices(skip, take);
+};
+
+export const getInvoicesCount = async () => {
+  return await selectInvoicesCount();
 };
 
 export const getInvoiceById = async (invoice_id: number) => {

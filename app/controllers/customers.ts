@@ -3,12 +3,20 @@ import {
   updateCustomer as putCustomers,
   deleteCustomerById as removeCustomerById,
   getCustomerById as selectCustomerById,
-  getCustomersBySearch as selectCustomersBySearch,
   getCustomers as selectCustomers,
+  getCustomersBySearch as selectCustomersBySearch,
+  getCustomersCount as selectCustomersCount,
 } from "../models/customers";
 
-export const getCustomers = async () => {
-  return await selectCustomers();
+export const getCustomers = async (
+  skip: number | undefined = undefined,
+  take: number | undefined = undefined
+) => {
+  return await selectCustomers(skip, take);
+};
+
+export const getCustomersCount = async () => {
+  return await selectCustomersCount();
 };
 
 export const getCustomerById = async (customer_id: number) => {

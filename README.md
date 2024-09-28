@@ -53,7 +53,14 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
- - FEATURE: add pagination on results pages, db level, implement and style component (daisyui), replace select fields with autocomplete input (dependent on search feature) (implement on products and new product row)
+ - FEATURE: homepage widgets:
+    - map of customer locations
+    - customer record count
+    - product record count
+    - quote record count
+    - quote totals in past month(s)
+    - invoice record count
+    - invoice totals in past month(s)
  - MAINTENANCE: refactor actions to controllers
  - MAINTENANCE: refactor type error objs, move to controller
  - MAINTENANCE: cleanup dupilcate customers, (can be handled by editor)

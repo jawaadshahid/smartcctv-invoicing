@@ -1,8 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getProducts = () => {
+export const getProducts = (
+  skip: number | undefined,
+  take: number | undefined
+) => {
   return db.products.findMany({
+    skip,
+    take,
     orderBy: [
       { brand_name: "asc" },
       { type_name: "asc" },
@@ -10,6 +15,10 @@ export const getProducts = () => {
       { price: "asc" },
     ],
   });
+};
+
+export const getProductsCount = () => {
+  return db.products.count();
 };
 
 export const getProductById = (product_id: number) => {

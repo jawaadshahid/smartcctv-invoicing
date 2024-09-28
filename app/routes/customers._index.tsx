@@ -8,15 +8,21 @@ import CustomerForm from "~/components/CustomerForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
 import {
   createCustomer,
-  getCustomersBySearch,
   getCustomers,
+  getCustomersBySearch,
+  getCustomersCount,
 } from "~/controllers/customers";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
-import { createBtnContainerClass, respTDClass, respTRClass } from "~/utils/styleClasses";
+import {
+  createBtnContainerClass,
+  respTDClass,
+  respTRClass,
+} from "~/utils/styleClasses";
 import { validateCustomerData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
@@ -27,8 +33,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const loadedCustomers = await getCustomers();
-    return json({ loadedCustomers });
+    const customerCount = await getCustomersCount();
+    return json({ customerCount });
   } catch (err) {
     console.error(err);
     return {};
@@ -39,6 +45,13 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "get_paged_customers":
+      const { skip, take } = values;
+      const pagedCustomers = await getCustomers(
+        parseInt(skip.toString()),
+        parseInt(take.toString())
+      );
+      return { pagedCustomers };
     case "customers_search":
       const { search_term } = values;
       const customers =
@@ -65,11 +78,11 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function CustomersIndex() {
-  const { loadedCustomers }: any = useLoaderData();
+  const { customerCount }: any = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  const [customers, setCustomers] = useState(loadedCustomers);
+  const [customers, setCustomers] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
@@ -147,6 +160,14 @@ export default function CustomersIndex() {
         <p className="text-center">No customers found...</p>
       )}
       <div className={createBtnContainerClass}>
+        <Pagination
+          className="mr-4"
+          totalCount={customerCount}
+          _action="get_paged_customers"
+          onDataLoaded={({ pagedCustomers }) => {
+            if (pagedCustomers) setCustomers(pagedCustomers);
+          }}
+        />
         <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {

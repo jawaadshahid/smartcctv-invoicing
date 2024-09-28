@@ -5,12 +5,20 @@ import {
   deleteQuoteById as removeQuoteId,
   getQuoteById as selectQuoteById,
   getQuotes as selectQuotes,
+  getQuotesCount as selectQuotesCount,
 } from "../models/quotes";
-import { getProductsByIds } from "./products";
 import { getCustomersBySearch } from "./customers";
+import { getProductsByIds } from "./products";
 
-export const getQuotes = async () => {
-  return await selectQuotes();
+export const getQuotes = async (
+  skip: number | undefined = undefined,
+  take: number | undefined = undefined
+) => {
+  return await selectQuotes(skip, take);
+};
+
+export const getQuotesCount = async () => {
+  return await selectQuotesCount();
 };
 
 export const getQuoteById = async (quote_id: number) => {

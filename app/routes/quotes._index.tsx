@@ -19,11 +19,13 @@ import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
 import {
   deleteQuoteById,
   getQuotes,
   getQuotesByCustomerSearch,
+  getQuotesCount,
 } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
@@ -48,8 +50,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const loadedQuotes = await getQuotes();
-    return json({ loadedQuotes });
+    const quoteCount = await getQuotesCount();
+    return json({ quoteCount });
   } catch (err) {
     console.error(err);
     return {};
@@ -60,6 +62,13 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "get_paged_quotes":
+      const { skip, take } = values;
+      const pagedQuotes = await getQuotes(
+        parseInt(skip.toString()),
+        parseInt(take.toString())
+      );
+      return { pagedQuotes };
     case "quotes_search":
       const { search_term } = values;
       const quotes =
@@ -82,11 +91,11 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function QuotesIndex() {
-  const { loadedQuotes }: any = useLoaderData();
+  const { quoteCount }: any = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  const [quotes, setQuotes] = useState(loadedQuotes);
+  const [quotes, setQuotes] = useState([]);
   const [deletedQuoteId, setDeletedQuoteId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
 
@@ -186,6 +195,14 @@ export default function QuotesIndex() {
         <p>No quotes found...</p>
       )}
       <div className={createBtnContainerClass}>
+        <Pagination
+          className="mr-4"
+          totalCount={quoteCount}
+          _action="get_paged_quotes"
+          onDataLoaded={({ pagedQuotes }) => {
+            if (pagedQuotes) setQuotes(pagedQuotes);
+          }}
+        />
         <FormAnchorButton href="/quotes/create">
           <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>

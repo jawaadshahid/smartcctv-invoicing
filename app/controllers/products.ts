@@ -12,12 +12,20 @@ import {
   getProductById as selectProductById,
   getProducts as selectProducts,
   getProductsBySearch as selectProductsBySearch,
+  getProductsCount as selectProductsCount,
   getTypes as selectTypes,
   getTypesBySearch as selectTypesBySearch,
 } from "../models/products";
 
-export const getProducts = async () => {
-  return await selectProducts();
+export const getProducts = async (
+  skip: number | undefined = undefined,
+  take: number | undefined = undefined
+) => {
+  return await selectProducts(skip, take);
+};
+
+export const getProductsCount = async () => {
+  return await selectProductsCount();
 };
 
 export const getProductById = async (product_id: number) => {

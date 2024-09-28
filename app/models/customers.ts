@@ -1,9 +1,18 @@
 import { db } from "../utils/db";
 
-export const getCustomers = () => {
+export const getCustomers = (
+  skip: number | undefined,
+  take: number | undefined
+) => {
   return db.customers.findMany({
+    skip,
+    take,
     orderBy: [{ name: "asc" }],
   });
+};
+
+export const getCustomersCount = () => {
+  return db.customers.count();
 };
 
 export const getCustomerById = (customer_id: number) => {

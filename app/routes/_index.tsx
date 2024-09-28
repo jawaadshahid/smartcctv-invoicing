@@ -21,6 +21,15 @@ export default function IndexRoute() {
   return (
     <div className={contentBodyClass}>
       <p>Welcome to Smart CCTV admin</p>
+      <ul>
+        <li>map of customer locations</li>
+        <li>customer record count</li>
+        <li>product record count</li>
+        <li>quote record count</li>
+        <li>quote totals in past month(s)</li>
+        <li>invoice record count</li>
+        <li>invoice totals in past month(s)</li>
+      </ul>
     </div>
   );
 }

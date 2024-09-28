@@ -1,8 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getInvoices = () => {
+export const getInvoices = (
+  skip: number | undefined,
+  take: number | undefined
+) => {
   return db.invoices.findMany({
+    skip,
+    take,
     include: {
       customer: true,
       invoiced_products: true,
@@ -11,6 +16,10 @@ export const getInvoices = () => {
       createdAt: "desc",
     },
   });
+};
+
+export const getInvoicesCount = () => {
+  return db.invoices.count();
 };
 
 export const getInvoiceById = (invoice_id: number) => {

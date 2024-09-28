@@ -1,8 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getQuotes = () => {
+export const getQuotes = (
+  skip: number | undefined,
+  take: number | undefined
+) => {
   return db.quotes.findMany({
+    skip,
+    take,
     include: {
       customer: true,
       quoted_products: true,
@@ -11,6 +16,10 @@ export const getQuotes = () => {
       createdAt: "desc",
     },
   });
+};
+
+export const getQuotesCount = () => {
+  return db.quotes.count();
 };
 
 export const getQuoteById = (quote_id: number) => {

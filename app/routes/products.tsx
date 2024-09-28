@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import FormBtn from "~/components/FormBtn";
 import Modal from "~/components/Modal";
+import Pagination from "~/components/Pagination";
 import ProductCleanupForm from "~/components/ProductCleanupForm";
 import ProductForm from "~/components/ProductForm";
 import SearchInput from "~/components/SearchInput";
@@ -33,6 +34,7 @@ import {
   getModelsBySearch,
   getProducts,
   getProductsBySearch,
+  getProductsCount,
   getTypes,
   getTypesBySearch,
   updateProduct,
@@ -56,8 +58,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const loadedProducts = await getProducts();
-    return json({ loadedProducts });
+    const productCount = await getProductsCount();
+    return json({ productCount });
   } catch (err) {
     console.error(err);
     return {};
@@ -156,6 +158,13 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, search_term, ...values } = Object.fromEntries(formData);
   switch (_action) {
+    case "get_paged_products":
+      const { skip, take } = values;
+      const pagedProducts = await getProducts(
+        parseInt(skip.toString()),
+        parseInt(take.toString())
+      );
+      return { pagedProducts };
     case "brands_search":
       const brands =
         search_term.toString().length > 0
@@ -196,12 +205,12 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Products() {
-  const { loadedProducts }: { loadedProducts: any[] } = useLoaderData();
+  const { productCount }: { productCount: number } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
   const fetcher = useFetcher();
   const isSubmitting = navigation.state === "submitting";
-  const [products, setProducts] = useState(loadedProducts);
+  const [products, setProducts] = useState([]);
   const [deletedProductID, setDeletedProductID] = useState(0);
   const [productToEdit, setProductToEdit] = useState({
     product_id: 0,
@@ -325,6 +334,14 @@ export default function Products() {
         <p className="text-center">No products found...</p>
       )}
       <div className={createBtnContainerClass}>
+        <Pagination
+          className="mr-4"
+          totalCount={productCount}
+          _action="get_paged_products"
+          onDataLoaded={({ pagedProducts }) => {
+            if (pagedProducts) setProducts(pagedProducts);
+          }}
+        />
         <FormBtn
           className="mr-4"
           isSubmitting={isSubmitting}
