@@ -53,6 +53,9 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
+ - FEATURE: limit autocomplete results to 10, use db take to reduce query size
+ - FEATURE: should the search input be present if there's only 1 page of results?
+ - FEATURE: can heroku send alerts when an error occurs with a snapshot of the console? if so, set it up, if not, create a custom solution to do this
  - FEATURE: homepage widgets:
     - map of customer locations
     - customer record count
@@ -65,4 +68,5 @@ cp -R ../my-old-remix-app/app app
  - MAINTENANCE: refactor type error objs, move to controller
  - MAINTENANCE: cleanup dupilcate customers, (can be handled by editor)
  - MAINTENANCE: cleanup styles, move repeated styles to definition file, need a better method than styleClasses.ts (SPIKE)
+ - MAINTENANCE: create subdirs for components, conains type file (for type cleanup)
  - MAINTENANCE: cleanup types, move inline types to single file
