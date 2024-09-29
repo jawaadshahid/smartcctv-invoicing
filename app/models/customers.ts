@@ -1,9 +1,6 @@
 import { db } from "../utils/db";
 
-export const getCustomers = (
-  skip: number | undefined,
-  take: number | undefined
-) => {
+export const getCustomers = (skip: number, take: number) => {
   return db.customers.findMany({
     skip,
     take,

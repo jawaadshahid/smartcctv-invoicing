@@ -1,10 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getQuotes = (
-  skip: number | undefined,
-  take: number | undefined
-) => {
+export const getQuotes = (skip: number, take: number) => {
   return db.quotes.findMany({
     skip,
     take,

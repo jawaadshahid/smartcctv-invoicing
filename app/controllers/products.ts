@@ -17,10 +17,7 @@ import {
   getTypesBySearch as selectTypesBySearch,
 } from "../models/products";
 
-export const getProducts = async (
-  skip: number | undefined = undefined,
-  take: number | undefined = undefined
-) => {
+export const getProducts = async (skip: number, take: number) => {
   return await selectProducts(skip, take);
 };
 

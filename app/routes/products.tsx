@@ -11,7 +11,6 @@ import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
-  useFetcher,
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
@@ -28,14 +27,11 @@ import {
   deleteOrphanedModels,
   deleteOrphanedTypes,
   deleteProductById,
-  getBrands,
   getBrandsBySearch,
-  getModels,
   getModelsBySearch,
   getProducts,
   getProductsBySearch,
   getProductsCount,
-  getTypes,
   getTypesBySearch,
   updateProduct,
 } from "~/controllers/products";
@@ -143,8 +139,8 @@ const editProdAction = async (values: any) => {
     return { editActionErrors };
 
   try {
-    await updateProduct(values);
-    return { productEdited: true };
+    const updatedProduct = await updateProduct(values);
+    return { productEdited: true, updatedProduct };
   } catch (error: any) {
     console.log({ error });
     if (error.code) {
@@ -169,25 +165,25 @@ export async function action({ request }: ActionArgs) {
       const brands =
         search_term.toString().length > 0
           ? await getBrandsBySearch(search_term.toString())
-          : await getBrands();
+          : [];
       return { brands };
     case "types_search":
       const types =
         search_term.toString().length > 0
           ? await getTypesBySearch(search_term.toString())
-          : await getTypes();
+          : [];
       return { types };
     case "models_search":
       const models =
         search_term.toString().length > 0
           ? await getModelsBySearch(search_term.toString())
-          : await getModels();
+          : [];
       return { models };
     case "products_search":
       const products =
         search_term.toString().length > 0
           ? await getProductsBySearch(search_term.toString())
-          : await getProducts();
+          : [];
       return { products };
     case "delete":
       return await deleteProdAction(values);
@@ -197,9 +193,6 @@ export async function action({ request }: ActionArgs) {
       return await editProdAction(values);
     case "cleanup":
       return await cleanupProdAction(values);
-    case "reload_products":
-      const reloadedProducts = await getProducts();
-      return { reloadedProducts };
   }
   return {};
 }
@@ -208,9 +201,8 @@ export default function Products() {
   const { productCount }: { productCount: number } = useLoaderData();
   const data = useActionData();
   const navigation = useNavigation();
-  const fetcher = useFetcher();
   const isSubmitting = navigation.state === "submitting";
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any>([]);
   const [deletedProductID, setDeletedProductID] = useState(0);
   const [productToEdit, setProductToEdit] = useState({
     product_id: 0,
@@ -226,19 +218,25 @@ export default function Products() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [cleanupModalOpen, setCleanupModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     if (!data) return;
     if (data.productCreated) setCreateModalOpen(false);
     if (data.productDeleted) setDeleteModalOpen(false);
-    if (data.productEdited) setEditModalOpen(false);
-    fetcher.submit({ _action: "reload_products" }, { method: "post" });
+    if (data.productEdited) {
+      setEditModalOpen(false);
+      // replace edited product in product list
+      if (data.updatedProduct)
+        setProducts((oldProducts: any) =>
+          oldProducts.map((oldProduct: any) =>
+            oldProduct.product_id === data.updatedProduct.product_id
+              ? data.updatedProduct
+              : oldProduct
+          )
+        );
+    }
   }, [data]);
-
-  useEffect(() => {
-    if (!fetcher.data) return;
-    setProducts(fetcher.data.reloadedProducts);
-  }, [fetcher.data]);
 
   return (
     <div className={contentBodyClass}>
@@ -246,7 +244,10 @@ export default function Products() {
         _action="products_search"
         placeholder="start typing to filter products..."
         onDataLoaded={(fetchedData) => {
-          if (fetchedData.products) setProducts(fetchedData.products);
+          if (fetchedData.products) {
+            setProducts(fetchedData.products);
+            setIsSearched(fetchedData.products.length > 0);
+          }
         }}
       />
       {products && products.length ? (
@@ -334,14 +335,16 @@ export default function Products() {
         <p className="text-center">No products found...</p>
       )}
       <div className={createBtnContainerClass}>
-        <Pagination
-          className="mr-4"
-          totalCount={productCount}
-          _action="get_paged_products"
-          onDataLoaded={({ pagedProducts }) => {
-            if (pagedProducts) setProducts(pagedProducts);
-          }}
-        />
+        {!isSearched && (
+          <Pagination
+            className="mr-4"
+            totalCount={productCount}
+            _action="get_paged_products"
+            onDataLoaded={({ pagedProducts }) => {
+              if (pagedProducts) setProducts(pagedProducts);
+            }}
+          />
+        )}
         <FormBtn
           className="mr-4"
           isSubmitting={isSubmitting}

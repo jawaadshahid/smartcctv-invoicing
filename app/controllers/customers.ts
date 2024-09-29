@@ -8,10 +8,7 @@ import {
   getCustomersCount as selectCustomersCount,
 } from "../models/customers";
 
-export const getCustomers = async (
-  skip: number | undefined = undefined,
-  take: number | undefined = undefined
-) => {
+export const getCustomers = async (skip: number, take: number) => {
   return await selectCustomers(skip, take);
 };
 

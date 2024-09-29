@@ -1,10 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getInvoices = (
-  skip: number | undefined,
-  take: number | undefined
-) => {
+export const getInvoices = (skip: number, take: number) => {
   return db.invoices.findMany({
     skip,
     take,

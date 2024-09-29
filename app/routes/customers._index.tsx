@@ -57,7 +57,7 @@ export async function action({ request }: ActionArgs) {
       const customers =
         search_term.toString().length > 0
           ? await getCustomersBySearch(search_term.toString())
-          : await getCustomers();
+          : [];
       return { customers };
     case "create":
       const createActionErrors: any = validateCustomerData(values);
@@ -84,6 +84,7 @@ export default function CustomersIndex() {
   const isSubmitting = navigation.state === "submitting";
   const [customers, setCustomers] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     if (!data) return;
@@ -96,7 +97,10 @@ export default function CustomersIndex() {
         _action="customers_search"
         placeholder="start typing to filter customers..."
         onDataLoaded={(fetchedData) => {
-          if (fetchedData.customers) setCustomers(fetchedData.customers);
+          if (fetchedData.customers) {
+            setCustomers(fetchedData.customers);
+            setIsSearched(fetchedData.customers.length > 0);
+          }
         }}
       />
       {customers && customers.length ? (
@@ -160,14 +164,16 @@ export default function CustomersIndex() {
         <p className="text-center">No customers found...</p>
       )}
       <div className={createBtnContainerClass}>
-        <Pagination
-          className="mr-4"
-          totalCount={customerCount}
-          _action="get_paged_customers"
-          onDataLoaded={({ pagedCustomers }) => {
-            if (pagedCustomers) setCustomers(pagedCustomers);
-          }}
-        />
+        {!isSearched && (
+          <Pagination
+            className="mr-4"
+            totalCount={customerCount}
+            _action="get_paged_customers"
+            onDataLoaded={({ pagedCustomers }) => {
+              if (pagedCustomers) setCustomers(pagedCustomers);
+            }}
+          />
+        )}
         <FormBtn
           isSubmitting={isSubmitting}
           onClick={() => {

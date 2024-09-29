@@ -11,10 +11,7 @@ import { getCustomersBySearch } from "./customers";
 import { getProductsByIds } from "./products";
 import { getQuoteById } from "./quotes";
 
-export const getInvoices = async (
-  skip: number | undefined = undefined,
-  take: number | undefined = undefined
-) => {
+export const getInvoices = async (skip: number, take: number) => {
   return await selectInvoices(skip, take);
 };
 

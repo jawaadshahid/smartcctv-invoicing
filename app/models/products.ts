@@ -1,10 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { db } from "../utils/db";
 
-export const getProducts = (
-  skip: number | undefined,
-  take: number | undefined
-) => {
+export const getProducts = (skip: number, take: number) => {
   return db.products.findMany({
     skip,
     take,

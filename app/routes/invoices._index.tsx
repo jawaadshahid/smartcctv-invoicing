@@ -74,7 +74,7 @@ export async function action({ request }: ActionArgs) {
       const invoices =
         search_term.toString().length > 0
           ? await getInvoiceByCustomerSearch(search_term.toString())
-          : await getInvoices();
+          : [];
       return { invoices };
     case "delete":
       const { invoice_id } = values;
@@ -98,6 +98,7 @@ export default function InvoicesIndex() {
   const [invoices, setInvoices] = useState([]);
   const [deletedInvoiceId, setDeletedInvoiceId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     if (!data) return;
@@ -110,7 +111,10 @@ export default function InvoicesIndex() {
         _action="invoices_search"
         placeholder="start typing to filter invoices..."
         onDataLoaded={(fetchedData) => {
-          if (fetchedData.invoices) setInvoices(fetchedData.invoices);
+          if (fetchedData.invoices) {
+            setInvoices(fetchedData.invoices);
+            setIsSearched(fetchedData.invoices.length > 0);
+          }
         }}
       />
       {invoices && invoices.length ? (
@@ -195,14 +199,16 @@ export default function InvoicesIndex() {
         <p>No invoices found...</p>
       )}
       <div className={createBtnContainerClass}>
-        <Pagination
-          className="mr-4"
-          totalCount={invoiceCount}
-          _action="get_paged_invoices"
-          onDataLoaded={({ pagedInvoices }) => {
-            if (pagedInvoices) setInvoices(pagedInvoices);
-          }}
-        />
+        {!isSearched && (
+          <Pagination
+            className="mr-4"
+            totalCount={invoiceCount}
+            _action="get_paged_invoices"
+            onDataLoaded={({ pagedInvoices }) => {
+              if (pagedInvoices) setInvoices(pagedInvoices);
+            }}
+          />
+        )}
         <FormAnchorButton href="/invoices/create">
           <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>

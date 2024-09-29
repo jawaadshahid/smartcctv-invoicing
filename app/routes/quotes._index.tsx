@@ -74,7 +74,7 @@ export async function action({ request }: ActionArgs) {
       const quotes =
         search_term.toString().length > 0
           ? await getQuotesByCustomerSearch(search_term.toString())
-          : await getQuotes();
+          : [];
       return { quotes };
     case "delete":
       const { quote_id } = values;
@@ -98,6 +98,7 @@ export default function QuotesIndex() {
   const [quotes, setQuotes] = useState([]);
   const [deletedQuoteId, setDeletedQuoteId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     if (!data) return;
@@ -110,7 +111,10 @@ export default function QuotesIndex() {
         _action="quotes_search"
         placeholder="start typing to filter quotes..."
         onDataLoaded={(fetchedData) => {
-          if (fetchedData.quotes) setQuotes(fetchedData.quotes);
+          if (fetchedData.quotes) {
+            setQuotes(fetchedData.quotes);
+            setIsSearched(fetchedData.quotes.length > 0);
+          }
         }}
       />
       {quotes && quotes.length ? (
@@ -195,14 +199,16 @@ export default function QuotesIndex() {
         <p>No quotes found...</p>
       )}
       <div className={createBtnContainerClass}>
-        <Pagination
-          className="mr-4"
-          totalCount={quoteCount}
-          _action="get_paged_quotes"
-          onDataLoaded={({ pagedQuotes }) => {
-            if (pagedQuotes) setQuotes(pagedQuotes);
-          }}
-        />
+        {!isSearched && (
+          <Pagination
+            className="mr-4"
+            totalCount={quoteCount}
+            _action="get_paged_quotes"
+            onDataLoaded={({ pagedQuotes }) => {
+              if (pagedQuotes) setQuotes(pagedQuotes);
+            }}
+          />
+        )}
         <FormAnchorButton href="/quotes/create">
           <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
