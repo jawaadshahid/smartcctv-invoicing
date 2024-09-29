@@ -41,6 +41,7 @@ import {
   getSubtotal,
   prettifyDateString,
 } from "../utils/formatters";
+import ListingItemMenu from "~/components/ListingItemMenu";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Invoices` }];
@@ -164,7 +165,7 @@ export default function InvoicesIndex() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-3 btn-group">
+                          <ListingItemMenu>
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`invoices/${invoice_id}`}
@@ -186,7 +187,7 @@ export default function InvoicesIndex() {
                             >
                               <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
-                          </div>
+                          </ListingItemMenu>
                         </td>
                       </tr>
                     );

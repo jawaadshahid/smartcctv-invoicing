@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import CustomerForm from "~/components/CustomerForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
@@ -144,14 +145,14 @@ export default function CustomersIndex() {
                           {address}
                         </td>
                         <td className={`${respTDClass} md:text-right`}>
-                          <div className="absolute md:static top-0 right-3 btn-group">
+                          <ListingItemMenu>
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`customers/${customer_id}`}
                             >
                               <PencilSquareIcon className="h-5 w-5 stroke-2" />
                             </FormAnchorButton>
-                          </div>
+                          </ListingItemMenu>
                         </td>
                       </tr>
                     );

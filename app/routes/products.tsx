@@ -16,6 +16,7 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import FormBtn from "~/components/FormBtn";
+import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import Pagination from "~/components/Pagination";
 import ProductCleanupForm from "~/components/ProductCleanupForm";
@@ -294,7 +295,7 @@ export default function Products() {
                           {getCurrencyString(price)}
                         </td>
                         <td className={`${respTDClass} md:text-right`}>
-                          <div className="absolute md:static top-0 right-3 btn-group">
+                          <ListingItemMenu>
                             <FormBtn
                               isSubmitting={isSubmitting}
                               onClick={() => {
@@ -322,7 +323,7 @@ export default function Products() {
                             >
                               <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
-                          </div>
+                          </ListingItemMenu>
                         </td>
                       </tr>
                     );
