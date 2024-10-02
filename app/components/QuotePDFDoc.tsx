@@ -16,10 +16,7 @@ import {
 } from "~/utils/formatters";
 import type { QuotesType } from "~/utils/types";
 
-export const getQuoteBuffer = async (
-  quoteid: string | undefined,
-  isVat: boolean
-) => {
+export const getQuoteBuffer = async (quoteid: string | undefined) => {
   if (!quoteid) return Promise.reject({ error: "quote id is not defined" });
   const id = quoteid as string;
   let quote: QuotesType | any;
@@ -31,9 +28,7 @@ export const getQuoteBuffer = async (
 
   if (!quote) return Promise.reject({ msg: "quote not found!" });
 
-  let stream = await renderToStream(
-    <QuotePDFDoc quote={quote} isVat={isVat} />
-  );
+  let stream = await renderToStream(<QuotePDFDoc quote={quote} />);
   // and transform it to a Buffer to send in the Response
   return new Promise((resolve, reject) => {
     let buffers: Uint8Array[] = [];
@@ -101,13 +96,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const QuotePDFDoc = ({
-  quote,
-  isVat,
-}: {
-  quote: QuotesType;
-  isVat: boolean;
-}) => {
+const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
   const { quote_id, createdAt, customer, labour, discount, quoted_products } =
     quote;
   const { name, tel, email, address } = customer;
@@ -215,22 +204,6 @@ const QuotePDFDoc = ({
             <Text style={styles.endField}>Total:</Text>
             <Text style={styles.endValue}>{getCurrencyString(grandTotal)}</Text>
           </View>
-          {isVat ? (
-            <>
-              <View style={styles.endRow}>
-                <Text style={styles.endField}>VAT:</Text>
-                <Text style={styles.endValue}>
-                  {getCurrencyString(vatTotal)}
-                </Text>
-              </View>
-              <View style={styles.endRow}>
-                <Text style={styles.endField}>Total (Inc VAT):</Text>
-                <Text style={styles.endValue}>
-                  {getCurrencyString(Prisma.Decimal.sum(grandTotal, vatTotal))}
-                </Text>
-              </View>
-            </>
-          ) : null}
         </View>
       </Page>
     </Document>
