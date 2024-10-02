@@ -71,30 +71,8 @@ export const prettifyRefNum = (baseRefNum: number) => {
   }${baseRefNum}`;
 };
 
-export const constructEmailBody = (
-  subtotal: FormDataEntryValue,
-  labour: FormDataEntryValue,
-  discount: FormDataEntryValue,
-  grandTotal: FormDataEntryValue,
-  productCount: FormDataEntryValue,
-  productData: any
-) => {
-  const pCount: number = parseInt(`${productCount}`);
-  let htmlStr = `<p>Hi,<br>Please see below for your quotation:</p>`;
-  htmlStr += `<p>`;
-  for (let ind = 0; ind < pCount; ind++) {
-    const productValue: FormDataEntryValue = productData[`prod_${ind + 1}`];
-    htmlStr += `${productValue}<br>`;
-  }
-  htmlStr += `Subtotal: ${getCurrencyString(`${subtotal}`)}<br>`;
-  htmlStr += `Labour: ${getCurrencyString(`${labour}`)}<br>`;
-  if (Number(`${discount}`) > 0)
-    htmlStr += `Discount: -${getCurrencyString(`${discount}`)}<br>`;
-  htmlStr += `Total: ${getCurrencyString(`${grandTotal}`)}`;
-  htmlStr += `</p>`;
-  htmlStr += `<p>A PDF containing your quotation is also attached for your records.</p>`;
-  htmlStr += `<p>Kind Regards,<br>Smart CCTV</p>`;
-  return htmlStr;
+export const prettifyFilename = (prefix: string, baseRefNum: number, format: string) => {
+  return `${prefix}_${prettifyRefNum(baseRefNum)}_${Date.now().toString()}.${format}`;
 };
 
 export const prettifyDateString = (dateString: string) => {

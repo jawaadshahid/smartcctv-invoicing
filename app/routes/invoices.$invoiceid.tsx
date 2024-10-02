@@ -23,17 +23,17 @@ import { getInvoiceById } from "~/controllers/invoices";
 import { getUserByEmail } from "~/controllers/users";
 import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
-import { sendEmail } from "~/utils/mailer";
+import { emailBodyData, sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import { respTDClass, respTRClass } from "~/utils/styleClasses";
 import type { InvoicedProductsType, InvoicesType } from "~/utils/types";
 import { validateEmail } from "~/utils/validations";
 import {
-  constructEmailBody,
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
   prettifyDateString,
+  prettifyFilename,
 } from "../utils/formatters";
 
 export const meta: V2_MetaFunction = () => {
@@ -102,14 +102,16 @@ export async function action({ request }: ActionArgs) {
         ...(userEmail ? [String(userEmail)] : []),
       ];
 
-      const emailBody = constructEmailBody(
+      const emailBodyData: emailBodyData = {
+        documentid: invoiceid,
         subtotal,
         labour,
         discount,
         grandTotal,
         productCount,
-        productData
-      );
+        productData,
+        type: "invoice",
+      };
 
       const user = await getUserByEmail(`${userEmail}`);
 
@@ -121,7 +123,7 @@ export async function action({ request }: ActionArgs) {
 
       let mailResponse: any;
       try {
-        mailResponse = await sendEmail(allEmails, emailBody, pdfBuffer);
+        mailResponse = await sendEmail(allEmails, emailBodyData, pdfBuffer);
       } catch (error: any) {
         if (error.code === "ETIMEDOUT")
           return { shareActionErrors: { msg: "Error: send request timeout!" } };
@@ -286,7 +288,11 @@ export default function InvoiceId() {
           <PencilSquareIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
         <FormAnchorButton
-          href={`/invoices/${invoice_id}/0/generatedinvoice`}
+          href={`/pdfs/${prettifyFilename(
+            "scuk_invoice",
+            invoice_id,
+            "pdf"
+          )}?type=invoice&id=${invoice_id}`}
           target="_blank"
           rel="noreferrer"
           isSubmitting={isSubmitting}
@@ -294,13 +300,19 @@ export default function InvoiceId() {
           <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
         <FormAnchorButton
-          href={`/invoices/${invoice_id}/1/generatedinvoice`}
+          href={`/pdfs/${prettifyFilename(
+            "scuk_invoice",
+            invoice_id,
+            "pdf"
+          )}?type=invoice&id=${invoice_id}&isvat=true`}
           target="_blank"
           rel="noreferrer"
           isSubmitting={isSubmitting}
         >
           <div className="indicator">
-            <span className="indicator-item indicator-bottom indicator-center badge badge-xs">VAT</span>
+            <span className="indicator-item indicator-bottom indicator-center badge badge-xs">
+              VAT
+            </span>
             <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
           </div>
         </FormAnchorButton>

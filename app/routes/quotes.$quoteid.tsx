@@ -25,17 +25,17 @@ import { createInvoiceFromQuoteById } from "~/controllers/invoices";
 import { getQuoteById } from "~/controllers/quotes";
 import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
-import { sendEmail } from "~/utils/mailer";
+import { emailBodyData, sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import { respTDClass, respTRClass } from "~/utils/styleClasses";
 import type { QuotedProductsType, QuotesType } from "~/utils/types";
 import { validateEmail } from "~/utils/validations";
 import {
-  constructEmailBody,
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
   prettifyDateString,
+  prettifyFilename,
 } from "../utils/formatters";
 
 export const meta: V2_MetaFunction = () => {
@@ -85,7 +85,6 @@ export async function action({ request }: ActionArgs) {
         discount,
         grandTotal,
         productCount,
-        isVatQuote,
         ...productData
       } = values;
       const shareActionErrors: any = {};
@@ -110,23 +109,22 @@ export async function action({ request }: ActionArgs) {
         ...(userEmail ? [String(userEmail)] : []),
       ];
 
-      const emailBody = constructEmailBody(
+      const emailBodyData: emailBodyData = {
+        documentid: quoteid,
         subtotal,
         labour,
         discount,
         grandTotal,
         productCount,
-        productData
-      );
+        productData,
+        type: "quote",
+      };
 
-      const pdfBuffer = await getQuoteBuffer(
-        quoteid as string,
-        isVatQuote === "on"
-      );
+      const pdfBuffer = await getQuoteBuffer(quoteid as string);
 
       let mailResponse: any;
       try {
-        mailResponse = await sendEmail(allEmails, emailBody, pdfBuffer);
+        mailResponse = await sendEmail(allEmails, emailBodyData, pdfBuffer);
       } catch (error: any) {
         if (error.code === "ETIMEDOUT")
           return { shareActionErrors: { msg: "Error: send request timeout!" } };
@@ -286,7 +284,11 @@ export default function QuoteId() {
           <PencilSquareIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
         <FormAnchorButton
-          href={`/quotes/${quote_id}/0/generatedquote`}
+          href={`/pdfs/${prettifyFilename(
+            "scuk_quote",
+            quote_id,
+            "pdf"
+          )}?type=quote&id=${quote_id}`}
           target="_blank"
           rel="noreferrer"
           isSubmitting={isSubmitting}
