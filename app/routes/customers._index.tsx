@@ -87,6 +87,7 @@ export default function CustomersIndex() {
   const [customers, setCustomers] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
 
   useEffect(() => {
     if (!data) return;
@@ -136,7 +137,12 @@ export default function CustomersIndex() {
                           {address}
                         </td>
                         <td className={`${respTDClass} md:text-right`}>
-                          <ListingItemMenu>
+                          <ListingItemMenu
+                            isOpen={customer_id === activeMenuItemId}
+                            setIsOpen={(isOpen) =>
+                              setActiveMenuItemId(isOpen ? customer_id : 0)
+                            }
+                          >
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`customers/${customer_id}`}

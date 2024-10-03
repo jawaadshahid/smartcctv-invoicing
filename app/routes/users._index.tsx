@@ -73,6 +73,7 @@ export default function UsersIndex() {
   const [deletedUserID, setDeletedUserId] = useState(0);
   const [modelOpen, setModalOpen] = useState(false);
   const user: any = useContext(UserContext);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
 
   return (
     <>
@@ -119,7 +120,12 @@ export default function UsersIndex() {
                         )}
                       </td>
                       <td className={respTDClass}>
-                        <ListingItemMenu>
+                        <ListingItemMenu
+                          isOpen={id === activeMenuItemId}
+                          setIsOpen={(isOpen) =>
+                            setActiveMenuItemId(isOpen ? id : 0)
+                          }
+                        >
                           <FormAnchorButton
                             href={`users/${id}`}
                             isSubmitting={isSubmitting}

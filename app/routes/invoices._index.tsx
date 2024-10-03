@@ -101,6 +101,7 @@ export default function InvoicesIndex() {
   const [deletedInvoiceId, setDeletedInvoiceId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
 
   useEffect(() => {
     if (!data) return;
@@ -159,7 +160,12 @@ export default function InvoicesIndex() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <ListingItemMenu>
+                          <ListingItemMenu
+                            isOpen={invoice_id === activeMenuItemId}
+                            setIsOpen={(isOpen) =>
+                              setActiveMenuItemId(isOpen ? invoice_id : 0)
+                            }
+                          >
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`invoices/${invoice_id}`}

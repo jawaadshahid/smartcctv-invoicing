@@ -101,6 +101,7 @@ export default function QuotesIndex() {
   const [deletedQuoteId, setDeletedQuoteId] = useState(0);
   const [deleteModelOpen, setDeleteModalOpen] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
 
   useEffect(() => {
     if (!data) return;
@@ -159,7 +160,12 @@ export default function QuotesIndex() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <ListingItemMenu>
+                          <ListingItemMenu
+                            isOpen={quote_id === activeMenuItemId}
+                            setIsOpen={(isOpen) =>
+                              setActiveMenuItemId(isOpen ? quote_id : 0)
+                            }
+                          >
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`quotes/${quote_id}`}

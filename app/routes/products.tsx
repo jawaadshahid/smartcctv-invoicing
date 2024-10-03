@@ -221,6 +221,7 @@ export default function Products() {
   const [cleanupModalOpen, setCleanupModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
 
   useEffect(() => {
     if (!data) return;
@@ -289,8 +290,12 @@ export default function Products() {
                         {getCurrencyString(price)}
                       </td>
                       <td className={`${respTDClass} md:text-right`}>
-                        {/* toggle off others */}
-                        <ListingItemMenu>
+                        <ListingItemMenu
+                          isOpen={product_id === activeMenuItemId}
+                          setIsOpen={(isOpen) =>
+                            setActiveMenuItemId(isOpen ? product_id : 0)
+                          }
+                        >
                           <FormBtn
                             isSubmitting={isSubmitting}
                             onClick={() => {

@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormBtn from "./FormBtn";
-import { EllipsisHorizontalIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
+type setIsOpen = (isOpen: boolean) => void;
+
 type Props = {
+  isOpen: boolean;
+  setIsOpen: setIsOpen;
   children: React.ReactNode;
 };
 
-const ListingItemMenu = ({ children }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const ListingItemMenu = ({ isOpen, setIsOpen, children }: Props) => {
   const overlayClassNames = classNames({
     "absolute md:static inset-0 flex gap-x-4 items-center justify-end px-4 md:px-0":
       true,
