@@ -25,7 +25,7 @@ import { mailer } from "~/entry.server";
 import { SITE_TITLE, UserContext } from "~/root";
 import { emailBodyData, sendEmail } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
-import { respTDClass, respTRClass } from "~/utils/styleClasses";
+import { respMidTDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
 import type { InvoicedProductsType, InvoicesType } from "~/utils/types";
 import { validateEmail } from "~/utils/validations";
 import {
@@ -219,15 +219,15 @@ export default function InvoiceId() {
                 }: InvoicedProductsType) => {
                   return (
                     <tr key={invprod_id} className={respTRClass}>
-                      <td data-label="Name: " className={respTDClass}>
+                      <td data-label="Name: " className={respMidTDClass}>
                         {name}
                       </td>
-                      <td data-label="Quantity: " className={respTDClass}>
+                      <td data-label="Quantity: " className={respMidTDClass}>
                         {quantity}
                       </td>
                       <td
                         data-label="Unit price: "
-                        className={`${respTDClass} md:text-right`}
+                        className={`${respMidTDClass} md:text-right`}
                       >
                         {getCurrencyString(price)}
                       </td>
