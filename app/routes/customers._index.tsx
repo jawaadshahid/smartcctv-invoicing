@@ -21,6 +21,7 @@ import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
+  respMidTDClass,
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
@@ -109,12 +110,11 @@ export default function CustomersIndex() {
           <table className="table">
             <thead>
               <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Name</th>
-                <th>Tel</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th className="md:text-right">Actions</th>
+                <th className="w-1/5">Name</th>
+                <th className="w-1/5">Tel</th>
+                <th className="w-1/5">Email</th>
+                <th className="w-1/5">Address</th>
+                <th className="text-right w-1/5">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -123,25 +123,16 @@ export default function CustomersIndex() {
                   ({ customer_id, name, tel, email, address }: customers) => {
                     return (
                       <tr className={respTRClass} key={customer_id}>
-                        <td data-label="ID: " className={respTDClass}>
-                          {customer_id}
-                        </td>
-                        <td
-                          data-label="Name: "
-                          className={`${respTDClass} w-half`}
-                        >
+                        <td data-label="Name: " className={respMidTDClass}>
                           {name}
                         </td>
-                        <td data-label="Tel: " className={respTDClass}>
+                        <td data-label="Tel: " className={respMidTDClass}>
                           {tel}
                         </td>
-                        <td data-label="Email: " className={respTDClass}>
+                        <td data-label="Email: " className={respMidTDClass}>
                           {email}
                         </td>
-                        <td
-                          data-label="Address: "
-                          className={`${respTDClass} w-half`}
-                        >
+                        <td data-label="Address: " className={respTDClass}>
                           {address}
                         </td>
                         <td className={`${respTDClass} md:text-right`}>

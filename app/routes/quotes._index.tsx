@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
@@ -31,6 +32,7 @@ import { SITE_TITLE } from "~/root";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
+  respMidTDClass,
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
@@ -41,7 +43,6 @@ import {
   getSubtotal,
   prettifyDateString,
 } from "../utils/formatters";
-import ListingItemMenu from "~/components/ListingItemMenu";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Quotes` }];
@@ -123,11 +124,10 @@ export default function QuotesIndex() {
           <table className="table">
             <thead>
               <tr className="hidden md:table-row">
-                <th>ID</th>
                 <th>Date</th>
-                <th>Customer</th>
+                <th className="w-full">Customer</th>
                 <th>Amount</th>
-                <th>Actions</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -143,16 +143,10 @@ export default function QuotesIndex() {
                   }: QuotesType) => {
                     return (
                       <tr className={respTRClass} key={quote_id}>
-                        <td data-label="ID: " className={respTDClass}>
-                          {quote_id}
-                        </td>
-                        <td data-label="Date: " className={respTDClass}>
+                        <td data-label="Date: " className={respMidTDClass}>
                           {prettifyDateString(createdAt)}
                         </td>
-                        <td
-                          data-label="Customer: "
-                          className={`${respTDClass} w-full`}
-                        >
+                        <td data-label="Customer: " className={respMidTDClass}>
                           {customer.name}
                         </td>
                         <td data-label="Amount: " className={respTDClass}>

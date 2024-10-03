@@ -42,6 +42,7 @@ import { getUserId } from "~/utils/session";
 import {
   contentBodyClass,
   createBtnContainerClass,
+  respMidTDClass,
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
@@ -256,79 +257,63 @@ export default function Products() {
           <table className="table">
             <thead>
               <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Brand</th>
-                <th>Type</th>
-                <th>Model</th>
-                <th>Price</th>
-                <th className="md:text-right">Actions</th>
+                <th className="w-1/5">Brand</th>
+                <th className="w-1/5">Type</th>
+                <th className="w-1/5">Model</th>
+                <th className="w-1/5">Price</th>
+                <th className="text-right w-1/5">Actions</th>
               </tr>
             </thead>
             <tbody>
               {products &&
-                products.map(
-                  ({
+                products.map((product: products) => {
+                  const {
                     product_id,
                     brand_name,
                     type_name,
                     model_name,
-                    brand_id,
-                    model_id,
-                    type_id,
                     price,
-                  }: products) => {
-                    return (
-                      <tr className={respTRClass} key={product_id}>
-                        <td data-label="ID: " className={respTDClass}>
-                          {product_id}
-                        </td>
-                        <td data-label="Brand: " className={respTDClass}>
-                          {brand_name}
-                        </td>
-                        <td data-label="Type: " className={respTDClass}>
-                          {type_name}
-                        </td>
-                        <td data-label="Model: " className={respTDClass}>
-                          {model_name}
-                        </td>
-                        <td data-label="Price: " className={respTDClass}>
-                          {getCurrencyString(price)}
-                        </td>
-                        <td className={`${respTDClass} md:text-right`}>
-                          <ListingItemMenu>
-                            <FormBtn
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                setProductToEdit({
-                                  product_id,
-                                  brand_name,
-                                  type_name,
-                                  model_name,
-                                  brand_id,
-                                  model_id,
-                                  type_id,
-                                  price,
-                                });
-                                setEditModalOpen(true);
-                              }}
-                            >
-                              <PencilSquareIcon className="h-5 w-5 stroke-2" />
-                            </FormBtn>
-                            <FormBtn
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                setDeletedProductID(product_id);
-                                setDeleteModalOpen(true);
-                              }}
-                            >
-                              <TrashIcon className="h-5 w-5 stroke-2" />
-                            </FormBtn>
-                          </ListingItemMenu>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                  } = product;
+                  return (
+                    <tr className={respTRClass} key={product_id}>
+                      <td data-label="Brand: " className={respMidTDClass}>
+                        {brand_name}
+                      </td>
+                      <td data-label="Type: " className={respMidTDClass}>
+                        {type_name}
+                      </td>
+                      <td data-label="Model: " className={respMidTDClass}>
+                        {model_name}
+                      </td>
+                      <td data-label="Price: " className={respTDClass}>
+                        {getCurrencyString(price)}
+                      </td>
+                      <td className={`${respTDClass} md:text-right`}>
+                        {/* toggle off others */}
+                        <ListingItemMenu>
+                          <FormBtn
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              setProductToEdit(product);
+                              setEditModalOpen(true);
+                            }}
+                          >
+                            <PencilSquareIcon className="h-5 w-5 stroke-2" />
+                          </FormBtn>
+                          <FormBtn
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              setDeletedProductID(product_id);
+                              setDeleteModalOpen(true);
+                            }}
+                          >
+                            <TrashIcon className="h-5 w-5 stroke-2" />
+                          </FormBtn>
+                        </ListingItemMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>

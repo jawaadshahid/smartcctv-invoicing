@@ -4,12 +4,14 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import { users } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext, useState } from "react";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import {
   approveUserById,
@@ -19,7 +21,7 @@ import {
 } from "~/controllers/users";
 import { SITE_TITLE, UserContext } from "~/root";
 import { getUserId } from "~/utils/session";
-import { respTDClass, respTRClass } from "~/utils/styleClasses";
+import { respMidTDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Users` }];
@@ -78,73 +80,68 @@ export default function UsersIndex() {
         <table className="table">
           <thead>
             <tr className="hidden md:table-row">
-              <th>ID</th>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>Email</th>
+              <th className="w-full">Email</th>
               <th>Approved</th>
-              <th>Actions</th>
+              <th className="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users &&
-              users.map((loopedUser: any) => {
-                return (
-                  <tr className={respTRClass} key={loopedUser.id}>
-                    <td data-label="ID: " className={respTDClass}>
-                      {loopedUser.id}
-                    </td>
-                    <td data-label="First Name: " className={respTDClass}>
-                      {loopedUser.firstName}
-                    </td>
-                    <td data-label="Last Name: " className={respTDClass}>
-                      {loopedUser.lastName}
-                    </td>
-                    <td
-                      data-label="Email: "
-                      className={`${respTDClass} w-full`}
-                    >
-                      {loopedUser.email}
-                    </td>
-                    <td data-label="Approved: " className={respTDClass}>
-                      {loopedUser.isApproved ? (
-                        "Approved"
-                      ) : (
-                        <Form method="post">
-                          <input
-                            type="hidden"
-                            name="approvedUserId"
-                            value={loopedUser.id}
-                          />
-                          <FormBtn type="submit" isSubmitting={isSubmitting}>
-                            Approve
+              users.map(
+                ({ id, firstName, lastName, email, isApproved }: users) => {
+                  return (
+                    <tr className={respTRClass} key={id}>
+                      <td data-label="First Name: " className={respMidTDClass}>
+                        {firstName}
+                      </td>
+                      <td data-label="Last Name: " className={respMidTDClass}>
+                        {lastName}
+                      </td>
+                      <td data-label="Email: " className={respMidTDClass}>
+                        {email}
+                      </td>
+                      <td data-label="Approved: " className={respTDClass}>
+                        {isApproved ? (
+                          "Yes"
+                        ) : (
+                          <Form method="post">
+                            <input
+                              type="hidden"
+                              name="approvedUserId"
+                              value={id}
+                            />
+                            <FormBtn type="submit" isSubmitting={isSubmitting}>
+                              Approve
+                            </FormBtn>
+                          </Form>
+                        )}
+                      </td>
+                      <td className={respTDClass}>
+                        <ListingItemMenu>
+                          <FormAnchorButton
+                            href={`users/${id}`}
+                            isSubmitting={isSubmitting}
+                          >
+                            <PencilSquareIcon className="h-5 w-5 stroke-2" />
+                          </FormAnchorButton>
+                          <FormBtn
+                            disabled={user.id === id}
+                            isSubmitting={isSubmitting}
+                            onClick={() => {
+                              setDeletedUserId(id);
+                              setModalOpen(true);
+                            }}
+                          >
+                            <TrashIcon className="h-5 w-5 stroke-2" />
                           </FormBtn>
-                        </Form>
-                      )}
-                    </td>
-                    <td className={respTDClass}>
-                      <div className="absolute md:static top-0 right-3 btn-group">
-                        <FormAnchorButton
-                          href={`users/${loopedUser.id}`}
-                          isSubmitting={isSubmitting}
-                        >
-                          <PencilSquareIcon className="h-5 w-5 stroke-2" />
-                        </FormAnchorButton>
-                        <FormBtn
-                          disabled={user.id === loopedUser.id}
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            setDeletedUserId(loopedUser.id);
-                            setModalOpen(true);
-                          }}
-                        >
-                          <TrashIcon className="h-5 w-5 stroke-2" />
-                        </FormBtn>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                        </ListingItemMenu>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
           </tbody>
         </table>
       </div>
