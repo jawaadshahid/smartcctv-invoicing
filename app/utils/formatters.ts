@@ -71,8 +71,14 @@ export const prettifyRefNum = (baseRefNum: number) => {
   }${baseRefNum}`;
 };
 
-export const prettifyFilename = (prefix: string, baseRefNum: number, format: string) => {
-  return `${prefix}_${prettifyRefNum(baseRefNum)}_${Date.now().toString()}.${format}`;
+export const prettifyFilename = (
+  prefix: string,
+  baseRefNum: number,
+  format: string
+) => {
+  return `${prefix}_${prettifyRefNum(
+    baseRefNum
+  )}_${Date.now().toString()}.${format}`;
 };
 
 export const prettifyDateString = (dateString: string) => {

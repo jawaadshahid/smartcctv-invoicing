@@ -51,11 +51,10 @@ export const validatePassword = (password: string) => {
 };
 
 export const validateCustomerData = ({ name, tel, email, address }: any) => {
-  const errors: any = {};
-  errors.name = validateName(`${name}`);
+  const nameErrors = validateName(`${name}`);
+  if (nameErrors) return nameErrors;
   if (!address && !tel && (!email || `${email}` === "sunny@smartcctvuk.co.uk"))
-    errors.info = "come on bro, capture some contact info!";
-  return errors;
+    return "come on bro, capture some contact info!";
 };
 
 export const validateProductData = ({
@@ -67,21 +66,19 @@ export const validateProductData = ({
   newmodel,
   price,
 }: any) => {
-  const errors: any = {};
   const isBrandSelected = brand && parseInt(`${brand}`) > 0;
   const isTypeSelected = type && parseInt(`${type}`) > 0;
   const isModelSelected = model && parseInt(`${model}`) > 0;
-  if (!isBrandSelected && !newbrand) {
-    errors.brand = "a brand must be selected or defined";
+  if (!isBrandSelected && !newbrand)
+    return "a brand must be selected or defined";
+  if (!isTypeSelected && !newtype) return "a type must be selected or defined";
+  if (!isModelSelected && !newmodel)
+    return "a model must be selected or defined";
+  if (!price || Number(price) <= 0) return "a valid price must be defined";
+};
+
+export const validateSearchTerm = (search_term: string) => {
+  if (!/^[_A-z0-9]*((\s)*[_A-z0-9])*$/.test(search_term)) {
+    return "Invalid search term";
   }
-  if (!isTypeSelected && !newtype) {
-    errors.type = "a type must be selected or defined";
-  }
-  if (!isModelSelected && !newmodel) {
-    errors.model = "a model must be selected or defined";
-  }
-  if (!price || Number(price) <= 0) {
-    errors.price = "a valid price must be defined";
-  }
-  return errors;
 };

@@ -21,7 +21,7 @@ const Pagination = ({
 }: PaginationProps) => {
   const fetcher = useFetcher();
   const [currentPage, setCurrentPage] = useState(1);
-  const pageCount = Math.ceil(totalCount / pageSize);
+  const [pageCount, setPageCount] = useState(Math.ceil(totalCount / pageSize));
 
   const gotoPrevPage = () => {
     setCurrentPage((oldPageNumber) => oldPageNumber - 1);
@@ -31,11 +31,12 @@ const Pagination = ({
   };
 
   useEffect(() => {
+    setPageCount(Math.ceil(totalCount / pageSize));
     fetcher.submit(
       { _action, skip: pageSize * (currentPage - 1), take: pageSize },
       { method: "post" }
     );
-  }, [currentPage]);
+  }, [currentPage, totalCount, pageSize]);
 
   useEffect(() => {
     if (!fetcher.data) return;

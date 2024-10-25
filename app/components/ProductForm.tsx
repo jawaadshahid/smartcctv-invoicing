@@ -11,14 +11,15 @@ import type {
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { useState } from "react";
+import { error } from "~/utils/errors";
 import { formClass, inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
 import TaxonomyField from "./TaxonomyField";
 
-type ProductFormProps = {
+type ProductForm = {
   navigation: Navigation;
-  formErrors?: any;
   onCancel: Function;
+  setAlertData: React.Dispatch<React.SetStateAction<error | null>>;
   actionName: string;
   existingData?: {
     product_id: number;
@@ -34,11 +35,11 @@ type ProductFormProps = {
 
 const ProductForm = ({
   navigation,
-  formErrors,
   onCancel,
+  setAlertData,
   actionName,
   existingData,
-}: ProductFormProps) => {
+}: ProductForm) => {
   // if existingData, then edit, else new
   const isNew = !existingData;
   const isSubmitting = navigation.state === "submitting";
@@ -47,11 +48,6 @@ const ProductForm = ({
   );
   return (
     <Form replace method="post" className={`${formClass} relative`}>
-      {formErrors && formErrors.info && (
-        <label className="label">
-          <span className="label-text-alt text-error">{formErrors.info}</span>
-        </label>
-      )}
       {!isNew && (
         <input
           type="hidden"
@@ -63,7 +59,7 @@ const ProductForm = ({
       <fieldset disabled={isSubmitting}>
         <TaxonomyField
           taxoName="brand"
-          inputError={formErrors}
+          setAlertData={setAlertData}
           {...(existingData && {
             existingItem: {
               brand_id: existingData.brand_id,
@@ -73,7 +69,7 @@ const ProductForm = ({
         />
         <TaxonomyField
           taxoName="type"
-          inputError={formErrors}
+          setAlertData={setAlertData}
           {...(existingData && {
             existingItem: {
               type_id: existingData.type_id,
@@ -83,7 +79,7 @@ const ProductForm = ({
         />
         <TaxonomyField
           taxoName="model"
-          inputError={formErrors}
+          setAlertData={setAlertData}
           {...(existingData && {
             existingItem: {
               model_id: existingData.model_id,
@@ -113,13 +109,6 @@ const ProductForm = ({
               }
             }}
           />
-          {formErrors && formErrors.price && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.price}
-              </span>
-            </label>
-          )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <FormBtn

@@ -1,13 +1,12 @@
 import {
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
-  EyeIcon,
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -16,9 +15,11 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import AlertMessage from "~/components/AlertMessage";
 import CustomerForm from "~/components/CustomerForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import {
   deleteCustomerById,
@@ -28,10 +29,10 @@ import {
 import { deleteInvoiceById } from "~/controllers/invoices";
 import { deleteQuoteById } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
+import { error } from "~/utils/errors";
 import { getUserId } from "~/utils/session";
-import { respTDClass, respTRClass } from "~/utils/styleClasses";
+import { respMidTDClass, respTDClass, respTRClass } from "~/utils/styleClasses";
 import type { CustomerType, InvoicesType, QuotesType } from "~/utils/types";
-import { validateCustomerData } from "~/utils/validations";
 import {
   getCurrencyString,
   getGrandTotal,
@@ -46,72 +47,59 @@ export const meta: V2_MetaFunction = () => {
 export const loader = async ({ request, params }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
-  const { customerid } = params;
-  const id = customerid as string;
+  const { customer_id } = params;
+  if (!customer_id) return redirect("/customers");
   try {
-    const customer = await getCustomerById(parseInt(id));
-    return json({ customer });
-  } catch (err) {
-    console.error(err);
-    return {};
+    const { customer } = await getCustomerById({ customer_id });
+    return { customer };
+  } catch (error) {
+    return { error };
   }
 };
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
-  const deleteActionsErrors: any = {};
   switch (_action) {
     case "edit":
-      const editActionErrors: any = validateCustomerData(values);
-
-      if (Object.values(editActionErrors).some(Boolean))
-        return { editActionErrors };
-
       try {
-        await updateCustomer(values);
-        return { customerEdited: true };
-      } catch (error: any) {
-        console.log({ error });
-        if (error.code) {
-          editActionErrors.info = error.msg;
-        } else
-          editActionErrors.info = "There was a problem editing the customer...";
-        return { editActionErrors };
+        const updatedCustomerData = await updateCustomer(values);
+        return { updatedCustomerData };
+      } catch (error) {
+        return { error };
       }
     case "delete_customer":
-      const { customer_id } = values;
-      const deleteActionsErrors: any = {};
       try {
-        await deleteCustomerById(parseInt(`${customer_id}`));
-        return { customerDeleted: true };
-      } catch (err: any) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting customer with id: ${customer_id}`;
-        return { deleteActionsErrors };
+        const { code } = await deleteCustomerById(values);
+        if (code === 201) return redirect("/customers");
+        return {
+          error: {
+            code: 500,
+            message:
+              "Internal server error: something went wrong deleting the customer",
+          },
+        };
+      } catch (error) {
+        return { error };
       }
     case "delete_quote":
-      const { quote_id } = values;
       try {
-        await deleteQuoteById(parseInt(`${quote_id}`));
-        return { quoteDeleted: true };
-      } catch (err) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting quote with id: ${quote_id}`;
-        return { deleteActionsErrors };
+        const deletedQuoteData = await deleteQuoteById(values);
+        return { deletedQuoteData };
+      } catch (error) {
+        return { error };
       }
     case "delete_invoice":
-      const { invoice_id } = values;
       try {
-        await deleteInvoiceById(parseInt(`${invoice_id}`));
-        return { invoiceDeleted: true };
-      } catch (err) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting invoice with id: ${invoice_id}`;
-        return { deleteActionsErrors };
+        const deletedInvoiceData = await deleteInvoiceById(values);
+        return { deletedInvoiceData };
+      } catch (error) {
+        return { error };
       }
   }
-  return {};
+  return {
+    error: { code: 400, message: "Bad request: action was not handled" },
+  };
 }
 
 export default function InvoiceId() {
@@ -122,26 +110,56 @@ export default function InvoiceId() {
     tel,
     email,
     address,
-    invoice: invoices,
-    quote: quotes,
+    invoice: customerInvoices,
+    quote: customerQuotes,
   }: CustomerType = customer;
   const navigation = useNavigation();
-  const data = useActionData();
+  const actionData = useActionData();
   const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
+  const [invoices, setInvoices] = useState(customerInvoices);
+  const [quotes, setQuotes] = useState(customerQuotes);
   const [deleteQuoteId, setDeleteQuoteId] = useState(0);
   const [deleteQuoteModelOpen, setDeleteQuoteModalOpen] = useState(false);
   const [deleteInvoiceId, setDeleteInvoiceId] = useState(0);
   const [deleteInvoiceModelOpen, setDeleteInvoiceModalOpen] = useState(false);
   const [deleteCustomerId, setDeleteCustomerId] = useState(0);
   const [deleteCustomerModelOpen, setDeleteCustomerModalOpen] = useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = useState(0);
+  const [alertData, setAlertData] = useState<error | null>(null);
 
   useEffect(() => {
-    if (!data) return;
-    if (data.quoteDeleted) setDeleteQuoteModalOpen(false);
-    if (data.invoiceDeleted) setDeleteInvoiceModalOpen(false);
-    if (data.customerDeleted) setDeleteCustomerModalOpen(false);
-  }, [data]);
+    if (!actionData) return;
+    const { updatedCustomerData, deletedQuoteData, deletedInvoiceData, error } =
+      actionData;
+    if (updatedCustomerData) {
+      const { code } = updatedCustomerData;
+      setAlertData({ code, message: "Success: customer updated" });
+    }
+    if (deletedQuoteData) {
+      const {
+        code,
+        deletedQuote: { quote_id: deletedQuoteId },
+      } = deletedQuoteData;
+      setQuotes((oldQuotes) =>
+        oldQuotes.filter(({ quote_id }) => quote_id !== deletedQuoteId)
+      );
+      setDeleteQuoteModalOpen(false);
+      setAlertData({ code, message: "Success: quote deleted" });
+    }
+    if (deletedInvoiceData) {
+      const {
+        code,
+        deletedInvoice: { invoice_id: deletedInvoiceId },
+      } = deletedInvoiceData;
+      setInvoices((oldInvoices) =>
+        oldInvoices.filter(({ invoice_id }) => invoice_id !== deletedInvoiceId)
+      );
+      setDeleteInvoiceModalOpen(false);
+      setAlertData({ code, message: "Success: quote deleted" });
+    }
+    if (error) setAlertData(error);
+  }, [actionData]);
 
   return (
     <div>
@@ -150,44 +168,36 @@ export default function InvoiceId() {
         actionName="edit"
         existingData={{ customer_id, name, tel, email, address }}
         navigation={navigation}
-        formErrors={data?.editActionErrors}
       />
       <h3>Quotes</h3>
-      {quotes && quotes.length ? (
-        <div className="-m-4 md:m-0">
-          <table className="table">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Amount</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {quotes &&
-                quotes.map(
-                  ({
-                    quote_id,
-                    createdAt,
-                    quoted_products,
-                    labour,
-                    discount,
-                  }: QuotesType) => {
-                    return (
+      <div className="-m-4 md:mb-0 md:mx-0">
+        <table className="table">
+          {quotes && quotes.length ? (
+            <>
+              <thead>
+                <tr className="hidden md:table-row">
+                  <th>Date</th>
+                  <th className="w-full">Customer</th>
+                  <th>Amount</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="border-y border-base-content/20">
+                {quotes &&
+                  quotes.map(
+                    ({
+                      quote_id,
+                      createdAt,
+                      quoted_products,
+                      labour,
+                      discount,
+                    }: QuotesType) => (
                       <tr className={respTRClass} key={quote_id}>
-                        <td data-label="ID: " className={respTDClass}>
-                          {quote_id}
+                        <td data-label="Date: " className={respMidTDClass}>
+                          {prettifyDateString(createdAt.toString())}
                         </td>
-                        <td data-label="Date: " className={respTDClass}>
-                          {prettifyDateString(createdAt)}
-                        </td>
-                        <td
-                          data-label="Customer: "
-                          className={`${respTDClass} w-full`}
-                        >
-                          {name}
+                        <td data-label="Customer: " className={respMidTDClass}>
+                          {customer.name}
                         </td>
                         <td data-label="Amount: " className={respTDClass}>
                           {getCurrencyString(
@@ -199,13 +209,12 @@ export default function InvoiceId() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-3 btn-group">
-                            <FormAnchorButton
-                              isSubmitting={isSubmitting}
-                              href={`/quotes/${quote_id}`}
-                            >
-                              <EyeIcon className="h-5 w-5 stroke-2" />
-                            </FormAnchorButton>
+                          <ListingItemMenu
+                            isOpen={quote_id === activeMenuItemId}
+                            setIsOpen={(isOpen) =>
+                              setActiveMenuItemId(isOpen ? quote_id : 0)
+                            }
+                          >
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`/quotes/${quote_id}/edit`}
@@ -221,54 +230,51 @@ export default function InvoiceId() {
                             >
                               <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
-                          </div>
+                          </ListingItemMenu>
                         </td>
                       </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>No quotes found...</p>
-      )}
-      <h3>Invoices</h3>
-      {invoices && invoices.length ? (
-        <div className="-m-4 md:m-0">
-          <table className="table">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Amount</th>
-                <th>Actions</th>
+                    )
+                  )}
+              </tbody>
+            </>
+          ) : (
+            <tbody className="border-y border-base-content/20">
+              <tr className={respTRClass}>
+                <td className={respTDClass}>No quotes found...</td>
               </tr>
-            </thead>
-            <tbody>
-              {invoices &&
-                invoices.map(
-                  ({
-                    invoice_id,
-                    createdAt,
-                    invoiced_products,
-                    labour,
-                    discount,
-                  }: InvoicesType) => {
-                    return (
+            </tbody>
+          )}
+        </table>
+      </div>
+      <h3>Invoices</h3>
+      <div className="-m-4 md:mb-0 md:mx-0">
+        <table className="table">
+          {invoices && invoices.length ? (
+            <>
+              <thead>
+                <tr className="hidden md:table-row">
+                  <th>Date</th>
+                  <th className="w-full">Customer</th>
+                  <th>Amount</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="border-y border-base-content/20">
+                {invoices &&
+                  invoices.map(
+                    ({
+                      invoice_id,
+                      createdAt,
+                      invoiced_products,
+                      labour,
+                      discount,
+                    }: InvoicesType) => (
                       <tr className={respTRClass} key={invoice_id}>
-                        <td data-label="ID: " className={respTDClass}>
-                          {invoice_id}
+                        <td data-label="Date: " className={respMidTDClass}>
+                          {prettifyDateString(createdAt.toString())}
                         </td>
-                        <td data-label="Date: " className={respTDClass}>
-                          {prettifyDateString(createdAt)}
-                        </td>
-                        <td
-                          data-label="Customer: "
-                          className={`${respTDClass} w-full`}
-                        >
-                          {name}
+                        <td data-label="Customer: " className={respMidTDClass}>
+                          {customer.name}
                         </td>
                         <td data-label="Amount: " className={respTDClass}>
                           {getCurrencyString(
@@ -280,13 +286,12 @@ export default function InvoiceId() {
                           )}
                         </td>
                         <td className={respTDClass}>
-                          <div className="absolute md:static top-0 right-3 btn-group">
-                            <FormAnchorButton
-                              isSubmitting={isSubmitting}
-                              href={`/invoices/${invoice_id}`}
-                            >
-                              <EyeIcon className="h-5 w-5 stroke-2" />
-                            </FormAnchorButton>
+                          <ListingItemMenu
+                            isOpen={invoice_id === activeMenuItemId}
+                            setIsOpen={(isOpen) =>
+                              setActiveMenuItemId(isOpen ? invoice_id : 0)
+                            }
+                          >
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`/invoices/${invoice_id}/edit`}
@@ -302,18 +307,22 @@ export default function InvoiceId() {
                             >
                               <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
-                          </div>
+                          </ListingItemMenu>
                         </td>
                       </tr>
-                    );
-                  }
-                )}
+                    )
+                  )}
+              </tbody>
+            </>
+          ) : (
+            <tbody className="border-y border-base-content/20">
+              <tr className={respTRClass}>
+                <td className={respTDClass}>No invoices found...</td>
+              </tr>
             </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>No invoices found...</p>
-      )}
+          )}
+        </table>
+      </div>
       <div className="flex flex-row justify-end gap-2">
         <FormAnchorButton
           onClick={() => navigate(-1)}
@@ -335,9 +344,9 @@ export default function InvoiceId() {
       </div>
       <Modal open={deleteQuoteModelOpen}>
         <p>Are you sure you want to delete this quote?</p>
-        {data && data.deleteActionsErrors && (
+        {actionData && actionData.deleteActionsErrors && (
           <p className="text-error mt-1 text-xs">
-            {data.deleteActionsErrors.info}
+            {actionData.deleteActionsErrors.info}
           </p>
         )}
         <div className="modal-action">
@@ -363,9 +372,9 @@ export default function InvoiceId() {
       </Modal>
       <Modal open={deleteInvoiceModelOpen}>
         <p>Are you sure you want to delete this invoice?</p>
-        {data && data.deleteActionsErrors && (
+        {actionData && actionData.deleteActionsErrors && (
           <p className="text-error mt-1 text-xs">
-            {data.deleteActionsErrors.info}
+            {actionData.deleteActionsErrors.info}
           </p>
         )}
         <div className="modal-action">
@@ -391,9 +400,9 @@ export default function InvoiceId() {
       </Modal>
       <Modal open={deleteCustomerModelOpen}>
         <p>Are you sure you want to delete this customer?</p>
-        {data && data.deleteActionsErrors && (
+        {actionData && actionData.deleteActionsErrors && (
           <p className="text-error mt-1 text-xs">
-            {data.deleteActionsErrors.info}
+            {actionData.deleteActionsErrors.info}
           </p>
         )}
         <div className="modal-action">
@@ -417,6 +426,7 @@ export default function InvoiceId() {
           </FormBtn>
         </div>
       </Modal>
+      <AlertMessage alertData={alertData} setAlertData={setAlertData} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import {
   ArrowUturnLeftIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-import type { customers, users } from "@prisma/client";
+import type { customers, quoted_products, users } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
@@ -16,7 +16,7 @@ import {
 import FormBtn from "./FormBtn";
 
 type ProductDataType = {
-  quoted_products: QuotedProductsType[];
+  quoted_products: quoted_products[];
   labour: Prisma.Decimal;
   discount: Prisma.Decimal;
   grandTotal: Prisma.Decimal;
@@ -29,7 +29,6 @@ const ShareQuoteForm = ({
   productData,
   user,
   onCancel,
-  formErrors,
 }: {
   quoteid: number;
   navigation: Navigation;
@@ -37,7 +36,6 @@ const ShareQuoteForm = ({
   productData: ProductDataType;
   user: users;
   onCancel: Function;
-  formErrors: any;
 }) => {
   const { quoted_products, labour, discount, grandTotal } = productData;
   const labourDec = new Prisma.Decimal(labour);
@@ -55,7 +53,7 @@ const ShareQuoteForm = ({
       />
       {quoted_products &&
         quoted_products.map(
-          ({ name, quantity, price }: QuotedProductsType, ind) => {
+          ({ name, quantity, price }: quoted_products, ind) => {
             const priceDec = new Prisma.Decimal(price);
             return (
               <input
@@ -136,13 +134,6 @@ const ShareQuoteForm = ({
             placeholder="john@example.com,jill@example.com,etc"
             className={inputClass}
           />
-          {formErrors?.msg && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.msg}
-              </span>
-            </label>
-          )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <FormBtn

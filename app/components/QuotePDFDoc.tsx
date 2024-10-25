@@ -14,31 +14,23 @@ import {
   getGrandTotal,
   getSubtotal,
 } from "~/utils/formatters";
-import type { QuotesType } from "~/utils/types";
+import type { QuotesWithCustomersType } from "~/utils/types";
 
-export const getQuoteBuffer = async (quoteid: string | undefined) => {
-  if (!quoteid) return Promise.reject({ error: "quote id is not defined" });
-  const id = quoteid as string;
-  let quote: QuotesType | any;
-  try {
-    quote = await getQuoteById(parseInt(id));
-  } catch (error) {
-    return Promise.reject({ error });
-  }
-
-  if (!quote) return Promise.reject({ msg: "quote not found!" });
+export const getQuoteBuffer = async (quote_id: string) => {
+  const { quote } = await getQuoteById({ quote_id });
 
   let stream = await renderToStream(<QuotePDFDoc quote={quote} />);
   // and transform it to a Buffer to send in the Response
   return new Promise((resolve, reject) => {
     let buffers: Uint8Array[] = [];
-    stream.on("data", (data) => {
-      buffers.push(data);
-    });
-    stream.on("end", () => {
-      resolve(Buffer.concat(buffers));
-    });
-    stream.on("error", reject);
+    stream.on("data", (data) => buffers.push(data));
+    stream.on("end", () => resolve(Buffer.concat(buffers)));
+    stream.on("error", () =>
+      reject({
+        code: 500,
+        message: "Internal server error: there was a problem generating PDF",
+      })
+    );
   });
 };
 
@@ -96,7 +88,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const QuotePDFDoc = ({ quote }: { quote: QuotesType }) => {
+const QuotePDFDoc = ({ quote }: { quote: QuotesWithCustomersType }) => {
   const { quote_id, createdAt, customer, labour, discount, quoted_products } =
     quote;
   const { name, tel, email, address } = customer;

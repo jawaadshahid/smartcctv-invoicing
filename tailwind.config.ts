@@ -2,8 +2,23 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: ["./app/**/*.{ts,tsx,js,jsx}"],
+  safelist: [{ pattern: /alert-+/ }],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        fadeout: "fadeout 0.5s forwards",
+      },
+      keyframes: {
+        fadeout: {
+          "0%": {
+            opacity: "1",
+          },
+          "100%": {
+            opacity: "0",
+          },
+        },
+      },
+    },
   },
   daisyui: {
     themes: [
@@ -15,7 +30,7 @@ export default {
           primary: "#03364F",
           secondary: "#2BC6EB",
           accent: "#0AD2A5",
-          "neutral": "#03364F",
+          neutral: "#03364F",
           "neutral-content": "#0AD2A5",
           "base-content": "#03364F",
           info: "#2BC6EB",
@@ -29,7 +44,7 @@ export default {
           primary: "#03364F",
           secondary: "#2BC6EB",
           accent: "#0AD2A5",
-          "neutral": "#03364F",
+          neutral: "#03364F",
           "neutral-content": "#0AD2A5",
           "base-content": "#2BC6EB",
           info: "#2BC6EB",

@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import classNames from "classnames";
 import { ReactNode, useState } from "react";
+import { error } from "~/utils/errors";
 import { getCurrencyString } from "~/utils/formatters";
 import SearchInput from "./SearchInput";
 
@@ -85,7 +86,7 @@ const ItemDropdown = ({
   );
 };
 
-type SearchInputWithDropdownProps = {
+type SearchInputWithDropdown = {
   dataType:
     | "customers"
     | "products"
@@ -95,22 +96,24 @@ type SearchInputWithDropdownProps = {
     | "models"
     | "types";
   onItemClick: OnItemClick;
-  isFixed?: boolean
+  setAlertData: React.Dispatch<React.SetStateAction<error | null>>;
+  isFixed?: boolean;
 };
 
 const SearchInputWithDropdown = ({
   dataType,
   onItemClick,
+  setAlertData,
   isFixed = true,
-}: SearchInputWithDropdownProps) => {
+}: SearchInputWithDropdown) => {
   const [items, setItems] = useState([]);
   const [isActive, setIsActive] = useState(false);
   return (
     <div
       onClick={() => setIsActive(false)}
       className={classNames({
-        "fixed": isFixed && isActive,
-        "absolute": !isFixed && isActive,
+        fixed: isFixed && isActive,
+        absolute: !isFixed && isActive,
         "inset-0 z-20 bg-black/[.5]": isActive,
       })}
     >
@@ -124,7 +127,9 @@ const SearchInputWithDropdown = ({
           e.stopPropagation();
         }}
         onDataLoaded={(fetchedData) => {
+          console.log({fetchedData})
           if (fetchedData[dataType]) setItems(fetchedData[dataType]);
+          if (fetchedData.error) setAlertData(fetchedData.error);
         }}
       />
       {isActive && (

@@ -1,26 +1,22 @@
+import { customers, products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useActionData, useNavigate, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import AlertMessage from "~/components/AlertMessage";
 import InvoiceForm from "~/components/InvoiceForm";
-import {
-  createCustomer,
-  getCustomerById,
-  getCustomersBySearch,
-} from "~/controllers/customers";
+import { createCustomer, getCustomersBySearch } from "~/controllers/customers";
 import { createInvoice } from "~/controllers/invoices";
 import {
   createProduct,
-  getBrands,
   getBrandsBySearch,
-  getModels,
   getModelsBySearch,
   getProductsBySearch,
-  getTypes,
   getTypesBySearch,
 } from "~/controllers/products";
 import { SITE_TITLE } from "~/root";
+import { error } from "~/utils/errors";
 import { getUserId } from "~/utils/session";
-import { validateCustomerData, validateProductData } from "~/utils/validations";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Create invoice` }];
@@ -34,108 +30,120 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  const { _action, search_term, ...values } = Object.fromEntries(formData);
+  const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
     case "brands_search":
-      const brands =
-        search_term.toString().length > 0
-          ? await getBrandsBySearch(search_term.toString())
-          : await getBrands();
-      return { brands };
-    case "types_search":
-      const types =
-        search_term.toString().length > 0
-          ? await getTypesBySearch(search_term.toString())
-          : await getTypes();
-      return { types };
-    case "models_search":
-      const models =
-        search_term.toString().length > 0
-          ? await getModelsBySearch(search_term.toString())
-          : await getModels();
-      return { models };
-    case "products_search":
-      const products =
-        search_term.toString().length > 0
-          ? await getProductsBySearch(search_term.toString())
-          : [];
-      return { products };
-    case "customers_search":
-      const customers =
-        search_term.toString().length > 0
-          ? await getCustomersBySearch(search_term.toString())
-          : [];
-      return { customers };
-    case "get_customer":
-      const { customer_id } = values;
       try {
-        const customer = await getCustomerById(
-          parseInt(customer_id.toString())
-        );
-        return { customer };
+        const { brands } = await getBrandsBySearch(values);
+        return { brands };
       } catch (error) {
-        return { quoteActionErrors: { info: "customer not found" } };
+        return { error };
+      }
+    case "types_search":
+      try {
+        const { types } = await getTypesBySearch(values);
+        return { types };
+      } catch (error) {
+        return { error };
+      }
+    case "models_search":
+      try {
+        const { models } = await getModelsBySearch(values);
+        return { models };
+      } catch (error) {
+        return { error };
+      }
+    case "products_search":
+      try {
+        const { products } = await getProductsBySearch(values);
+        return { products };
+      } catch (error) {
+        return { error };
+      }
+    case "customers_search":
+      try {
+        const { customers } = await getCustomersBySearch(values);
+        return { customers };
+      } catch (error) {
+        return { error };
       }
     case "create_customer":
-      const customerActionErrors: any = validateCustomerData(values);
-
-      if (Object.values(customerActionErrors).some(Boolean))
-        return { customerActionErrors };
-
       try {
-        const createdCustomer = await createCustomer(values);
-        return json({ createdCustomer });
+        const createdCustomerData = await createCustomer(values);
+        return { createdCustomerData };
       } catch (error) {
-        console.log({ error });
-        customerActionErrors.info =
-          "There was a problem creating the customer...";
-        return { customerActionErrors };
+        return { error };
       }
     case "create_product":
-      const productActionErrors: any = validateProductData(values);
-
-      if (Object.values(productActionErrors).some(Boolean))
-        return { productActionErrors };
-
       try {
-        const createdProduct = await createProduct(values);
-        return { createdProduct };
-      } catch (error: any) {
-        console.log({ error });
-        if (error.code) {
-          productActionErrors.info = error.msg;
-        } else
-          productActionErrors.info =
-            "There was a problem creating the product...";
-        return { productActionErrors };
+        const createdProductData = await createProduct(values);
+        return { createdProductData };
+      } catch (error) {
+        return { error };
       }
     case "create_invoice":
       try {
-        await createInvoice(values);
-        return redirect("/invoices");
+        const createdInvoiceData = await createInvoice(values);
+        return { createdInvoiceData };
       } catch (error) {
-        return { quoteActionErrors: { info: error } };
+        return { error };
       }
   }
-
-  return {};
+  return {
+    error: { code: 400, message: "Bad request: action was not handled" },
+  };
 }
 
 export default function InvoicesCreate() {
+  const actionData = useActionData();
   const navigation = useNavigation();
-  const data = useActionData();
   const navigate = useNavigate();
+  const [createdCustomer, setCreatedCustomer] = useState<customers | null>(
+    null
+  );
+  const [createdProduct, setCreatedProduct] = useState<products | null>(null);
+  const [alertData, setAlertData] = useState<error | null>(null);
+
+  useEffect(() => {
+    if (!actionData) return;
+    const {
+      createdCustomerData,
+      createdProductData,
+      createdInvoiceData,
+      error,
+    } = actionData;
+
+    if (createdCustomerData) {
+      const { code, createdCustomer: retrievedCustomer } = createdCustomerData;
+      setCreatedCustomer(retrievedCustomer);
+      setAlertData({ code, message: "Success: customer created" });
+    }
+    if (createdProductData) {
+      const { code, createdProduct: retrievedProduct } = createdProductData;
+      setCreatedProduct(retrievedProduct);
+      setAlertData({ code, message: "Success: product created" });
+    }
+    if (createdInvoiceData) {
+      const { code } = createdInvoiceData;
+      setAlertData({ code, message: "Success: invoice created" });
+      setTimeout(() => navigate(`/invoices`, { replace: true }), 2000);
+    }
+    if (error) setAlertData(error);
+  }, [actionData]);
   return (
-    <div>
+    <>
       <h2 className="mb-4 text-center">Create a new invoice</h2>
       <InvoiceForm
         navigation={navigation}
-        formData={data || {}}
+        createdCustomer={createdCustomer}
+        setCreatedCustomer={setCreatedCustomer}
+        createdProduct={createdProduct}
+        setCreatedProduct={setCreatedProduct}
+        setAlertData={setAlertData}
         actionName="create_invoice"
-        onCancel={() => {
-          navigate(`/invoices`);
-        }}
+        onCancel={() => navigate(-1)}
       />
-    </div>
+      <AlertMessage alertData={alertData} setAlertData={setAlertData} />
+    </>
   );
 }

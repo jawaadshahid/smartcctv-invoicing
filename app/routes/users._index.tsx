@@ -77,7 +77,7 @@ export default function UsersIndex() {
 
   return (
     <>
-      <div className="-m-4 md:m-0">
+      <div className="-m-4 md:mb-0 md:mx-0">
         <table className="table">
           <thead>
             <tr className="hidden md:table-row">
@@ -88,7 +88,7 @@ export default function UsersIndex() {
               <th className="text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="border-y border-base-content/20">
             {users &&
               users.map(
                 ({ id, firstName, lastName, email, isApproved }: users) => {

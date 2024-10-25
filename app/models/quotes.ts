@@ -78,3 +78,34 @@ export const deleteQuoteById = (quote_id: number) => {
     }),
   ]);
 };
+
+export const updateQuoteById = (data: any) => {
+  const { quote_id, customer, labour, discount, quotedProducts } = data;
+  const newQuote: Prisma.quotesCreateInput = {
+    customer: {
+      connect: {
+        customer_id: parseInt(`${customer}`),
+      },
+    },
+    quoted_products: {
+      createMany: {
+        data: quotedProducts,
+      },
+    },
+    labour: Number(`${labour}`),
+    discount: Number(`${discount}`),
+  };
+  return db.$transaction([
+    db.quotes.delete({
+      where: {
+        quote_id,
+      },
+    }),
+    db.quoted_products.deleteMany({
+      where: {
+        quote_id,
+      },
+    }),
+    db.quotes.create({ data: newQuote }),
+  ]);
+};

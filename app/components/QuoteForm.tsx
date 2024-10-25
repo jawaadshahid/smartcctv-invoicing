@@ -11,6 +11,7 @@ import { Prisma } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { ReactNode, useEffect, useReducer, useState } from "react";
+import { error } from "~/utils/errors";
 import {
   getGrandTotal,
   getSubtotal,
@@ -22,7 +23,7 @@ import {
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
-import type { QuotesType } from "~/utils/types";
+import type { QuotesWithCustomersType } from "~/utils/types";
 import CustomerForm from "./CustomerForm";
 import FormBtn from "./FormBtn";
 import Modal from "./Modal";
@@ -32,41 +33,46 @@ import QuoteNewProductRow from "./QuoteNewProductRow";
 import ReadOnlyWithClearInput from "./ReadOnlyWithClearInput";
 import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
 
-interface ICustomer {
-  id: number;
-  name: string;
-  address: string;
-}
-
-const QuoteForm = ({
-  existingData,
-  navigation,
-  formData,
-  onCancel,
-  actionName,
-}: {
-  existingData?: QuotesType;
+type QuoteForm = {
+  existingQuoteData?: QuotesWithCustomersType;
+  setExistingQuoteData?: React.Dispatch<
+    React.SetStateAction<QuotesWithCustomersType | null>
+  >;
   navigation: Navigation;
-  formData: any;
+  createdCustomer: customers | null;
+  setCreatedCustomer: React.Dispatch<React.SetStateAction<customers | null>>;
+  createdProduct: products | null;
+  setCreatedProduct: React.Dispatch<React.SetStateAction<products | null>>;
   onCancel: Function;
   actionName: string;
-}) => {
-  const [selectedCustomer, setSelectedCustomer] = useState<
-    ICustomer | null | "new"
-  >(null);
-  const [existingCustomer, setExistingCustomer] = useState<
-    ICustomer | null | "unset"
-  >(null);
-  const [createdProduct, setCreatedProduct] = useState<products | null>(null);
+  setAlertData: React.Dispatch<React.SetStateAction<error | null>>;
+};
+
+const QuoteForm = ({
+  existingQuoteData,
+  setExistingQuoteData,
+  navigation,
+  createdCustomer,
+  setCreatedCustomer,
+  createdProduct,
+  setCreatedProduct,
+  onCancel,
+  actionName,
+  setAlertData,
+}: QuoteForm) => {
+  const [currentCustomer, setCurrectCustomer] = useState<customers | null>(
+    null
+  );
+  const [isAddingNewCustomer, setIsAddingNewCustomer] = useState(false);
   const [labour, setLabour] = useState("0");
   const [labourValue, setLabourValue] = useState(0);
   const [discount, setDiscount] = useState("0");
   const [discountValue, setDiscountValue] = useState(0);
   const [subtotal, setSubtotal] = useState("0");
   const [grandtotal, setGrandtotal] = useState("0");
+  const [newProduct, setNewProduct] = useState<products | null>(null);
   const [newProductRow, setNewProductRow] = useState(0);
   const [isNewProduct, setIsNewProduct] = useState(false);
-  const [isFirstRender, setIsFirstRender] = useState(true);
   const [productSelectValues, psvDispatcher] = useReducer(
     (state: any[], action: any) => {
       const { type, ...values } = action;
@@ -130,28 +136,44 @@ const QuoteForm = ({
   );
 
   useEffect(() => {
-    if (isFirstRender) {
-      if (!existingData) return () => setIsFirstRender(false);
-      const { customer, labour, discount, quoted_products } = existingData;
-      if (customer) {
-        const { customer_id: id, name, address } = customer;
-        setExistingCustomer({ id, name, address });
-      }
-      if (labour) setLabour(labour.toString());
-      if (discount) setDiscount(discount.toString());
-      if (quoted_products)
-        quoted_products.forEach(({ name, quantity, price }, i) => {
-          pivDispatcher({
-            type: "add",
-            row_id: `${i + 1}`,
-            name,
-            quantity,
-            price: new Prisma.Decimal(price),
-          });
+    // first time only
+    if (!existingQuoteData) return;
+    const { customer, labour, discount, quoted_products } = existingQuoteData;
+    if (customer) setCurrectCustomer(customer);
+    if (labour) setLabour(labour.toString());
+    if (discount) setDiscount(discount.toString());
+    if (quoted_products)
+      quoted_products.forEach(({ name, quantity, price }, i) => {
+        pivDispatcher({
+          type: "add",
+          row_id: `${i + 1}`,
+          name,
+          quantity,
+          price: new Prisma.Decimal(price),
         });
-    }
-    return () => setIsFirstRender(false);
-  }, []);
+      });
+    if (setExistingQuoteData) setExistingQuoteData(null);
+  }, [existingQuoteData]);
+
+  useEffect(() => {
+    if (!createdCustomer) return;
+    setCurrectCustomer(createdCustomer);
+    setIsAddingNewCustomer(false);
+    setCreatedCustomer(null);
+  }, [createdCustomer]);
+
+  useEffect(() => {
+    if (!createdProduct) return;
+    setNewProduct(createdProduct);
+    const { product_id, price }: products = createdProduct;
+    psvDispatcher({
+      type: "update",
+      row_id: newProductRow,
+      product_id: `${product_id}`,
+      price,
+    });
+    setCreatedProduct(null);
+  }, [createdProduct]);
 
   useEffect(() => {
     const labourNum = Number(labour);
@@ -184,25 +206,6 @@ const QuoteForm = ({
     setGrandtotal(getTwoDecimalPlaces(grandTotalDec));
   }, [productInputValues, productSelectValues, labourValue, discountValue]);
 
-  useEffect(() => {
-    if (!formData) return;
-    if (formData.createdCustomer) {
-      const { customer_id: id, name, address } = formData.createdCustomer;
-      setSelectedCustomer({ id, name, address });
-    }
-    if (formData.createdProduct) {
-      const { product_id, price }: products = formData.createdProduct;
-      setCreatedProduct(formData.createdProduct);
-      psvDispatcher({
-        type: "update",
-        row_id: newProductRow,
-        product_id: `${product_id}`,
-        price,
-      });
-    }
-    return () => {};
-  }, [formData, newProductRow]);
-
   const isSubmitting = navigation.state === "submitting";
   const allProductValues = productSelectValues
     .concat(productInputValues)
@@ -220,20 +223,20 @@ const QuoteForm = ({
           if (rowItem.hasOwnProperty("product_id")) {
             return (
               <QuoteNewProductRow
-                key={parseInt(rowItem.row_id) - 1}
+                key={rowItem.row_id}
                 rowId={rowItem.row_id}
                 dispatcher={psvDispatcher}
-                {...(createdProduct &&
-                  createdProduct.product_id.toString() ===
-                    rowItem.product_id && {
-                    createdProduct,
-                  })}
+                setAlertData={setAlertData}
+                {...(newProduct &&
+                newProduct.product_id.toString() === rowItem.product_id
+                  ? { createdProduct: newProduct }
+                  : {})}
               />
             );
           } else {
             return (
               <QuoteEditProductRow
-                key={parseInt(rowItem.row_id) - 1}
+                key={rowItem.row_id}
                 rowId={rowItem.row_id}
                 productInputValue={rowItem}
                 dispatcher={pivDispatcher}
@@ -264,8 +267,10 @@ const QuoteForm = ({
   const addProductRow = (rowType: "custom" | "product") => {
     const targetDispatcher =
       rowType === "custom" ? pivDispatcher : psvDispatcher;
+    const lastItem = allProductValues.at(-1);
+    const row_id = lastItem ? lastItem.row_id : "0";
     targetDispatcher({
-      row_id: `${apvCount + 1}`,
+      row_id: `${parseInt(row_id) + 1}`,
       type: "add",
       ...(rowType === "custom" && { name: "" }),
       ...(rowType === "product" && { product_id: "" }),
@@ -277,73 +282,37 @@ const QuoteForm = ({
   return (
     <>
       <Form method="post" className={formClass}>
-        {formData &&
-          formData.quoteActionErrors &&
-          formData.quoteActionErrors.info && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formData.quoteActionErrors.info}
-              </span>
-            </label>
-          )}
         <input type="hidden" name="prodcount" id="prodcount" value={apvCount} />
         <fieldset disabled={isSubmitting}>
           <div className="mb-4 flex flex-wrap items-start gap-2">
-            {selectedCustomer && selectedCustomer !== "new" && (
+            {currentCustomer ? (
               <ReadOnlyWithClearInput
                 name="customer"
                 id="customer"
-                value={selectedCustomer.id}
-                label={`${selectedCustomer.name} - ${selectedCustomer.address}`}
-                onClear={() => setSelectedCustomer(null)}
-              />
-            )}
-            {existingCustomer && existingCustomer !== "unset" ? (
-              <ReadOnlyWithClearInput
-                name="customer"
-                id="customer"
-                value={existingCustomer.id}
-                label={`${existingCustomer.name} - ${existingCustomer.address}`}
-                onClear={() => setExistingCustomer("unset")}
+                value={currentCustomer.customer_id}
+                label={`${currentCustomer.name} - ${currentCustomer.address}`}
+                onClear={() => setCurrectCustomer(null)}
               />
             ) : (
-              (!selectedCustomer || selectedCustomer === "new") && (
-                <>
-                  <div className="flex-1">
-                    <SearchInputWithDropdown
-                      dataType="customers"
-                      onItemClick={(item: ItemType) => {
-                        const {
-                          customer_id: id,
-                          name,
-                          address,
-                        } = item as customers;
-                        setSelectedCustomer({
-                          id,
-                          name,
-                          address,
-                        });
-                      }}
-                    />
-                  </div>
-                  <FormBtn
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setSelectedCustomer("new");
-                      setExistingCustomer("unset");
-                    }}
-                  >
-                    <UserPlusIcon className="h-5 w-5 stroke-2" />
-                  </FormBtn>
-                </>
-              )
-            )}
-            {formData && formData.customer && (
-              <label className="label">
-                <span className="label-text-alt text-error">
-                  {formData.customer}
-                </span>
-              </label>
+              <>
+                <div className="flex-1">
+                  <SearchInputWithDropdown
+                    dataType="customers"
+                    setAlertData={setAlertData}
+                    onItemClick={(item: ItemType) =>
+                      setCurrectCustomer(item as customers)
+                    }
+                  />
+                </div>
+                <FormBtn
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsAddingNewCustomer(true);
+                  }}
+                >
+                  <UserPlusIcon className="h-5 w-5 stroke-2" />
+                </FormBtn>
+              </>
             )}
           </div>
         </fieldset>
@@ -351,14 +320,7 @@ const QuoteForm = ({
           <label className="label">
             <span className="label-text">Products</span>
           </label>
-          {formData && formData.product && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formData.product}
-              </span>
-            </label>
-          )}
-          <div className="-m-4 md:m-0">
+          <div className="-m-4 md:mb-0 md:mx-0">
             <table className="table">
               <thead>
                 <tr className="hidden md:table-row">
@@ -524,17 +486,13 @@ const QuoteForm = ({
           </div>
         </fieldset>
       </Form>
-      <Modal open={selectedCustomer === "new"}>
+      <Modal open={isAddingNewCustomer}>
         <h3 className="mb-4">Create new customer</h3>
-        {selectedCustomer === "new" && (
+        {isAddingNewCustomer && (
           <CustomerForm
             actionName="create_customer"
             navigation={navigation}
-            formErrors={formData?.customerActionErrors}
-            onCancel={() => {
-              setSelectedCustomer(null);
-              if (formData) formData.customerActionErrors = {};
-            }}
+            onCancel={() => setIsAddingNewCustomer(false)}
           />
         )}
       </Modal>
@@ -544,15 +502,14 @@ const QuoteForm = ({
           <ProductForm
             actionName="create_product"
             navigation={navigation}
-            formErrors={formData?.productActionErrors}
-            onCancel={() => {
+            setAlertData={setAlertData}
+            onCancel={() =>
               psvDispatcher({
                 type: "update",
                 row_id: newProductRow,
                 product_id: "",
-              });
-              if (formData) formData.productActionErrors = {};
-            }}
+              })
+            }
           />
         )}
       </Modal>

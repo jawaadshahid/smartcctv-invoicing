@@ -78,3 +78,34 @@ export const deleteInvoiceById = (invoice_id: number) => {
     }),
   ]);
 };
+
+export const updateInvoiceById = (data: any) => {
+  const { invoice_id, customer, labour, discount, invoicedProducts } = data;
+  const newInvoice: Prisma.invoicesCreateInput = {
+    customer: {
+      connect: {
+        customer_id: parseInt(`${customer}`),
+      },
+    },
+    invoiced_products: {
+      createMany: {
+        data: invoicedProducts,
+      },
+    },
+    labour: Number(`${labour}`),
+    discount: Number(`${discount}`),
+  };
+  return db.$transaction([
+    db.invoices.delete({
+      where: {
+        invoice_id,
+      },
+    }),
+    db.invoiced_products.deleteMany({
+      where: {
+        invoice_id,
+      },
+    }),
+    db.invoices.create({ data: newInvoice }),
+  ]);
+};

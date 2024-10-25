@@ -4,6 +4,7 @@ import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import AlertMessage from "~/components/AlertMessage";
 import CustomerForm from "~/components/CustomerForm";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
@@ -18,6 +19,7 @@ import {
   getCustomersCount,
 } from "~/controllers/customers";
 import { SITE_TITLE } from "~/root";
+import { error } from "~/utils/errors";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
@@ -35,11 +37,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const customerCount = await getCustomersCount();
-    return json({ customerCount });
-  } catch (err) {
-    console.error(err);
-    return {};
+    const { customerCount } = await getCustomersCount();
+    return { customerCount };
+  } catch (error) {
+    return { error };
   }
 };
 
@@ -48,81 +49,95 @@ export async function action({ request }: ActionArgs) {
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
     case "get_paged_customers":
-      const { skip, take } = values;
-      const pagedCustomers = await getCustomers(
-        parseInt(skip.toString()),
-        parseInt(take.toString())
-      );
-      return { pagedCustomers };
-    case "customers_search":
-      const { search_term } = values;
-      const customers =
-        search_term.toString().length > 0
-          ? await getCustomersBySearch(search_term.toString())
-          : [];
-      return { customers };
-    case "create":
-      const createActionErrors: any = validateCustomerData(values);
-
-      if (Object.values(createActionErrors).some(Boolean))
-        return { createActionErrors };
-
       try {
-        await createCustomer(values);
-        return { customerCreated: true };
-      } catch (err) {
-        console.log(err);
-        createActionErrors.info =
-          "There was a problem creating the customer...";
-        return { createActionErrors };
+        const { pagedCustomers } = await getCustomers(values);
+        return { pagedCustomers };
+      } catch (error) {
+        return { error };
+      }
+    case "customers_search":
+      try {
+        const { customers } = await getCustomersBySearch(values);
+        return { customers };
+      } catch (error) {
+        return { error };
+      }
+    case "create":
+      try {
+        const createdCustomerData = await createCustomer(values);
+        return { createdCustomerData };
+      } catch (error) {
+        return { error };
       }
   }
+  return {
+    error: { code: 400, message: "Bad request: action was not handled" },
+  };
 }
 
 export default function CustomersIndex() {
-  const { customerCount }: any = useLoaderData();
-  const data = useActionData();
+  const loaderData = useLoaderData();
+  const actionData = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [customerCount, setCustomerCount] = useState(0);
   const [customers, setCustomers] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
   const [activeMenuItemId, setActiveMenuItemId] = useState(0);
+  const [alertData, setAlertData] = useState<error | null>(null);
 
   useEffect(() => {
-    if (!data) return;
-    if (data.customerCreated) setCreateModalOpen(false);
-  }, [data]);
+    if (!loaderData) return;
+    const { customerCount: retrievedCustomerCount } = loaderData;
+    if (retrievedCustomerCount) setCustomerCount(retrievedCustomerCount);
+    if (loaderData.error) setAlertData(loaderData.error);
+  }, [loaderData]);
+
+  useEffect(() => {
+    if (!actionData) return;
+    const { createdCustomerData, error } = actionData;
+    if (createdCustomerData) {
+      const { code } = createdCustomerData;
+      setCustomerCount((oldCustomerCount: number) => oldCustomerCount + 1);
+      setCreateModalOpen(false);
+      // alert
+      setAlertData({ code, message: `Success: customer created` });
+    }
+    if (error) setAlertData(error);
+  }, [actionData]);
 
   return (
     <>
       <SearchInput
         _action="customers_search"
         placeholder="start typing to filter customers..."
-        onDataLoaded={(fetchedData) => {
-          if (fetchedData.customers) {
-            setCustomers(fetchedData.customers);
-            setIsSearched(fetchedData.customers.length > 0);
+        onDataLoaded={({ customers: retrievedCustomers, error }) => {
+          if (retrievedCustomers) {
+            const isRetrievedCustomers = retrievedCustomers.length > 0;
+            setIsSearched(isRetrievedCustomers);
+            if (isRetrievedCustomers) setCustomers(retrievedCustomers);
           }
+          if (error) setAlertData(error);
         }}
       />
-      {customers && customers.length ? (
-        <div className="-m-4 md:m-0">
-          <table className="table">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th className="w-1/5">Name</th>
-                <th className="w-1/5">Tel</th>
-                <th className="w-1/5">Email</th>
-                <th className="w-1/5">Address</th>
-                <th className="text-right w-1/5">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers &&
-                customers.map(
-                  ({ customer_id, name, tel, email, address }: customers) => {
-                    return (
+      <div className="-m-4 md:mb-0 md:mx-0">
+        <table className="table">
+          {customers && customers.length ? (
+            <>
+              <thead>
+                <tr className="hidden md:table-row">
+                  <th className="w-1/5">Name</th>
+                  <th className="w-1/5">Tel</th>
+                  <th className="w-1/5">Email</th>
+                  <th className="w-1/5">Address</th>
+                  <th className="text-right w-1/5">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="border-y border-base-content/20">
+                {customers &&
+                  customers.map(
+                    ({ customer_id, name, tel, email, address }: customers) => (
                       <tr className={respTRClass} key={customer_id}>
                         <td data-label="Name: " className={respMidTDClass}>
                           {name}
@@ -152,15 +167,19 @@ export default function CustomersIndex() {
                           </ListingItemMenu>
                         </td>
                       </tr>
-                    );
-                  }
-                )}
+                    )
+                  )}
+              </tbody>
+            </>
+          ) : (
+            <tbody className="border-y border-base-content/20">
+              <tr className={respTRClass}>
+                <td className={respTDClass}>No customers found...</td>
+              </tr>
             </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="text-center">No customers found...</p>
-      )}
+          )}
+        </table>
+      </div>
       <div className={createBtnContainerClass}>
         {!isSearched && (
           <Pagination
@@ -187,14 +206,14 @@ export default function CustomersIndex() {
           <CustomerForm
             actionName="create"
             navigation={navigation}
-            formErrors={data?.createActionErrors}
             onCancel={() => {
               setCreateModalOpen(false);
-              if (data) data.createActionErrors = {};
+              if (actionData) actionData.createActionErrors = {};
             }}
           />
         )}
       </Modal>
+      <AlertMessage alertData={alertData} setAlertData={setAlertData} />
     </>
   );
 }

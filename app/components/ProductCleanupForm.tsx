@@ -8,23 +8,16 @@ import FormBtn from "./FormBtn";
 
 const ProductCleanupForm = ({
   navigation,
-  formData,
   onCancel,
   actionName,
 }: {
   navigation: Navigation;
-  formData: any;
   onCancel: Function;
   actionName: string;
 }) => {
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post">
-      {formData && formData.info && (
-        <label className="label">
-          <span className="label-text-alt text-error">{formData.info}</span>
-        </label>
-      )}
       <div className="form-control">
         <label className="label cursor-pointer">
           <span className="label-text">brands</span>

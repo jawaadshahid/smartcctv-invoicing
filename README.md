@@ -64,8 +64,6 @@ cp -R ../my-old-remix-app/app app
     - quote totals in past month(s)
     - invoice record count
     - invoice totals in past month(s)
- - MAINTENANCE: refactor actions to controllers
- - MAINTENANCE: refactor type error objs, move to controller
  - MAINTENANCE: cleanup dupilcate customers, (can be handled by editor)
  - MAINTENANCE: cleanup styles, move repeated styles to definition file, need a better method than styleClasses.ts (SPIKE)
  - MAINTENANCE: create subdirs for components, conains type file (for type cleanup)

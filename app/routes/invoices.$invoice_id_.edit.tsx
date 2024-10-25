@@ -1,11 +1,17 @@
 import { customers, products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useActionData, useNavigate, useNavigation } from "@remix-run/react";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import { useEffect, useState } from "react";
 import AlertMessage from "~/components/AlertMessage";
-import QuoteForm from "~/components/QuoteForm";
+import InvoiceForm from "~/components/InvoiceForm";
 import { createCustomer, getCustomersBySearch } from "~/controllers/customers";
+import { getInvoiceById, updateInvoiceById } from "~/controllers/invoices";
 import {
   createProduct,
   getBrandsBySearch,
@@ -13,22 +19,31 @@ import {
   getProductsBySearch,
   getTypesBySearch,
 } from "~/controllers/products";
-import { createQuote } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
 import { error } from "~/utils/errors";
 import { getUserId } from "~/utils/session";
+import { InvoicesWithCustomersType } from "~/utils/types";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - Create quote` }];
+  return [{ title: `${SITE_TITLE} - Edit Invoice` }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
-  return {};
+  const { invoice_id } = params;
+  if (!invoice_id) return redirect("/invoices");
+  try {
+    const { invoice } = await getInvoiceById({ invoice_id });
+    return { invoice };
+  } catch (error) {
+    return { error };
+  }
 };
 
-export async function action({ request }: ActionArgs) {
+export const shouldRevalidate = () => false;
+
+export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
@@ -81,10 +96,16 @@ export async function action({ request }: ActionArgs) {
       } catch (error) {
         return { error };
       }
-    case "create_quote":
+    case "edit_invoice":
+      const { invoice_id } = params;
+      if (!invoice_id)
+        return {
+          code: 400,
+          message: "Bad request: failed to update invoice",
+        };
       try {
-        const createdQuoteData = await createQuote(values);
-        return { createdQuoteData };
+        const updatedInvoiceData = await updateInvoiceById(invoice_id, values);
+        return { updatedInvoiceData };
       } catch (error) {
         return { error };
       }
@@ -94,10 +115,13 @@ export async function action({ request }: ActionArgs) {
   };
 }
 
-export default function QuotesCreate() {
+export default function InvoicesEdit() {
+  const loaderData = useLoaderData();
   const actionData = useActionData();
   const navigation = useNavigation();
   const navigate = useNavigate();
+  const [existingInvoiceData, setExistingInvoiceData] =
+    useState<InvoicesWithCustomersType | null>(null);
   const [createdCustomer, setCreatedCustomer] = useState<customers | null>(
     null
   );
@@ -105,9 +129,20 @@ export default function QuotesCreate() {
   const [alertData, setAlertData] = useState<error | null>(null);
 
   useEffect(() => {
+    if (!loaderData) return;
+    const { invoice: retrievedInvoice } = loaderData;
+    if (retrievedInvoice) setExistingInvoiceData(retrievedInvoice);
+    if (loaderData.error) setAlertData(loaderData.error);
+  }, [loaderData]);
+
+  useEffect(() => {
     if (!actionData) return;
-    const { createdCustomerData, createdProductData, createdQuoteData, error } =
-      actionData;
+    const {
+      createdCustomerData,
+      createdProductData,
+      updatedInvoiceData,
+      error,
+    } = actionData;
 
     if (createdCustomerData) {
       const { code, createdCustomer: retrievedCustomer } = createdCustomerData;
@@ -119,24 +154,36 @@ export default function QuotesCreate() {
       setCreatedProduct(retrievedProduct);
       setAlertData({ code, message: "Success: product created" });
     }
-    if (createdQuoteData) {
-      const { code } = createdQuoteData;
-      setAlertData({ code, message: "Success: quote created" });
-      setTimeout(() => navigate(`/quotes`, { replace: true }), 2000);
+    if (updatedInvoiceData) {
+      const {
+        code,
+        updatedInvoice,
+      }: { code: number; updatedInvoice: InvoicesWithCustomersType } =
+        updatedInvoiceData;
+      setExistingInvoiceData(updatedInvoice);
+      setAlertData({ code, message: "Success: invoice updated" });
+      const { invoice_id } = updatedInvoice;
+      if (invoice_id)
+        navigate(`/invoices/${invoice_id}/edit`, { replace: true, preventScrollReset: true });
+      else navigate(`/invoices`, { replace: true });
     }
     if (error) setAlertData(error);
   }, [actionData]);
+
   return (
     <>
-      <h2 className="mb-4 text-center">Create a new quote</h2>
-      <QuoteForm
+      <h2 className="mb-4 text-center">Edit invoice</h2>
+      <InvoiceForm
+        {...(existingInvoiceData
+          ? { existingInvoiceData, setExistingInvoiceData }
+          : {})}
         navigation={navigation}
         createdCustomer={createdCustomer}
         setCreatedCustomer={setCreatedCustomer}
         createdProduct={createdProduct}
         setCreatedProduct={setCreatedProduct}
         setAlertData={setAlertData}
-        actionName="create_quote"
+        actionName="edit_invoice"
         onCancel={() => navigate(-1)}
       />
       <AlertMessage alertData={alertData} setAlertData={setAlertData} />

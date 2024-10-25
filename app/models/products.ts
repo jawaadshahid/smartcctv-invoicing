@@ -29,6 +29,17 @@ export const getProductById = (product_id: number) => {
   });
 };
 
+export const getProductsByIds = (product_ids: number[]) => {
+  return db.products.findMany({
+    where: { product_id: { in: product_ids } },
+    include: {
+      brand: true,
+      model: true,
+      type: true,
+    },
+  });
+};
+
 export const getProductsBySearch = (search_term: string) => {
   const search_terms = search_term.split(" ").join(" & ");
   return db.products.findMany({

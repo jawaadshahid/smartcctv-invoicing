@@ -9,6 +9,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { getInvoiceById } from "~/controllers/invoices";
+import { getUserByEmail } from "~/controllers/users";
 import {
   getCurrencyString,
   getGrandTotal,
@@ -16,37 +17,41 @@ import {
   prettifyDateString,
   prettifyRefNum,
 } from "~/utils/formatters";
-import type { InvoicesType } from "~/utils/types";
+import type { InvoicesWithCustomersType } from "~/utils/types";
 
 export const getInvoiceBuffer = async (
-  invoiceid: string | undefined,
+  invoice_id: string,
   isVat: boolean,
-  userAddress: string
+  userEmail: string
 ) => {
-  if (!invoiceid) return Promise.reject({ error: "invoice id is not defined" });
-  const id = invoiceid as string;
-  let invoice: InvoicesType | any;
-  try {
-    invoice = await getInvoiceById(parseInt(id));
-  } catch (error) {
-    return Promise.reject({ error });
-  }
-
-  if (!invoice) return Promise.reject({ msg: "invoice not found!" });
+  const { invoice } = await getInvoiceById({ invoice_id });
+  const user = await getUserByEmail(`${userEmail}`);
+  if (!user)
+    return {
+      error: {
+        code: 500,
+        message: "Internal server error: there was a problem generating PDF",
+      },
+    };
 
   let stream = await renderToStream(
-    <InvoicePDFDoc invoice={invoice} isVat={isVat} userAddress={userAddress} />
+    <InvoicePDFDoc
+      invoice={invoice}
+      isVat={isVat}
+      userAddress={`${user.address}`}
+    />
   );
   // and transform it to a Buffer to send in the Response
   return new Promise((resolve, reject) => {
     let buffers: Uint8Array[] = [];
-    stream.on("data", (data) => {
-      buffers.push(data);
-    });
-    stream.on("end", () => {
-      resolve(Buffer.concat(buffers));
-    });
-    stream.on("error", reject);
+    stream.on("data", (data) => buffers.push(data));
+    stream.on("end", () => resolve(Buffer.concat(buffers)));
+    stream.on("error", () =>
+      reject({
+        code: 500,
+        message: "Internal server error: there was a problem generating PDF",
+      })
+    );
   });
 };
 
@@ -113,7 +118,7 @@ const InvoicePDFDoc = ({
   isVat,
   userAddress,
 }: {
-  invoice: InvoicesType;
+  invoice: InvoicesWithCustomersType;
   isVat: boolean;
   userAddress: string;
 }) => {
@@ -160,7 +165,7 @@ const InvoicePDFDoc = ({
             {`${userAddress.split(", ").join(`${"\n"}`)}${"\n"}`}
             invoice ref: {prettifyRefNum(invoice_id)}
             {"\n"}
-            {prettifyDateString(date.toISOString())}
+            {prettifyDateString(createdAt.toString())}
           </Text>
         </View>
         <View style={{ margin: "15 20" }}>

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import FormBtn from "./FormBtn";
 
-type OnDataLoaded = (fetchedData: any) => void;
+export type OnDataLoaded = (fetchedData: any) => void;
 
 export interface SearchInputProps<T> extends InputHTMLAttributes<T> {
   onDataLoaded: OnDataLoaded;

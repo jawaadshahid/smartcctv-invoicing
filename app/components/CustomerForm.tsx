@@ -11,18 +11,15 @@ import FormBtn from "./FormBtn";
 
 const CustomerForm = ({
   navigation,
-  formErrors,
   onCancel,
   actionName,
   existingData,
 }: {
   navigation: Navigation;
-  formErrors?: any;
   onCancel?: Function;
   actionName: string;
   existingData?: customers;
 }) => {
-  // if existingData, then edit, else new
   const isNew = !existingData;
   const [name, setName] = useState(!isNew ? existingData.name : "");
   const [tel, setTel] = useState(!isNew ? existingData.tel : "");
@@ -31,11 +28,6 @@ const CustomerForm = ({
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
-      {formErrors && formErrors.info && (
-        <label className="label">
-          <span className="label-text-alt text-error">{formErrors.info}</span>
-        </label>
-      )}
       {!isNew && (
         <input
           type="hidden"
@@ -57,13 +49,6 @@ const CustomerForm = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {formErrors && formErrors.name && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.name}
-              </span>
-            </label>
-          )}
         </div>
         <div className="mb-2">
           <label className="label" htmlFor="tel">
@@ -78,13 +63,6 @@ const CustomerForm = ({
             value={tel}
             onChange={(e) => setTel(e.target.value)}
           />
-          {formErrors && formErrors.tel && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.tel}
-              </span>
-            </label>
-          )}
         </div>
         <div className="mb-2">
           <label className="label" htmlFor="email">
@@ -99,13 +77,6 @@ const CustomerForm = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {formErrors && formErrors.email && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.email}
-              </span>
-            </label>
-          )}
         </div>
         <div className="mb-2">
           <label className="label" htmlFor="address">
@@ -119,13 +90,6 @@ const CustomerForm = ({
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
-          {formErrors && formErrors.address && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.address}
-              </span>
-            </label>
-          )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <FormBtn

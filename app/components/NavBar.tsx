@@ -7,11 +7,11 @@ import { UserContext } from "~/root";
 
 const NavBar = () => {
   const user: any = useContext(UserContext);
-  if (!user) return <div className="navbar bg-base-100"></div>;
+  if (!user) return <></>;
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 p-4 fixed top-0 z-20">
       <div className="navbar-start">
-        <div className="dropdown fixed z-20">
+        <div className="dropdown">
           <label tabIndex={0} className="btn">
             <Bars3Icon className="h-5 w-5 stroke-2" />
           </label>

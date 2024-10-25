@@ -1,10 +1,17 @@
 import { SquaresPlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { product_brands, product_models, product_types } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
+import { error } from "~/utils/errors";
 import { inputClass } from "~/utils/styleClasses";
 import FormBtn from "./FormBtn";
-import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
-import { product_brands, product_models, product_types } from "@prisma/client";
 import ReadOnlyWithClearInput from "./ReadOnlyWithClearInput";
+import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
+
+type TaxonomyField = {
+  taxoName: "brand" | "model" | "type";
+  existingItem?: product_brands | product_models | product_types;
+  setAlertData: React.Dispatch<React.SetStateAction<error | null>>;
+};
 
 const getItemByType = (item: ItemType, type: "brand" | "model" | "type") => {
   switch (type) {
@@ -22,13 +29,9 @@ const getItemByType = (item: ItemType, type: "brand" | "model" | "type") => {
 
 const TaxonomyField = ({
   taxoName,
-  inputError,
   existingItem,
-}: {
-  taxoName: "brand" | "model" | "type";
-  inputError: any;
-  existingItem?: product_brands | product_models | product_types;
-}) => {
+  setAlertData,
+}: TaxonomyField) => {
   const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
   const [isNewItem, setIsNewItem] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -78,6 +81,7 @@ const TaxonomyField = ({
               <SearchInputWithDropdown
                 dataType={`${taxoName}s`}
                 onItemClick={(item: ItemType) => setSelectedItem(item)}
+                setAlertData={setAlertData}
                 isFixed={false}
               />
             </div>
@@ -92,13 +96,6 @@ const TaxonomyField = ({
           </>
         )}
       </div>
-      {inputError && inputError[taxoName] && (
-        <label className="label">
-          <span className="label-text-alt text-error">
-            {inputError[taxoName]}
-          </span>
-        </label>
-      )}
     </div>
   );
 };

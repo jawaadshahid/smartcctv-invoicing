@@ -8,40 +8,25 @@ export type QuotedProductsType = {
   price: Prisma.Decimal;
 };
 
-export type QuotesType = {
-  quote_id: number;
-  createdAt: string;
-  updatedAt: string;
-  customer: customers;
-  labour: Prisma.Decimal;
-  discount: Prisma.Decimal;
-  quoted_products: QuotedProductsType[];
-};
+export type QuotesWithCustomersType = Prisma.quotesGetPayload<{
+  include: { customer: true; quoted_products: true };
+}>;
 
-export type InvoicedProductsType = {
-  invprod_id: number;
-  invoice_id: number;
-  name: string;
-  quantity: number;
-  price: Prisma.Decimal;
-};
+export type QuotesType = Prisma.quotesGetPayload<{
+  include: { quoted_products: true };
+}>;
 
-export type InvoicesType = {
-  invoice_id: number;
-  createdAt: string;
-  updatedAt: string;
-  customer: customers;
-  labour: Prisma.Decimal;
-  discount: Prisma.Decimal;
-  invoiced_products: InvoicedProductsType[];
-};
+export type InvoicesWithCustomersType = Prisma.invoicesGetPayload<{
+  include: { customer: true; invoiced_products: true };
+}>;
 
-export type CustomerType = {
-  customer_id: number;
-  name: string;
-  tel: string;
-  email: string;
-  address: string;
-  invoice: InvoicesType[];
-  quote: QuotesType[];
-};
+export type InvoicesType = Prisma.invoicesGetPayload<{
+  include: { invoiced_products: true };
+}>;
+
+export type CustomerType = Prisma.customersGetPayload<{
+  include: {
+    invoice: { include: { invoiced_products: true } };
+    quote: { include: { quoted_products: true } };
+  };
+}>;

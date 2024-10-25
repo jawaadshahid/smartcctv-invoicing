@@ -6,6 +6,7 @@ import { getCurrencyString } from "../utils/formatters";
 import FormBtn from "./FormBtn";
 import ReadOnlyWithClearInput from "./ReadOnlyWithClearInput";
 import SearchInputWithDropdown, { ItemType } from "./SearchInputWithDropdown";
+import { error } from "~/utils/errors";
 
 type PsvType = {
   row_id: string;
@@ -18,10 +19,12 @@ const QuoteNewProductRow = ({
   rowId,
   createdProduct,
   dispatcher,
+  setAlertData,
 }: {
   rowId: string;
   createdProduct?: products;
   dispatcher: React.Dispatch<any>;
+  setAlertData: React.Dispatch<React.SetStateAction<error | null>>;
 }) => {
   const [selectedProduct, setSelectedProduct] = useState<products | null>(null);
   const [qty, setQty] = useState(1);
@@ -83,6 +86,7 @@ const QuoteNewProductRow = ({
             <div className="flex-1">
               <SearchInputWithDropdown
                 dataType="products"
+                setAlertData={setAlertData}
                 onItemClick={(item: ItemType) => handleSelect(item as products)}
               />
             </div>

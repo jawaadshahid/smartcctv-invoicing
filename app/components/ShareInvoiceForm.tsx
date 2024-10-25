@@ -3,11 +3,10 @@ import {
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
 import type { customers, users } from "@prisma/client";
-import { Prisma } from "@prisma/client";
+import { Prisma, invoiced_products } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { Navigation } from "@remix-run/router";
 import { formClass, inputClass } from "~/utils/styleClasses";
-import type { InvoicedProductsType } from "~/utils/types";
 import {
   getCurrencyString,
   getSubtotal,
@@ -16,7 +15,7 @@ import {
 import FormBtn from "./FormBtn";
 
 type ProductDataType = {
-  invoiced_products: InvoicedProductsType[];
+  invoiced_products: invoiced_products[];
   labour: Prisma.Decimal;
   discount: Prisma.Decimal;
   grandTotal: Prisma.Decimal;
@@ -29,7 +28,6 @@ const ShareInvoiceFrom = ({
   productData,
   user,
   onCancel,
-  formErrors,
 }: {
   invoiceid: number;
   navigation: Navigation;
@@ -37,7 +35,6 @@ const ShareInvoiceFrom = ({
   productData: ProductDataType;
   user: users;
   onCancel: Function;
-  formErrors: any;
 }) => {
   const { invoiced_products, labour, discount, grandTotal } = productData;
   const labourDec = new Prisma.Decimal(labour);
@@ -55,7 +52,7 @@ const ShareInvoiceFrom = ({
       />
       {invoiced_products &&
         invoiced_products.map(
-          ({ name, quantity, price }: InvoicedProductsType, ind) => {
+          ({ name, quantity, price }: invoiced_products, ind) => {
             const priceDec = new Prisma.Decimal(price);
             return (
               <input
@@ -147,13 +144,6 @@ const ShareInvoiceFrom = ({
               id="isVatInvoice"
             />
           </label>
-          {formErrors?.msg && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {formErrors.msg}
-              </span>
-            </label>
-          )}
         </div>
         <div className="flex justify-end mt-4 mb-2">
           <FormBtn

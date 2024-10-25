@@ -1,34 +1,40 @@
 import {
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
+  DocumentCurrencyPoundIcon,
   DocumentPlusIcon,
-  EyeIcon,
   PencilSquareIcon,
+  ShareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { Prisma } from "@prisma/client";
+import { invoices, Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import AlertMessage from "~/components/AlertMessage";
 import FormAnchorButton from "~/components/FormAnchorBtn";
 import FormBtn from "~/components/FormBtn";
+import { getInvoiceBuffer } from "~/components/InvoicePDFDoc";
 import ListingItemMenu from "~/components/ListingItemMenu";
 import Modal from "~/components/Modal";
 import Pagination from "~/components/Pagination";
 import SearchInput from "~/components/SearchInput";
+import ShareInvoiceFrom from "~/components/ShareInvoiceForm";
 import {
   deleteInvoiceById,
   getInvoiceByCustomerSearch,
   getInvoices,
   getInvoicesCount,
 } from "~/controllers/invoices";
-import { SITE_TITLE } from "~/root";
+import { SITE_TITLE, UserContext } from "~/root";
+import { error } from "~/utils/errors";
+import { emailBodyData, sendEmailPromise } from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
@@ -36,13 +42,15 @@ import {
   respTDClass,
   respTRClass,
 } from "~/utils/styleClasses";
-import type { InvoicesType } from "~/utils/types";
+import type { InvoicesWithCustomersType } from "~/utils/types";
 import {
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
   prettifyDateString,
+  prettifyFilename,
 } from "../utils/formatters";
+import { getAllEmails } from "../utils/mailer";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Invoices` }];
@@ -52,11 +60,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
   try {
-    const invoiceCount = await getInvoicesCount();
-    return json({ invoiceCount });
-  } catch (err) {
-    console.error(err);
-    return {};
+    const { invoiceCount } = await getInvoicesCount();
+    return { invoiceCount };
+  } catch (error) {
+    return { error };
   }
 };
 
@@ -65,87 +72,171 @@ export async function action({ request }: ActionArgs) {
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
     case "get_paged_invoices":
-      const { skip, take } = values;
-      const pagedInvoices = await getInvoices(
-        parseInt(skip.toString()),
-        parseInt(take.toString())
-      );
-      return { pagedInvoices };
-    case "invoices_search":
-      const { search_term } = values;
-      const invoices =
-        search_term.toString().length > 0
-          ? await getInvoiceByCustomerSearch(search_term.toString())
-          : [];
-      return { invoices };
-    case "delete":
-      const { invoice_id } = values;
-      const deleteActionsErrors: any = {};
       try {
-        await deleteInvoiceById(parseInt(`${invoice_id}`));
-        return { invoiceDeleted: true };
-      } catch (err) {
-        console.error(err);
-        deleteActionsErrors.info = `There was a problem deleting invoice with id: ${invoice_id}`;
-        return { deleteActionsErrors };
+        const { pagedInvoices } = await getInvoices(values);
+        return { pagedInvoices };
+      } catch (error) {
+        return { error };
+      }
+    case "invoices_search":
+      try {
+        const { invoices } = await getInvoiceByCustomerSearch(values);
+        return { invoices };
+      } catch (error) {
+        return { error };
+      }
+    case "delete":
+      try {
+        const deletedInvoiceData = await deleteInvoiceById(values);
+        return { deletedInvoiceData };
+      } catch (error) {
+        return { error };
+      }
+    case "share_invoice":
+      try {
+        const {
+          invoiceid,
+          userEmail,
+          subtotal,
+          labour,
+          discount,
+          grandTotal,
+          productCount,
+          isVatInvoice,
+          ...productData
+        } = values;
+
+        const allEmails = await getAllEmails(values);
+        if (!allEmails)
+          return {
+            error: {
+              code: 500,
+              message: "Internal server error: the email has not been sent",
+            },
+          };
+
+        const emailBodyData: emailBodyData = {
+          documentid: invoiceid,
+          subtotal,
+          labour,
+          discount,
+          grandTotal,
+          productCount,
+          productData,
+          type: "invoice",
+        };
+
+        // TODO: change to getInvoiceBuffer(values)
+        const pdfBuffer = await getInvoiceBuffer(
+          `${invoiceid}`,
+          isVatInvoice === "on",
+          `${userEmail}`
+        );
+
+        // TODO: change to sendEmailPromise(values, pdfBuffer, documentid: invoiceid, type: "invoice")
+        const { code } = await sendEmailPromise(
+          allEmails,
+          emailBodyData,
+          pdfBuffer
+        );
+        return {
+          mailSentData: { code, message: "Success: email sent" },
+        };
+      } catch (error) {
+        return { error };
       }
   }
+  return {
+    error: { code: 400, message: "Bad request: action was not handled" },
+  };
 }
 
 export default function InvoicesIndex() {
-  const { invoiceCount }: any = useLoaderData();
-  const data = useActionData();
+  const user: any = useContext(UserContext);
+  const loaderData = useLoaderData();
+  const actionData = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [invoiceCount, setInvoiceCount] = useState(0);
   const [invoices, setInvoices] = useState([]);
   const [deletedInvoiceId, setDeletedInvoiceId] = useState(0);
-  const [deleteModelOpen, setDeleteModalOpen] = useState(false);
+  const [invoiceToShare, setInvoiceToShare] =
+    useState<InvoicesWithCustomersType | null>(null);
   const [isSearched, setIsSearched] = useState(false);
   const [activeMenuItemId, setActiveMenuItemId] = useState(0);
+  const [alertData, setAlertData] = useState<error | null>(null);
 
   useEffect(() => {
-    if (!data) return;
-    if (data.invoiceDeleted) setDeleteModalOpen(false);
-  }, [data]);
+    if (!loaderData) return;
+    const { invoiceCount: retrievedInvoiceCount } = loaderData;
+    if (retrievedInvoiceCount) setInvoiceCount(retrievedInvoiceCount);
+    if (loaderData.error) setAlertData(loaderData.error);
+  }, [loaderData]);
+
+  useEffect(() => {
+    if (!actionData) return;
+    const { deletedInvoiceData, mailSentData, error } = actionData;
+    if (deletedInvoiceData) {
+      const {
+        code,
+        deletedInvoice: { invoice_id: deletedInvoiceId },
+      } = deletedInvoiceData;
+      setInvoices((oldInvoices: any) =>
+        oldInvoices.filter(
+          ({ invoice_id }: invoices) => invoice_id !== deletedInvoiceId
+        )
+      );
+      setAlertData({ code, message: "Success: invoice deleted" });
+      setDeletedInvoiceId(0);
+    }
+    if (mailSentData) {
+      setAlertData(mailSentData);
+      setInvoiceToShare(null);
+    }
+    if (error) setAlertData(error);
+  }, [actionData]);
 
   return (
     <>
       <SearchInput
         _action="invoices_search"
         placeholder="start typing to filter invoices..."
-        onDataLoaded={(fetchedData) => {
-          if (fetchedData.invoices) {
-            setInvoices(fetchedData.invoices);
-            setIsSearched(fetchedData.invoices.length > 0);
+        onDataLoaded={({ invoices: retrievedInvoices, error }) => {
+          if (retrievedInvoices) {
+            const isRetrievedInvoices = retrievedInvoices.length > 0;
+            setIsSearched(isRetrievedInvoices);
+            if (isRetrievedInvoices) setInvoices(retrievedInvoices);
           }
+          if (error) setAlertData(error);
         }}
       />
-      {invoices && invoices.length ? (
-        <div className="-m-4 md:m-0">
-          <table className="table">
-            <thead>
-              <tr className="hidden md:table-row">
-                <th>Date</th>
-                <th className="w-full">Customer</th>
-                <th>Amount</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices &&
-                invoices.map(
-                  ({
-                    invoice_id,
-                    createdAt,
-                    customer,
-                    invoiced_products,
-                    labour,
-                    discount,
-                  }: InvoicesType) => {
+      <div className="-m-4 md:mb-0 md:mx-0">
+        <table className="table">
+          {invoices && invoices.length ? (
+            <>
+              <thead>
+                <tr className="hidden md:table-row">
+                  <th>Date</th>
+                  <th className="w-full">Customer</th>
+                  <th>Amount</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="border-y border-base-content/20">
+                {invoices &&
+                  invoices.map((invoice: InvoicesWithCustomersType) => {
+                    const {
+                      invoice_id,
+                      createdAt,
+                      customer,
+                      invoiced_products,
+                      labour,
+                      discount,
+                    } = invoice;
                     return (
                       <tr className={respTRClass} key={invoice_id}>
                         <td data-label="Date: " className={respMidTDClass}>
-                          {prettifyDateString(createdAt)}
+                          {prettifyDateString(createdAt.toString())}
                         </td>
                         <td data-label="Customer: " className={respMidTDClass}>
                           {customer.name}
@@ -167,11 +258,40 @@ export default function InvoicesIndex() {
                             }
                           >
                             <FormAnchorButton
+                              href={`/pdfs/${prettifyFilename(
+                                "scuk_invoice",
+                                invoice_id,
+                                "pdf"
+                              )}?type=invoice&id=${invoice_id}`}
+                              target="_blank"
+                              rel="noreferrer"
                               isSubmitting={isSubmitting}
-                              href={`invoices/${invoice_id}`}
                             >
-                              <EyeIcon className="h-5 w-5 stroke-2" />
+                              <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
                             </FormAnchorButton>
+                            <FormAnchorButton
+                              href={`/pdfs/${prettifyFilename(
+                                "scuk_invoice",
+                                invoice_id,
+                                "pdf"
+                              )}?type=invoice&id=${invoice_id}&isvat=true`}
+                              target="_blank"
+                              rel="noreferrer"
+                              isSubmitting={isSubmitting}
+                            >
+                              <div className="indicator bg-inherit">
+                                <span className="indicator-item indicator-bottom indicator-center badge badge-xs bg-inherit border-0 transition-none">
+                                  VAT
+                                </span>
+                                <DocumentCurrencyPoundIcon className="h-5 w-5 stroke-2" />
+                              </div>
+                            </FormAnchorButton>
+                            <FormBtn
+                              isSubmitting={isSubmitting}
+                              onClick={() => setInvoiceToShare(invoice)}
+                            >
+                              <ShareIcon className="h-5 w-5 stroke-2" />
+                            </FormBtn>
                             <FormAnchorButton
                               isSubmitting={isSubmitting}
                               href={`invoices/${invoice_id}/edit`}
@@ -180,10 +300,7 @@ export default function InvoicesIndex() {
                             </FormAnchorButton>
                             <FormBtn
                               isSubmitting={isSubmitting}
-                              onClick={() => {
-                                setDeletedInvoiceId(invoice_id);
-                                setDeleteModalOpen(true);
-                              }}
+                              onClick={() => setDeletedInvoiceId(invoice_id)}
                             >
                               <TrashIcon className="h-5 w-5 stroke-2" />
                             </FormBtn>
@@ -191,14 +308,18 @@ export default function InvoicesIndex() {
                         </td>
                       </tr>
                     );
-                  }
-                )}
+                  })}
+              </tbody>
+            </>
+          ) : (
+            <tbody className="border-y border-base-content/20">
+              <tr className={respTRClass}>
+                <td className={respTDClass}>No invoices found...</td>
+              </tr>
             </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>No invoices found...</p>
-      )}
+          )}
+        </table>
+      </div>
       <div className={createBtnContainerClass}>
         {!isSearched && (
           <Pagination
@@ -214,13 +335,8 @@ export default function InvoicesIndex() {
           <DocumentPlusIcon className="h-5 w-5 stroke-2" />
         </FormAnchorButton>
       </div>
-      <Modal open={deleteModelOpen}>
+      <Modal open={deletedInvoiceId !== 0}>
         <p>Are you sure you want to delete this invoice?</p>
-        {data && data.deleteActionsErrors && (
-          <p className="text-error mt-1 text-xs">
-            {data.deleteActionsErrors.info}
-          </p>
-        )}
         <div className="modal-action">
           <Form replace method="post">
             <input type="hidden" name="invoice_id" value={deletedInvoiceId} />
@@ -236,12 +352,42 @@ export default function InvoicesIndex() {
           <FormBtn
             className="ml-4"
             isSubmitting={isSubmitting}
-            onClick={() => setDeleteModalOpen(false)}
+            onClick={() => setDeletedInvoiceId(0)}
           >
             <ArrowUturnLeftIcon className="h-5 w-5 stroke-2" />
           </FormBtn>
         </div>
       </Modal>
+      <Modal open={Boolean(invoiceToShare)}>
+        <h3 className="mb-4">Share with:</h3>
+        {(() => {
+          if (!invoiceToShare) return <></>;
+          const { invoice_id, customer, invoiced_products, labour, discount } =
+            invoiceToShare;
+          return (
+            <ShareInvoiceFrom
+              invoiceid={invoice_id}
+              customer={customer}
+              productData={{
+                invoiced_products,
+                labour,
+                discount,
+                grandTotal: getGrandTotal(
+                  getSubtotal(invoiced_products),
+                  new Prisma.Decimal(labour),
+                  new Prisma.Decimal(discount)
+                ),
+              }}
+              user={user}
+              navigation={navigation}
+              onCancel={() => {
+                setInvoiceToShare(null);
+              }}
+            />
+          );
+        })()}
+      </Modal>
+      <AlertMessage alertData={alertData} setAlertData={setAlertData} />
     </>
   );
 }

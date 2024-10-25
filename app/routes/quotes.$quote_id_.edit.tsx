@@ -1,7 +1,12 @@
 import { customers, products } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { useActionData, useNavigate, useNavigation } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import { useEffect, useState } from "react";
 import AlertMessage from "~/components/AlertMessage";
 import QuoteForm from "~/components/QuoteForm";
@@ -13,22 +18,32 @@ import {
   getProductsBySearch,
   getTypesBySearch,
 } from "~/controllers/products";
-import { createQuote } from "~/controllers/quotes";
+import { getQuoteById, updateQuoteById } from "~/controllers/quotes";
 import { SITE_TITLE } from "~/root";
 import { error } from "~/utils/errors";
 import { getUserId } from "~/utils/session";
+import { QuotesWithCustomersType } from "~/utils/types";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `${SITE_TITLE} - Create quote` }];
+  return [{ title: `${SITE_TITLE} - Edit quote ` }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const uid = await getUserId(request);
   if (!uid) return redirect("/login");
-  return {};
+  const { quote_id } = params;
+  if (!quote_id) return redirect("/quotes");
+  try {
+    const { quote } = await getQuoteById({ quote_id });
+    return json({ quote });
+  } catch (error) {
+    return { error };
+  }
 };
 
-export async function action({ request }: ActionArgs) {
+export const shouldRevalidate = () => false;
+
+export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
   switch (_action) {
@@ -81,10 +96,16 @@ export async function action({ request }: ActionArgs) {
       } catch (error) {
         return { error };
       }
-    case "create_quote":
+    case "edit_quote":
+      const { quote_id } = params;
+      if (!quote_id)
+        return {
+          code: 400,
+          message: "Bad request: failed to update quote",
+        };
       try {
-        const createdQuoteData = await createQuote(values);
-        return { createdQuoteData };
+        const updatedQuoteData = await updateQuoteById(quote_id, values);
+        return { updatedQuoteData };
       } catch (error) {
         return { error };
       }
@@ -94,10 +115,13 @@ export async function action({ request }: ActionArgs) {
   };
 }
 
-export default function QuotesCreate() {
+export default function QuotesEdit() {
+  const loaderData = useLoaderData();
   const actionData = useActionData();
   const navigation = useNavigation();
   const navigate = useNavigate();
+  const [existingQuoteData, setExistingQuoteData] =
+    useState<QuotesWithCustomersType | null>(null);
   const [createdCustomer, setCreatedCustomer] = useState<customers | null>(
     null
   );
@@ -105,8 +129,15 @@ export default function QuotesCreate() {
   const [alertData, setAlertData] = useState<error | null>(null);
 
   useEffect(() => {
+    if (!loaderData) return;
+    const { quote: retrievedQuote } = loaderData;
+    if (retrievedQuote) setExistingQuoteData(retrievedQuote);
+    if (loaderData.error) setAlertData(loaderData.error);
+  }, [loaderData]);
+
+  useEffect(() => {
     if (!actionData) return;
-    const { createdCustomerData, createdProductData, createdQuoteData, error } =
+    const { createdCustomerData, createdProductData, updatedQuoteData, error } =
       actionData;
 
     if (createdCustomerData) {
@@ -119,24 +150,35 @@ export default function QuotesCreate() {
       setCreatedProduct(retrievedProduct);
       setAlertData({ code, message: "Success: product created" });
     }
-    if (createdQuoteData) {
-      const { code } = createdQuoteData;
-      setAlertData({ code, message: "Success: quote created" });
-      setTimeout(() => navigate(`/quotes`, { replace: true }), 2000);
+    if (updatedQuoteData) {
+      const {
+        code,
+        updatedQuote,
+      }: { code: number; updatedQuote: QuotesWithCustomersType } =
+        updatedQuoteData;
+      setExistingQuoteData(updatedQuote);
+      setAlertData({ code, message: "Success: quote updated" });
+      const { quote_id } = updatedQuote;
+      if (quote_id) navigate(`/quotes/${quote_id}/edit`, { replace: true });
+      else navigate(`/quotes`, { replace: true });
     }
     if (error) setAlertData(error);
   }, [actionData]);
+
   return (
     <>
-      <h2 className="mb-4 text-center">Create a new quote</h2>
+      <h2 className="mb-4 text-center">Edit quote</h2>
       <QuoteForm
+        {...(existingQuoteData
+          ? { existingQuoteData, setExistingQuoteData }
+          : {})}
         navigation={navigation}
         createdCustomer={createdCustomer}
         setCreatedCustomer={setCreatedCustomer}
         createdProduct={createdProduct}
         setCreatedProduct={setCreatedProduct}
         setAlertData={setAlertData}
-        actionName="create_quote"
+        actionName="edit_quote"
         onCancel={() => navigate(-1)}
       />
       <AlertMessage alertData={alertData} setAlertData={setAlertData} />
