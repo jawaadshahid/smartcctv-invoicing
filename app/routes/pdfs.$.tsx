@@ -23,7 +23,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       body = await getInvoiceBuffer(
         id,
         isvat === "true",
-        user && user.address ? `${user.address}` : ""
+        user && user.email ? `${user.email}` : ""
       );
       break;
     case "quote":
