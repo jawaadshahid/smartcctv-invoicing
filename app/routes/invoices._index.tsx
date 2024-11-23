@@ -96,7 +96,7 @@ export async function action({ request }: ActionArgs) {
       try {
         const {
           invoiceid,
-          userEmail,
+          currUserEmail,
           subtotal,
           labour,
           discount,
@@ -130,7 +130,7 @@ export async function action({ request }: ActionArgs) {
         const pdfBuffer = await getInvoiceBuffer(
           `${invoiceid}`,
           isVatInvoice === "on",
-          `${userEmail}`
+          `${currUserEmail}`
         );
 
         // TODO: change to sendEmailPromise(values, pdfBuffer, documentid: invoiceid, type: "invoice")

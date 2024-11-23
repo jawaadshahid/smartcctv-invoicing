@@ -43,6 +43,7 @@ const ShareInvoiceFrom = ({
   const isSubmitting = navigation.state === "submitting";
   return (
     <Form replace method="post" className={formClass}>
+      <input type="hidden" value={user.email} name="currUserEmail" id="currUserEmail" />
       <input type="hidden" value={invoiceid} name="invoiceid" id="invoiceid" />
       <input
         type="hidden"
