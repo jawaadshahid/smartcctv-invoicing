@@ -53,6 +53,7 @@ cp -R ../my-old-remix-app/app app
 ```
 
 ## TO-DO
+ - FEATURE: add jobs page (see below for spec)
  - FEATURE: limit autocomplete results to 10, use db take to reduce query size
  - FEATURE: should the search input be present if there's only 1 page of results?
  - FEATURE: can heroku send alerts when an error occurs with a snapshot of the console? if so, set it up, if not, create a custom solution to do this
@@ -68,3 +69,24 @@ cp -R ../my-old-remix-app/app app
  - MAINTENANCE: cleanup styles, move repeated styles to definition file, need a better method than styleClasses.ts (SPIKE)
  - MAINTENANCE: create subdirs for components, conains type file (for type cleanup)
  - MAINTENANCE: cleanup types, move inline types to single file
+
+### FEATURE: jobs
+jobs = {
+    job_id: int* (unique key)
+    job_title: varchar
+    customer_id: int* (associated with customers entry, many jobs to one customer)
+    job_event_id: int* (associated with job_events, many job_events to one job)
+    invoice_id: int (associated invoice_id, one job to one invoice)
+}
+
+job_events = {
+    job_event_id: int* (unique key)
+    job_event_title: varchar
+    start_date: date
+    end_date: date
+    quote_id: int (associated quote_id, many job_events to many quotes)
+}
+
+since invoice is generated after job completion, it is associated to the whole job. Whereas, the quote can be generated during a job, if the scope of a job changes, so its associated with the job_event (data relationship TBD)
+
+so that, a single invoice can be generated from a job that contains 1 or more quotes by compiling all items from said quotes 
