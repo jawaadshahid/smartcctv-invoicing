@@ -71,6 +71,7 @@ cp -R ../my-old-remix-app/app app
  - MAINTENANCE: cleanup types, move inline types to single file
 
 ### FEATURE: jobs
+```sh
 jobs = {
     job_id: int* (unique key)
     job_title: varchar
@@ -78,7 +79,8 @@ jobs = {
     job_event_id: int* (associated with job_events, many job_events to one job)
     invoice_id: int (associated invoice_id, one job to one invoice)
 }
-
+```
+```sh
 job_events = {
     job_event_id: int* (unique key)
     job_event_title: varchar
@@ -86,6 +88,7 @@ job_events = {
     end_date: date
     quote_id: int (associated quote_id, many job_events to many quotes)
 }
+```
 
 since invoice is generated after job completion, it is associated to the whole job. Whereas, the quote can be generated during a job, if the scope of a job changes, so its associated with the job_event (data relationship TBD)
 
