@@ -1,5 +1,10 @@
 import { Prisma } from "@prisma/client";
 
+export const logo =
+  "https://cctvalarm.co.uk/logo-light.png";
+export const logoDark =
+  "https://cctvalarm.co.uk/logo-dark.png";
+
 const currencyFormatter = Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "GBP",

@@ -14,6 +14,7 @@ import {
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
+  logo,
   prettifyDateString,
   prettifyRefNum,
 } from "~/utils/formatters";
@@ -65,9 +66,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "#000000",
     borderBottomWidth: 1,
+    padding: 20,
   },
   address: {
-    marginRight: 20,
     textAlign: "right",
   },
   logo: {
@@ -157,10 +158,7 @@ const InvoicePDFDoc = ({
     <Document title={`Smart CCTV invoice #${invoice_id}, for ${name}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Image
-            src="https://smartcctvuk.co.uk/img/logo-small.png"
-            style={styles.logo}
-          />
+          <Image src={logo} style={styles.logo} />
           <Text style={styles.address}>
             {`${userAddress.split(", ").join(`${"\n"}`)}${"\n"}`}
             invoice ref: {prettifyRefNum(invoice_id)}

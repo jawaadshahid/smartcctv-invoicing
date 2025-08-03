@@ -13,6 +13,7 @@ import {
   getCurrencyString,
   getGrandTotal,
   getSubtotal,
+  logo,
 } from "~/utils/formatters";
 import type { QuotesWithCustomersType } from "~/utils/types";
 
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "#000000",
     borderBottomWidth: 1,
+    padding: 20,
   },
   logo: {
     width: 200,
@@ -100,11 +102,8 @@ const QuotePDFDoc = ({ quote }: { quote: QuotesWithCustomersType }) => {
     <Document title={`Smart CCTV quote #${quote_id}, for ${name}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Image
-            src="https://smartcctvuk.co.uk/img/logo-small.png"
-            style={styles.logo}
-          />
-          <Text style={{ marginRight: 20 }}>{date.toDateString()}</Text>
+          <Image src={logo} style={styles.logo} />
+          <Text>{date.toDateString()}</Text>
         </View>
         <View style={{ margin: "15 20" }}>
           <View style={styles.customerRow}>

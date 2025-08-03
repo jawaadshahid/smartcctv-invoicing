@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import { UserContext } from "~/root";
+import { logo, logoDark } from "~/utils/formatters";
 
 const NavBar = () => {
   const user: any = useContext(UserContext);
@@ -45,9 +46,10 @@ const NavBar = () => {
         </div>
       </div>
       <div className="navbar-center">
+        <img className="h-10 w-auto mx-4 dark:hidden" src={logo} alt="" />
         <img
-          className="h-10 w-auto mx-4"
-          src="https://smartcctvuk.co.uk/img/logo-small.png"
+          className="h-10 w-auto mx-4 hidden dark:block"
+          src={logoDark}
           alt=""
         />
       </div>
