@@ -46,9 +46,9 @@ const NavBar = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <img className="h-10 w-auto mx-4 dark:hidden" src={logo} alt="" />
+        <img className="w-[200px] mx-4 dark:hidden" src={logo} alt="" />
         <img
-          className="h-10 w-auto mx-4 hidden dark:block"
+          className="w-[200px] mx-4 hidden dark:block"
           src={logoDark}
           alt=""
         />
