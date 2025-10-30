@@ -7,7 +7,7 @@ import {
   ShareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { invoices, Prisma } from "@prisma/client";
+import { type invoices, Prisma } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
@@ -33,8 +33,12 @@ import {
   getInvoicesCount,
 } from "~/controllers/invoices";
 import { SITE_TITLE, UserContext } from "~/root";
-import { error } from "~/utils/errors";
-import { emailBodyData, sendEmailPromise } from "~/utils/mailer";
+import type { error } from "~/utils/errors";
+import {
+  type emailBodyData,
+  getAllEmails,
+  sendEmailPromise,
+} from "~/utils/mailer";
 import { getUserId } from "~/utils/session";
 import {
   createBtnContainerClass,
@@ -50,7 +54,6 @@ import {
   prettifyDateString,
   prettifyFilename,
 } from "../utils/formatters";
-import { getAllEmails } from "../utils/mailer";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `${SITE_TITLE} - Invoices` }];

@@ -1,23 +1,13 @@
-import { renderToStream } from "@react-pdf/renderer";
 import { getQuoteById } from "~/controllers/quotes";
 import type { QuotesWithCustomersType } from "~/utils/types";
 import { RPDFDoc } from "./rpdf/RPDFDoc";
+import { RPDFRenderToBuffer } from "./rpdf/RPDFRenderToBuffer";
 
 export const getQuoteBuffer = async (quote_id: string) => {
   const { quote } = await getQuoteById({ quote_id });
 
-  let stream = await renderToStream(<QuotePDFDoc quote={quote} />);
-  // and transform it to a Buffer to send in the Response
-  return new Promise((resolve, reject) => {
-    let buffers: Uint8Array[] = [];
-    stream.on("data", (data) => buffers.push(data));
-    stream.on("end", () => resolve(Buffer.concat(buffers)));
-    stream.on("error", () =>
-      reject({
-        code: 500,
-        message: "Internal server error: there was a problem generating PDF",
-      })
-    );
+  return RPDFRenderToBuffer({
+    document: <QuotePDFDoc quote={quote} />,
   });
 };
 

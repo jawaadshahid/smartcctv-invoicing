@@ -1,9 +1,9 @@
-import { renderToStream } from "@react-pdf/renderer";
 import { getInvoiceById } from "~/controllers/invoices";
 import { getUserByEmail } from "~/controllers/users";
 import { prettifyDateString } from "~/utils/formatters";
 import type { InvoicesWithCustomersType } from "~/utils/types";
 import { RPDFDoc } from "./rpdf/RPDFDoc";
+import { RPDFRenderToBuffer } from "./rpdf/RPDFRenderToBuffer";
 
 export const getInvoiceBuffer = async (
   invoice_id: string,
@@ -19,25 +19,14 @@ export const getInvoiceBuffer = async (
         message: "Internal server error: there was a problem generating PDF",
       },
     };
-
-  let stream = await renderToStream(
-    <InvoicePDFDoc
-      invoice={invoice}
-      isVat={isVat}
-      userAddress={`${user.address}`}
-    />
-  );
-  // and transform it to a Buffer to send in the Response
-  return new Promise((resolve, reject) => {
-    let buffers: Uint8Array[] = [];
-    stream.on("data", (data) => buffers.push(data));
-    stream.on("end", () => resolve(Buffer.concat(buffers)));
-    stream.on("error", () =>
-      reject({
-        code: 500,
-        message: "Internal server error: there was a problem generating PDF",
-      })
-    );
+  return RPDFRenderToBuffer({
+    document: (
+      <InvoicePDFDoc
+        invoice={invoice}
+        isVat={isVat}
+        userAddress={`${user.address}`}
+      />
+    ),
   });
 };
 

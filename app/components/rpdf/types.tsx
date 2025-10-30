@@ -30,3 +30,6 @@ export type RPDFProductTotalsProps = {
   grandTotal: Prisma.Decimal;
   isVat?: boolean;
 };
+export type RPDFRenderToBufferProps = {
+  document: React.ReactElement;
+};
