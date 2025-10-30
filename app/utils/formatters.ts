@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
+import logoSrc from "../assets/logo-light.png"
+import logoDarkSrc from "../assets/logo-dark.png"
 
-export const logo =
-  "https://cctvalarm.co.uk/logo-light.png";
-export const logoDark =
-  "https://cctvalarm.co.uk/logo-dark.png";
+export const logo = logoSrc;
+export const logoDark = logoDarkSrc;
 
 const currencyFormatter = Intl.NumberFormat("en-GB", {
   style: "currency",
