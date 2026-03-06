@@ -52,9 +52,9 @@ const InvoicePDFDoc = ({
       docTitle={`CCTV Alarm invoice #${invoice_id}, for ${customer.name}`}
       headerText={`${userAddress
         .split(", ")
-        .join(`${"\n"}`)}"\n"invoice ref: ${prettifyRefNum(
+        .join(`${"\n"}`)}\ninvoice ref: ${prettifyRefNum(
         invoice_id,
-      )}"\n"${prettifyDateString(createdAt.toString())}`}
+      )}\n${prettifyDateString(createdAt.toString())}`}
       customer={customer}
       products={invoiced_products}
       labour={labour}
