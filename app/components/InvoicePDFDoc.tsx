@@ -1,6 +1,6 @@
 import { getInvoiceById } from "~/controllers/invoices";
 import { getUserByEmail } from "~/controllers/users";
-import { prettifyDateString } from "~/utils/formatters";
+import { prettifyDateString, prettifyRefNum } from "~/utils/formatters";
 import type { InvoicesWithCustomersType } from "~/utils/types";
 import { RPDFDoc } from "./rpdf/RPDFDoc";
 import { RPDFRenderToBuffer } from "./rpdf/RPDFRenderToBuffer";
@@ -8,7 +8,7 @@ import { RPDFRenderToBuffer } from "./rpdf/RPDFRenderToBuffer";
 export const getInvoiceBuffer = async (
   invoice_id: string,
   isVat: boolean,
-  userEmail: string
+  userEmail: string,
 ) => {
   const { invoice } = await getInvoiceById({ invoice_id });
   const user = await getUserByEmail(`${userEmail}`);
@@ -50,9 +50,13 @@ const InvoicePDFDoc = ({
   return (
     <RPDFDoc
       docTitle={`CCTV Alarm invoice #${invoice_id}, for ${customer.name}`}
-      headerText={`${userAddress
-        .split(", ")
-        .join(`${"\n"}`)}${"\n"}${prettifyDateString(createdAt.toString())}`}
+      headerText={`
+        ${userAddress.split(", ").join(`${"\n"}`)}
+        ${"\n"}
+        invoice ref: ${prettifyRefNum(invoice_id)}
+        ${"\n"}
+        ${prettifyDateString(createdAt.toString())}
+      `}
       customer={customer}
       products={invoiced_products}
       labour={labour}
