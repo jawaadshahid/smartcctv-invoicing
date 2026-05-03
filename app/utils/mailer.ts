@@ -75,7 +75,7 @@ const constructEmailBody = (emailBodyData: emailBodyData) => {
   htmlStr += `Total: ${getCurrencyString(`${grandTotal}`)}`;
   htmlStr += `</p>`;
   htmlStr += `<p>A PDF of your ${type} is also attached for your records.</p>`;
-  htmlStr += `<p>Kind Regards,<br>Smart CCTV</p>`;
+  htmlStr += `<p>Kind Regards,<br>CCTV Alarm UK</p>`;
   return htmlStr;
 };
 
@@ -124,7 +124,7 @@ const sendEmail = async (
   return transporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
-    subject: `Smart CCTV UK ${docType} (ref: ${documentId})`,
+    subject: `CCTV Alarm UK ${docType} (ref: ${documentId})`,
     html: constructEmailBody(emailBodyData),
     attachments: [
       {

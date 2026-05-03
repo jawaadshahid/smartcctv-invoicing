@@ -53,7 +53,7 @@ export const validatePassword = (password: string) => {
 export const validateCustomerData = ({ name, tel, email, address }: any) => {
   const nameErrors = validateName(`${name}`);
   if (nameErrors) return nameErrors;
-  if (!address && !tel && (!email || `${email}` === "sunny@smartcctvuk.co.uk"))
+  if (!address && !tel && (!email || `${email}` === process.env.EMAIL_USER))
     return "come on bro, capture some contact info!";
 };
 

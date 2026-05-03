@@ -20,7 +20,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function IndexRoute() {
   return (
     <div className={contentBodyClass}>
-      <p>Welcome to Smart CCTV admin</p>
+      <p>Welcome to CCTV Alarm UK admin</p>
     </div>
   );
 }

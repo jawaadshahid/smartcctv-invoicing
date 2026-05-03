@@ -14,7 +14,7 @@ import NavBar from "./components/NavBar";
 import { getUserById } from "./controllers/users";
 import { getUserId } from "./utils/session";
 
-export const SITE_TITLE = "Smart CCTV admin";
+export const SITE_TITLE = "CCTV Alarm admin";
 
 export const UserContext = createContext(null);
 
